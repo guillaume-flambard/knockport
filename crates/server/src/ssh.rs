@@ -263,6 +263,10 @@ impl Handler for Connection {
 
 impl Drop for Connection {
     fn drop(&mut self) {
+        // Persist session on drop (connection close, timeout, or handler end).
+        // This blocks the tokio worker thread for one small JSONL append (~100-500 bytes).
+        // Trade-off: correctness (all sessions logged) beats async complexity; one append per
+        // session is negligible overhead compared to SSH negotiation and network latency.
         self.persist();
     }
 }

@@ -165,12 +165,6 @@ impl Default for Decoder {
     }
 }
 
-#[allow(dead_code)]
-pub fn decode(bytes: &[u8]) -> Vec<Key> {
-    let mut decoder = Decoder::new();
-    decoder.feed(bytes)
-}
-
 #[derive(Debug, Default)]
 #[allow(dead_code)]
 pub struct LineEditor {
@@ -258,28 +252,37 @@ mod tests {
 
     #[test]
     fn decodes_plain_characters() {
-        assert_eq!(decode(b"ls"), vec![Key::Char('l'), Key::Char('s')]);
+        let mut decoder = Decoder::new();
+        assert_eq!(decoder.feed(b"ls"), vec![Key::Char('l'), Key::Char('s')]);
     }
 
     #[test]
     fn decodes_control_keys() {
-        assert_eq!(decode(b"\r"), vec![Key::Enter]);
-        assert_eq!(decode(b"\x7f"), vec![Key::Backspace]);
-        assert_eq!(decode(b"\t"), vec![Key::Tab]);
-        assert_eq!(decode(&[3]), vec![Key::CtrlC]);
-        assert_eq!(decode(&[4]), vec![Key::CtrlD]);
+        let mut decoder = Decoder::new();
+        assert_eq!(decoder.feed(b"\r"), vec![Key::Enter]);
+        let mut decoder = Decoder::new();
+        assert_eq!(decoder.feed(b"\x7f"), vec![Key::Backspace]);
+        let mut decoder = Decoder::new();
+        assert_eq!(decoder.feed(b"\t"), vec![Key::Tab]);
+        let mut decoder = Decoder::new();
+        assert_eq!(decoder.feed(&[3]), vec![Key::CtrlC]);
+        let mut decoder = Decoder::new();
+        assert_eq!(decoder.feed(&[4]), vec![Key::CtrlD]);
     }
 
     #[test]
     fn decodes_arrow_escape_sequences() {
-        assert_eq!(decode(b"\x1b[A"), vec![Key::Up]);
-        assert_eq!(decode(b"\x1b[B"), vec![Key::Down]);
+        let mut decoder = Decoder::new();
+        assert_eq!(decoder.feed(b"\x1b[A"), vec![Key::Up]);
+        let mut decoder = Decoder::new();
+        assert_eq!(decoder.feed(b"\x1b[B"), vec![Key::Down]);
     }
 
     #[test]
     fn typing_then_enter_submits_the_line() {
         let mut editor = LineEditor::default();
-        for key in decode(b"ls") {
+        let mut decoder = Decoder::new();
+        for key in decoder.feed(b"ls") {
             editor.apply(key);
         }
         assert_eq!(editor.apply(Key::Enter), Action::Submit("ls".to_string()));
@@ -289,7 +292,8 @@ mod tests {
     #[test]
     fn backspace_removes_the_last_character() {
         let mut editor = LineEditor::default();
-        for key in decode(b"lsx") {
+        let mut decoder = Decoder::new();
+        for key in decoder.feed(b"lsx") {
             editor.apply(key);
         }
         editor.apply(Key::Backspace);
@@ -319,7 +323,8 @@ mod tests {
     #[test]
     fn ctrl_c_clears_the_line_and_ctrl_d_quits() {
         let mut editor = LineEditor::default();
-        for key in decode(b"half typed") {
+        let mut decoder = Decoder::new();
+        for key in decoder.feed(b"half typed") {
             editor.apply(key);
         }
         assert_eq!(editor.apply(Key::CtrlC), Action::Redraw);
@@ -331,7 +336,8 @@ mod tests {
     fn two_byte_utf8_character_in_one_read_produces_one_key() {
         // "é" is U+00E9, encoded as 0xC3 0xA9 in UTF-8
         let bytes = [0xC3, 0xA9];
-        assert_eq!(decode(&bytes), vec![Key::Char('é')]);
+        let mut decoder = Decoder::new();
+        assert_eq!(decoder.feed(&bytes), vec![Key::Char('é')]);
     }
 
     #[test]
@@ -392,7 +398,8 @@ mod tests {
     fn invalid_utf8_continuation_sequence() {
         // Valid start byte 0xC3, but invalid continuation byte 0x20 (space)
         let bytes = [0xC3, 0x20];
-        let keys = decode(&bytes);
+        let mut decoder = Decoder::new();
+        let keys = decoder.feed(&bytes);
         // First byte treated as invalid start, second as space character
         assert_eq!(keys, vec![Key::Ignored, Key::Char(' ')]);
     }
@@ -402,7 +409,8 @@ mod tests {
         // "é" using 3-byte encoding (different from the 2-byte version)
         // Let's use a character that requires 3 bytes: "中" is U+4E2D, encoded as 0xE4 0xB8 0xAD
         let bytes = [0xE4, 0xB8, 0xAD];
-        assert_eq!(decode(&bytes), vec![Key::Char('中')]);
+        let mut decoder = Decoder::new();
+        assert_eq!(decoder.feed(&bytes), vec![Key::Char('中')]);
     }
 
     #[test]
