@@ -10,3 +10,4 @@ export type {
 export { content } from './content.generated.ts'
 export { displayName, resolveDir, resolveFile } from './content.ts'
 export type { Content, Dir, File } from './content.ts'
+export { BOOK_URL, CV_URL, validEmail, validMessage } from './commands/contact.ts'
