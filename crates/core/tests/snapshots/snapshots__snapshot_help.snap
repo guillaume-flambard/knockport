@@ -6,6 +6,7 @@ commands
 
   ls       list what is here, -a shows everything
   cd       move around, .. goes up
+  pwd      where you are right now
   cat      read a file
   whoami   the short version
   stack    what I build with

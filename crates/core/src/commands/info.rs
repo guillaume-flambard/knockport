@@ -5,6 +5,7 @@ use crate::session::Session;
 const COMMANDS: &[(&str, &str)] = &[
     ("ls", "list what is here, -a shows everything"),
     ("cd", "move around, .. goes up"),
+    ("pwd", "where you are right now"),
     ("cat", "read a file"),
     ("whoami", "the short version"),
     ("stack", "what I build with"),
@@ -74,10 +75,10 @@ mod tests {
     }
 
     #[test]
-    fn help_lists_every_dispatched_command() {
+    fn help_lists_the_main_commands() {
         let rendered = flatten(&help());
         for name in [
-            "ls", "cd", "cat", "whoami", "stack", "cv", "contact", "book", "exit",
+            "ls", "cd", "pwd", "cat", "whoami", "stack", "cv", "contact", "book", "exit",
         ] {
             assert!(rendered.contains(name), "help is missing {name}");
         }
