@@ -3,4 +3,7 @@ name = "knockport"
 
 [web.app]
 title = "knockport"
-style = ["main.css"]
+
+[web.resource]
+dev = []
+prod = ["main.css"]
