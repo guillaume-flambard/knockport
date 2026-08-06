@@ -1,0 +1,11 @@
+[package]
+name = "knockport-core"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+
+[dev-dependencies]
+insta = "1.48.0"
