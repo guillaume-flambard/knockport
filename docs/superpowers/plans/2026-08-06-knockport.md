@@ -136,6 +136,15 @@ mod tests {
         assert_eq!(out.lines[0].spans[0].text, "hello");
         assert_eq!(out.lines[0].spans[0].style, Style::Plain);
         assert!(out.effect.is_none());
+        assert!(!out.failed);
+    }
+
+    #[test]
+    fn failure_prefixes_the_program_name_and_marks_the_output() {
+        let out = Output::failure("cd: nowhere: no such directory");
+        assert!(out.failed);
+        assert_eq!(out.lines[0].spans[0].text, "knockport: cd: nowhere: no such directory");
+        assert_eq!(out.lines[0].spans[0].style, Style::Accent);
     }
 
     #[test]
@@ -210,6 +219,10 @@ pub enum Effect {
 pub struct Output {
     pub lines: Vec<Line>,
     pub effect: Option<Effect>,
+    /// Porté explicitement, jamais déduit du texte rendu. Le journal a besoin
+    /// de savoir si le visiteur s'est cogné, et renifler la sortie pour le
+    /// deviner casserait à la première reformulation d'un message.
+    pub failed: bool,
 }
 
 impl Output {
@@ -218,7 +231,15 @@ impl Output {
     }
 
     pub fn text(text: &str) -> Self {
-        Output { lines: vec![Line::plain(text)], effect: None }
+        Output { lines: vec![Line::plain(text)], ..Output::default() }
+    }
+
+    pub fn failure(text: &str) -> Self {
+        Output {
+            lines: vec![Line::styled(&format!("knockport: {text}"), Style::Accent)],
+            effect: None,
+            failed: true,
+        }
     }
 
     /// Nommée `from_texts` et pas `lines`, pour ne pas entrer en collision
@@ -226,7 +247,7 @@ impl Output {
     pub fn from_texts(texts: &[&str]) -> Self {
         Output {
             lines: texts.iter().map(|t| Line::plain(t)).collect(),
-            effect: None,
+            ..Output::default()
         }
     }
 
@@ -735,27 +756,24 @@ pub fn execute(session: &mut Session, content: &Content, input: &str, at_ms: u64
     session.history.push(input.trim().to_string());
 
     let output = dispatch(session, content, &cmd);
-    let ok = !output.lines.iter().any(|l| {
-        l.spans.iter().any(|s| s.style == Style::Accent && s.text.starts_with("knockport:"))
+    session.journal.push(Event {
+        at_ms,
+        input: input.trim().to_string(),
+        ok: !output.failed,
     });
-    session.journal.push(Event { at_ms, input: input.trim().to_string(), ok });
     output
 }
 
-fn dispatch(session: &mut Session, content: &Content, cmd: &Cmd) -> Output {
-    match cmd.name.as_str() {
-        _ => unknown(&cmd.name),
-    }
+// Les commandes arrivent à la tâche 4. Écrite sans `match` à bras unique,
+// sinon `clippy -D warnings` refuse le commit sur `match_single_binding`.
+fn dispatch(_session: &mut Session, _content: &Content, cmd: &Cmd) -> Output {
+    unknown(&cmd.name)
 }
 
 fn unknown(name: &str) -> Output {
-    Output {
-        lines: vec![
-            Line::styled(&format!("knockport: {name}: no such command"), Style::Accent),
-            Line::styled("try help", Style::Dim),
-        ],
-        effect: None,
-    }
+    let mut output = Output::failure(&format!("{name}: no such command"));
+    output.lines.push(Line::styled("try help", Style::Dim));
+    output
 }
 ```
 
@@ -915,7 +933,7 @@ pub fn ls(session: &Session, content: &Content, args: &[String]) -> Output {
     };
 
     let Some(dir) = content.resolve_dir(&target) else {
-        return error(&format!("ls: {}: no such directory", target.join("/")));
+        return Output::failure(&format!("ls: {}: no such directory", target.join("/")));
     };
 
     let mut lines: Vec<Line> = dir
@@ -939,7 +957,7 @@ pub fn ls(session: &Session, content: &Content, args: &[String]) -> Output {
     if lines.is_empty() {
         return Output::text("(empty)");
     }
-    Output { lines, effect: None }
+    Output { lines, ..Output::default() }
 }
 
 pub fn cd(session: &mut Session, content: &Content, args: &[String]) -> Output {
@@ -949,17 +967,10 @@ pub fn cd(session: &mut Session, content: &Content, args: &[String]) -> Output {
     };
     let target = resolve(session, arg);
     if content.resolve_dir(&target).is_none() {
-        return error(&format!("cd: {arg}: no such directory"));
+        return Output::failure(&format!("cd: {arg}: no such directory"));
     }
     session.cwd = target;
     Output::empty()
-}
-
-fn error(message: &str) -> Output {
-    Output {
-        lines: vec![Line::styled(&format!("knockport: {message}"), Style::Accent)],
-        effect: None,
-    }
 }
 ```
 
@@ -1100,16 +1111,16 @@ Dans `crates/core/src/commands/fs.rs` :
 ```rust
 pub fn cat(session: &mut Session, content: &Content, args: &[String]) -> Output {
     let Some(arg) = args.first() else {
-        return error("cat: which file? try ls");
+        return Output::failure("cat: which file? try ls");
     };
     let path = resolve(session, arg);
 
     if content.resolve_dir(&path).is_some() {
-        return error(&format!("cat: {arg}: is a directory"));
+        return Output::failure(&format!("cat: {arg}: is a directory"));
     }
 
     let Some(file) = content.resolve_file(&path) else {
-        return error(&format!("cat: {arg}: no such file"));
+        return Output::failure(&format!("cat: {arg}: no such file"));
     };
 
     if file.hidden {
@@ -1118,7 +1129,7 @@ pub fn cat(session: &mut Session, content: &Content, args: &[String]) -> Output 
 
     Output {
         lines: file.body.lines().map(Line::plain).collect(),
-        effect: None,
+        ..Output::default()
     }
 }
 ```
@@ -1154,7 +1165,7 @@ pub fn help() -> Output {
             ],
         });
     }
-    Output { lines, effect: None }
+    Output { lines, ..Output::default() }
 }
 
 pub fn history(session: &Session) -> Output {
@@ -1165,14 +1176,14 @@ pub fn history(session: &Session) -> Output {
             .enumerate()
             .map(|(i, entry)| Line::plain(&format!("{:>3}  {entry}", i + 1)))
             .collect(),
-        effect: None,
+        ..Output::default()
     }
 }
 
 pub fn show(content: &Content, name: &str) -> Output {
     match content.resolve_file(&[name.to_string()]) {
-        Some(file) => Output { lines: file.body.lines().map(Line::plain).collect(), effect: None },
-        None => Output::text(&format!("knockport: {name}: content is missing")),
+        Some(file) => Output { lines: file.body.lines().map(Line::plain).collect(), ..Output::default() },
+        None => Output::failure(&format!("{name}: content is missing")),
     }
 }
 ```
@@ -1390,7 +1401,7 @@ pub fn start(session: &mut Session) -> Output {
             Line::plain("Three questions. Type cancel at any point to drop out."),
             Line::blank(),
         ],
-        effect: None,
+        ..Output::default()
     }
 }
 
@@ -1442,6 +1453,7 @@ pub fn step(session: &mut Session, input: &str) -> Output {
             Output {
                 lines: vec![Line::plain("Sent. I read everything, and I answer.")],
                 effect: Some(Effect::SubmitContact(payload)),
+                failed: false,
             }
         }
     }
@@ -1451,6 +1463,7 @@ fn retry(message: &str) -> Output {
     Output {
         lines: vec![Line::styled(message, Style::Accent)],
         effect: None,
+        failed: true,
     }
 }
 ```
@@ -1631,7 +1644,7 @@ mod tests {
     fn styles_are_wrapped_and_reset() {
         let out = Output {
             lines: vec![Line::styled("dim", Style::Dim)],
-            effect: None,
+            ..Output::default()
         };
         assert_eq!(String::from_utf8_lossy(&render(&out)), "\x1b[2mdim\x1b[0m\r\n");
     }
@@ -1651,7 +1664,7 @@ mod tests {
                     Span { text: "  title".to_string(), style: Style::Dim },
                 ],
             }],
-            effect: None,
+            ..Output::default()
         };
         assert_eq!(
             String::from_utf8_lossy(&render(&out)),
