@@ -57,6 +57,13 @@ fn dispatch(session: &mut Session, content: &Content, cmd: &Cmd) -> Output {
         "history" => info::history(session),
         "clear" => Output::empty().with_effect(Effect::Clear),
         "exit" | "quit" | "logout" => Output::empty().with_effect(Effect::Quit),
+        "contact" | "hire" => crate::commands::contact::start(session),
+        "cv" => Output::text("Opening the CV.").with_effect(Effect::OpenUrl(
+            crate::commands::contact::CV_URL.to_string(),
+        )),
+        "book" => Output::text("Opening the calendar.").with_effect(Effect::OpenUrl(
+            crate::commands::contact::BOOK_URL.to_string(),
+        )),
         _ => unknown(&cmd.name),
     }
 }
