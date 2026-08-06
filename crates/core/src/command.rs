@@ -43,10 +43,14 @@ pub fn execute(session: &mut Session, content: &Content, input: &str, at_ms: u64
     output
 }
 
-// Les commandes arrivent à la tâche 4. Écrite sans `match` à bras unique,
-// sinon `clippy -D warnings` refuse le commit sur `match_single_binding`.
-fn dispatch(_session: &mut Session, _content: &Content, cmd: &Cmd) -> Output {
-    unknown(&cmd.name)
+fn dispatch(session: &mut Session, content: &Content, cmd: &Cmd) -> Output {
+    use crate::commands::fs;
+    match cmd.name.as_str() {
+        "ls" => fs::ls(session, content, &cmd.args),
+        "cd" => fs::cd(session, content, &cmd.args),
+        "pwd" => fs::pwd(session),
+        _ => unknown(&cmd.name),
+    }
 }
 
 fn unknown(name: &str) -> Output {
