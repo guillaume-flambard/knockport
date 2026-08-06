@@ -20,4 +20,3 @@ async-trait = "0.1"
 
 [dev-dependencies]
 tower = "0.5"
-async-trait = "0.1"
