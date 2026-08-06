@@ -1,0 +1,14 @@
+<svg viewBox="0 0 420 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="knockport">
+  <title>knockport</title>
+  <!-- Horizontal lockup: mark + wordmark. The wordmark uses the system monospace
+       stack on purpose, so it matches whatever terminal the visitor arrives from. -->
+  <g fill="currentColor">
+    <rect x="24" y="34" width="6" height="32" rx="3"/>
+    <rect x="36" y="34" width="6" height="32" rx="3"/>
+    <rect x="56" y="34" width="6" height="32" rx="3"/>
+    <rect x="74" y="18" width="7" height="64" rx="3.5"/>
+  </g>
+  <text x="106" y="62" fill="currentColor"
+        font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace"
+        font-size="34" letter-spacing="1.5">knockport</text>
+</svg>

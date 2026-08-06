@@ -1,0 +1,5 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="knockport">
+  <path d="M21.8 39.7 A30 30 0 1 1 21.8 60.3" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+  <rect x="4" y="47.5" width="11" height="5" rx="2.5" fill="currentColor" opacity="0.4"/>
+  <circle cx="38" cy="50" r="6.5" fill="currentColor"/>
+</svg>

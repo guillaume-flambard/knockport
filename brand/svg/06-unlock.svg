@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="knockport">
+  <g fill="currentColor">
+    <rect x="16" y="39" width="10" height="22" rx="5"/>
+    <rect x="31" y="39" width="10" height="22" rx="5"/>
+    <rect x="46" y="39" width="10" height="22" rx="5"/>
+  </g>
+  <circle cx="76" cy="50" r="11" fill="none" stroke="currentColor" stroke-width="4"/>
+</svg>

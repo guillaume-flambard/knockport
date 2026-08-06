@@ -1,0 +1,11 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="knockport">
+  <title>knockport</title>
+  <g fill="currentColor">
+    <!-- knock, knock, pause, knock: the port knocking sequence -->
+    <rect x="24" y="34" width="6" height="32" rx="3"/>
+    <rect x="36" y="34" width="6" height="32" rx="3"/>
+    <rect x="56" y="34" width="6" height="32" rx="3"/>
+    <!-- the door the sequence is aimed at -->
+    <rect x="74" y="18" width="7" height="64" rx="3.5"/>
+  </g>
+</svg>

@@ -1,0 +1,8 @@
+                    ████
+   ██  ██     ██    ████
+   ██  ██     ██    ████    knockport
+   ██  ██     ██    ████    guillaume flambard, full-stack & ai engineer
+                    ████
+
+   ls    regarder autour
+   help  la liste complete

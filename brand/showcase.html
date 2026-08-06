@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>knockport · exploration logo</title>
+<style>
+  :root{
+    --bg:#0b0d0e; --fg:#e8e6e1; --dim:#7d8285; --line:#1e2325; --card:#111415;
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f6f3; --fg:#14171a; --dim:#6b7175; --line:#e2e0da; --card:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--bg); color:var(--fg);
+    font:400 15px/1.6 ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    padding:56px 24px 96px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+  header{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:48px;
+    display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  h1{font-size:13px;font-weight:400;letter-spacing:.34em;text-transform:uppercase}
+  h1 b{font-weight:600}
+  .sub{color:var(--dim);font-size:13px;margin-top:10px;max-width:56ch}
+  button{
+    font:inherit;font-size:12px;color:var(--dim);background:none;
+    border:1px solid var(--line);border-radius:6px;padding:7px 13px;cursor:pointer
+  }
+  button:hover{color:var(--fg)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:28px;display:flex;flex-direction:column;gap:20px
+  }
+  .stage{height:150px;display:flex;align-items:center;justify-content:center}
+  .stage svg{width:96px;height:96px;color:var(--fg)}
+  .id{font-size:11px;color:var(--dim);letter-spacing:.22em;text-transform:uppercase}
+  .name{font-size:17px;margin-top:5px}
+  .why{font-size:13px;color:var(--dim);line-height:1.65}
+  .sizes{display:flex;align-items:flex-end;gap:18px;padding-top:16px;border-top:1px solid var(--line)}
+  .sizes span{display:flex;flex-direction:column;align-items:center;gap:7px;color:var(--dim);font-size:10px}
+  .s16 svg{width:16px;height:16px} .s24 svg{width:24px;height:24px} .s40 svg{width:40px;height:40px}
+  .sizes svg{color:var(--fg)}
+  .banner{
+    margin-top:48px;background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:28px;white-space:pre;overflow-x:auto;font-size:13px;line-height:1.45;color:var(--dim)
+  }
+  .banner b{color:var(--fg);font-weight:400}
+  footer{margin-top:48px;color:var(--dim);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1><b>knockport</b> &middot; exploration logo</h1>
+    <p class="sub">Sept directions, monochrome, pensées pour tenir dans une bannière SSH
+    comme dans un favicon 16px. Une par famille de motifs, pas sept réglages du même dessin.</p>
+  </div>
+  <button onclick="var r=document.documentElement;r.dataset.theme=r.dataset.theme==='light'?'dark':'light'">
+    inverser le thème
+  </button>
+</header>
+
+<div class="grid" id="grid"></div>
+
+<div class="banner">Ce que voit le visiteur qui tape <b>ssh knockport.com</b> :
+
+  <b>▍▍ ▍  ▐</b>
+  <b>knockport</b>
+  guillaume flambard · full-stack &amp; ai engineer
+
+  <b>ls</b> pour regarder autour, <b>help</b> si tu es perdu.
+</div>
+
+<footer>~/projects/knockport/brand/svg/ · 7 fichiers SVG, currentColor, viewBox 0 0 100 100</footer>
+</div>
+
+<script>
+const logos = [
+  {
+    id:"01", name:"Sequence", family:"géométrie pure",
+    why:"Le port knocking littéral : toc, toc, une pause, toc, et le montant de la porte à droite qui encaisse. C'est le seul dessin qui raconte une séquence dans le temps, donc le seul qui explique le nom sans légende. Se transpose en ASCII tel quel.",
+    svg:`<rect x="24" y="34" width="6" height="32" rx="3"/><rect x="36" y="34" width="6" height="32" rx="3"/><rect x="56" y="34" width="6" height="32" rx="3"/><rect x="74" y="18" width="7" height="64" rx="3.5"/>`,
+    fill:true
+  },
+  {
+    id:"02", name:"Arch", family:"géométrie pure",
+    why:"Une porte ouverte par le bas, et quelqu'un déjà dedans, décalé pour éviter la symétrie molle. Chaleureux là où le reste du dossier est technique. Risque : l'arche est un archétype très fréquenté, donc peu distinctif à petite taille.",
+    svg:`<path d="M28 80 L28 46 A22 22 0 0 1 72 46 L72 80" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="56" r="6.5"/>`,
+    fill:true
+  },
+  {
+    id:"03", name:"Port grid", family:"matrice de points",
+    why:"Neuf ports, huit fermés, un seul ouvert. Dit exactement ce que fait le produit : presque tout reste clos, un chemin s'ouvre pour qui frappe juste. La grille donne de la masse, l'anneau donne le point de fixation. Le plus dense du lot.",
+    svg:`<rect x="20" y="20" width="13" height="13" rx="4"/><rect x="43" y="20" width="13" height="13" rx="4"/><rect x="66" y="20" width="13" height="13" rx="4"/><rect x="20" y="43" width="13" height="13" rx="4"/><rect x="43" y="43" width="13" height="13" rx="4"/><rect x="20" y="66" width="13" height="13" rx="4"/><rect x="43" y="66" width="13" height="13" rx="4"/><rect x="66" y="66" width="13" height="13" rx="4"/><circle cx="72.5" cy="49.5" r="7" fill="none" stroke="currentColor" stroke-width="3.5"/>`,
+    fill:true
+  },
+  {
+    id:"04", name:"Waves", family:"système de lignes",
+    why:"Le bruit du poing sur la porte, ou un signal qui part vers un hôte. Double lecture réseau et physique, très dev-native. Ressemble en revanche à un logo de wifi ou de podcast, c'est le plus déjà-vu.",
+    svg:`<rect x="27" y="18" width="7" height="64" rx="3.5"/><g fill="none" stroke="currentColor" stroke-linecap="round"><path d="M42 38.5 A14 14 0 0 1 42 61.5" stroke-width="3.5"/><path d="M46.6 32 A22 22 0 0 1 46.6 68" stroke-width="3"/><path d="M51.2 25.4 A30 30 0 0 1 51.2 74.6" stroke-width="2.5" opacity="0.5"/></g>`,
+    fill:true
+  },
+  {
+    id:"05", name:"Prompt gate", family:"lignes + géométrie",
+    why:"Le chevron du prompt posé dans l'encadrement, avec le curseur qui clignote. Assume que le produit est un terminal avant d'être une porte. Trois éléments, c'est le plus bavard, et le curseur disparaît en favicon.",
+    svg:`<path d="M26 82 L26 48 A24 24 0 0 1 74 48 L74 82" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.55"/><path d="M40 40 L54 52 L40 64" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="58" y="59" width="13" height="5" rx="2.5"/>`,
+    fill:true
+  },
+  {
+    id:"06", name:"Unlock", family:"points + géométrie",
+    why:"Trois barreaux, un blanc, puis l'anneau qui s'ouvre. Même récit que Sequence, en plus abstrait et plus calme. Lecture horizontale parfaite pour une signature de mail ou un en-tête de repo, moins bonne en carré.",
+    svg:`<rect x="16" y="39" width="10" height="22" rx="5"/><rect x="31" y="39" width="10" height="22" rx="5"/><rect x="46" y="39" width="10" height="22" rx="5"/><circle cx="76" cy="50" r="11" fill="none" stroke="currentColor" stroke-width="4"/>`,
+    fill:true
+  },
+  {
+    id:"07", name:"Threshold", family:"réseau, composition",
+    why:"Un anneau fendu et un point qui vient d'entrer. C'est le seul qui montre le franchissement plutôt que la porte. Le plus élégant à grande taille, le plus fragile à 16px où la fente se referme visuellement.",
+    svg:`<path d="M21.8 39.7 A30 30 0 1 1 21.8 60.3" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><rect x="4" y="47.5" width="11" height="5" rx="2.5" opacity="0.4"/><circle cx="38" cy="50" r="6.5"/>`,
+    fill:true
+  }
+];
+
+const svgTag = (inner) =>
+  `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="currentColor">${inner}</svg>`;
+
+document.getElementById("grid").innerHTML = logos.map(l => `
+  <div class="card">
+    <div class="stage">${svgTag(l.svg)}</div>
+    <div>
+      <div class="id">${l.id} &middot; ${l.family}</div>
+      <div class="name">${l.name}</div>
+    </div>
+    <p class="why">${l.why}</p>
+    <div class="sizes">
+      <span class="s40">${svgTag(l.svg)}40</span>
+      <span class="s24">${svgTag(l.svg)}24</span>
+      <span class="s16">${svgTag(l.svg)}16</span>
+    </div>
+  </div>
+`).join("");
+</script>
+</body>
+</html>
