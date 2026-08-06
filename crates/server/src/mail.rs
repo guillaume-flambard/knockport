@@ -18,36 +18,47 @@ impl SmtpSink {
     }
 }
 
+/// Build an email message from a contact payload.
+/// This function is separated for testability: it can be called to verify
+/// email construction without requiring SMTP transport.
+pub fn build_email(
+    payload: &ContactPayload,
+    fingerprint: &str,
+    recipient: &str,
+) -> anyhow::Result<Message> {
+    let mut trail = String::new();
+    for event in &payload.journal {
+        trail.push_str(&format!(
+            "  {:>6}ms  {}{}\n",
+            event.at_ms,
+            event.input,
+            if event.ok { "" } else { "   (missed)" }
+        ));
+    }
+
+    let body = format!(
+        "From: {} <{}>\n\n{}\n\n---\nvisitor: {fingerprint}\nfound the hidden file: {}\n\nwhat they read:\n{}",
+        payload.name,
+        payload.email,
+        payload.message,
+        if payload.egg_found { "yes" } else { "no" },
+        trail
+    );
+
+    Message::builder()
+        .from(format!("knockport <{}>", recipient).parse()?)
+        .reply_to(format!("{} <{}>", payload.name, payload.email).parse()?)
+        .to(recipient.parse()?)
+        .subject(format!("knockport: {}", payload.name))
+        .header(ContentType::TEXT_PLAIN)
+        .body(body)
+        .map_err(Into::into)
+}
+
 #[async_trait::async_trait]
 impl ContactSink for SmtpSink {
     async fn send(&self, payload: &ContactPayload, fingerprint: &str) -> anyhow::Result<()> {
-        let mut trail = String::new();
-        for event in &payload.journal {
-            trail.push_str(&format!(
-                "  {:>6}ms  {}{}\n",
-                event.at_ms,
-                event.input,
-                if event.ok { "" } else { "   (missed)" }
-            ));
-        }
-
-        let body = format!(
-            "From: {} <{}>\n\n{}\n\n---\nvisitor: {fingerprint}\nfound the hidden file: {}\n\nwhat they read:\n{}",
-            payload.name,
-            payload.email,
-            payload.message,
-            if payload.egg_found { "yes" } else { "no" },
-            trail
-        );
-
-        let email = Message::builder()
-            .from(format!("knockport <{}>", self.to).parse()?)
-            .reply_to(format!("{} <{}>", payload.name, payload.email).parse()?)
-            .to(self.to.parse()?)
-            .subject(format!("knockport: {}", payload.name))
-            .header(ContentType::TEXT_PLAIN)
-            .body(body)?;
-
+        let email = build_email(payload, fingerprint, &self.to)?;
         self.transport.send(email).await?;
         Ok(())
     }

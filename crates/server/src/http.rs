@@ -3,6 +3,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use axum::extract::{ConnectInfo, State};
 use axum::http::StatusCode;
+use axum::middleware;
 use axum::response::Html;
 use axum::routing::{get, post};
 use axum::{Json, Router};
@@ -58,22 +59,26 @@ pub struct ContactRequest {
 
 pub fn router(state: AppState) -> Router {
     use axum::extract::DefaultBodyLimit;
-    use axum::middleware;
-    use std::net::SocketAddr;
 
-    // Middleware to ensure ConnectInfo is always available.
-    // In production with into_make_service_with_connect_info, this is already populated.
-    // In tests, this provides a sensible default so the handler can extract it cleanly.
-    async fn ensure_connect_info(
-        mut req: axum::extract::Request,
+    // Middleware that ensures ConnectInfo is present for the contact endpoint.
+    // Fails closed: returns 500 if ConnectInfo is missing (server misconfiguration).
+    async fn require_connect_info(
+        req: axum::extract::Request,
         next: middleware::Next,
-    ) -> axum::response::Response {
-        if req.extensions().get::<ConnectInfo<SocketAddr>>().is_none() {
-            // Provide a default address for tests or cases where ConnectInfo isn't populated
-            let default_addr: SocketAddr = "127.0.0.1:0".parse().unwrap();
-            req.extensions_mut().insert(ConnectInfo(default_addr));
+    ) -> Result<axum::response::Response, StatusCode> {
+        if req.uri().path() == "/api/contact"
+            && req
+                .extensions()
+                .get::<ConnectInfo<std::net::SocketAddr>>()
+                .is_none()
+        {
+            tracing::error!(
+                "contact handler called without ConnectInfo; \
+             server must be started with into_make_service_with_connect_info::<SocketAddr>()"
+            );
+            return Err(StatusCode::INTERNAL_SERVER_ERROR);
         }
-        next.run(req).await
+        Ok(next.run(req).await)
     }
 
     Router::new()
@@ -83,7 +88,7 @@ pub fn router(state: AppState) -> Router {
         // Message capped at 4000 characters, plus metadata. 64KB is generous and protects
         // the JSON parser from unbounded allocations.
         .layer(DefaultBodyLimit::max(64 * 1024))
-        .layer(middleware::from_fn(ensure_connect_info))
+        .layer(axum::middleware::from_fn(require_connect_info))
 }
 
 async fn profile(State(state): State<AppState>) -> Html<String> {
