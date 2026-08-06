@@ -26,6 +26,9 @@ describe('words, aligné sur split_whitespace() de Rust', () => {
   it('effondre les suites de blancs', () => {
     expect(words('  cat   projects/knockport  ')).toEqual(['cat', 'projects/knockport'])
   })
+  it('decout les blancs reachables: espaces, tabulations, retours a la ligne', () => {
+    expect(words('hello\tworld\ngoodbye')).toEqual(['hello', 'world', 'goodbye'])
+  })
 })
 
 describe('charCount, aligné sur chars().count() de Rust', () => {

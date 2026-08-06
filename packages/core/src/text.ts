@@ -11,7 +11,9 @@ export function lines(text: string): string[] {
 
 /**
  * Reproduit `split_whitespace()` de Rust. La garde sur la chaine vide est
- * indispensable: `''.split(/\s+/)` rend `['']` et non `[]`.
+ * indispensable: `''.split(/\s+/)` rend `['']` et non `[]`. Note: Rust s'appuie
+ * sur la propriete Unicode White_Space, le \s de JS diverge sur U+0085 et U+FEFF;
+ * cet ecart est assume car il est hors de portee d'une saisie clavier.
  */
 export function words(input: string): string[] {
   const trimmed = input.trim()
