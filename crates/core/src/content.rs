@@ -49,28 +49,17 @@ pub struct Content {
 
 impl Content {
     pub fn load() -> Self {
-        let matter = Matter::<YAML>::new();
         let mut root = Dir::default();
 
         for path in Files::iter() {
             let raw = Files::get(path.as_ref()).expect("embedded file must exist");
             let text = String::from_utf8_lossy(raw.data.as_ref()).to_string();
-            let parsed = matter
-                .parse::<FrontMatter>(&text)
-                .expect("frontmatter must parse");
-            let fm = parsed.data.unwrap_or_default();
 
             let segments: Vec<&str> = path.split('/').collect();
             let (file_name, dirs) = segments.split_last().expect("path must not be empty");
             let stem = file_name.trim_end_matches(".md").to_string();
 
-            let file = File {
-                title: fm.title.unwrap_or_else(|| stem.clone()),
-                order: fm.order.unwrap_or(u32::MAX),
-                hidden: fm.hidden,
-                name: stem,
-                body: parsed.content.trim().to_string(),
-            };
+            let file = parse_file(&stem, &text);
 
             let mut cursor = &mut root;
             for segment in dirs {
@@ -105,6 +94,33 @@ impl Content {
         let (name, dirs) = path.split_last()?;
         let dir = self.resolve_dir(dirs)?;
         dir.files.iter().find(|f| f.display_name() == *name)
+    }
+}
+
+fn parse_file(name: &str, text: &str) -> File {
+    let matter = Matter::<YAML>::new();
+
+    match matter.parse::<FrontMatter>(text) {
+        Ok(parsed) => {
+            let fm = parsed.data.unwrap_or_default();
+            File {
+                title: fm.title.unwrap_or_else(|| name.to_string()),
+                order: fm.order.unwrap_or(u32::MAX),
+                hidden: fm.hidden,
+                name: name.to_string(),
+                body: parsed.content.trim().to_string(),
+            }
+        }
+        Err(_) => {
+            // Malformed frontmatter: treat entire text as body, use defaults
+            File {
+                title: name.to_string(),
+                order: u32::MAX,
+                hidden: false,
+                name: name.to_string(),
+                body: text.trim().to_string(),
+            }
+        }
     }
 }
 
@@ -165,5 +181,56 @@ mod tests {
             stack.extend(dir.dirs.iter());
         }
         assert!(seen >= 4, "expected the seed content to be embedded");
+    }
+
+    #[test]
+    fn parse_file_handles_no_frontmatter() {
+        let text = "Just plain markdown text, no frontmatter at all.";
+        let file = parse_file("test", text);
+
+        assert_eq!(file.name, "test");
+        assert_eq!(file.title, "test");
+        assert_eq!(file.order, u32::MAX);
+        assert!(!file.hidden);
+        assert_eq!(
+            file.body,
+            "Just plain markdown text, no frontmatter at all."
+        );
+    }
+
+    #[test]
+    fn parse_file_handles_malformed_frontmatter() {
+        let text = "---\nthis is not valid yaml: [unclosed array\n---\nBody content here.";
+        let file = parse_file("broken", text);
+
+        // With malformed YAML, the whole text becomes the body, defaults are used
+        assert_eq!(file.name, "broken");
+        assert_eq!(file.title, "broken");
+        assert_eq!(file.order, u32::MAX);
+        assert!(!file.hidden);
+        // The entire text is treated as body when frontmatter fails to parse
+        assert!(file.body.contains("this is not valid yaml"));
+    }
+
+    #[test]
+    fn parse_file_handles_valid_frontmatter() {
+        let text = "---\ntitle: Test File\norder: 42\nhidden: true\n---\nThis is the body.";
+        let file = parse_file("valid", text);
+
+        assert_eq!(file.name, "valid");
+        assert_eq!(file.title, "Test File");
+        assert_eq!(file.order, 42);
+        assert!(file.hidden);
+        assert_eq!(file.body, "This is the body.");
+    }
+
+    #[test]
+    fn parse_file_uses_stem_as_fallback_title() {
+        let text = "---\norder: 5\n---\nBody without explicit title.";
+        let file = parse_file("implicit", text);
+
+        assert_eq!(file.title, "implicit");
+        assert_eq!(file.order, 5);
+        assert_eq!(file.body, "Body without explicit title.");
     }
 }
