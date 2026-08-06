@@ -17,6 +17,7 @@ Ce plan couvre l'**étape 2** de la section 12 de la spec. Les étapes 3 à 7 (w
 - `packages/core` a **zéro dépendance runtime**. Aucun `dependencies` dans son `package.json`. Toute tentative d'en ajouter une est un échec du plan.
 - Outillage autorisé pour ce lot, et rien d'autre : `typescript`, `vitest`.
 - Tous les imports relatifs portent l'extension `.ts` explicite. Node 26 exécute le TypeScript par type stripping et l'exige.
+- **`packages/core/src/index.ts` existe dès la tâche 1 et chaque tâche y ajoute ses propres exports.** Le `package.json` déclare `"exports": { ".": "./src/index.ts" }` dès le départ, donc la cible ne doit jamais être pendante : le paquet reste cohérent et installable à chaque commit, y compris si l'on s'arrête en cours de plan. Arbitrage rendu le 2026-08-06 après la revue de la tâche 1.
 - `crates/` n'est ni modifié ni supprimé par ce plan. Le Rust doit rester compilable jusqu'à l'étape 7.
 - Aucun commit ne porte de ligne `Co-Authored-By`.
 - Prose destinée à un humain (messages de commit, README) : jamais de tiret cadratin (`—`) ni demi-cadratin (`–`), ni les entités `&mdash;` / `&ndash;`.
@@ -1514,7 +1515,9 @@ function unknown(name: string): Output {
 }
 ```
 
-- [ ] **Step 4: Implémenter `index.ts`**
+- [ ] **Step 4: Compléter `index.ts`**
+
+Le fichier existe depuis la tâche 1 et s'est enrichi à chaque tâche. Cette étape le porte à sa forme finale, qui doit correspondre exactement à ceci :
 
 ```ts
 export { parse, execute } from './command.ts'
