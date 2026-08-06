@@ -7,3 +7,6 @@ export { newSession, prompt } from './session.ts'
 export type {
   ContactDraft, ContactPayload, ContactStep, Event, Mode, Session,
 } from './session.ts'
+export { content } from './content.generated.ts'
+export { displayName, resolveDir, resolveFile } from './content.ts'
+export type { Content, Dir, File } from './content.ts'
