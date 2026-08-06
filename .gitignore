@@ -1,3 +1,4 @@
 target/
 *.png.bak
 .env
+.superpowers/brainstorm/
