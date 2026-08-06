@@ -457,7 +457,9 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const CONTENT_DIR = join(ROOT, 'content')
-const OUT = join(ROOT, 'packages/core/src/content.generated.ts')
+// Chemin de sortie surchargeable, pour que le test de fraicheur puisse
+// generer ailleurs et comparer sans jamais reecrire le fichier suivi.
+const OUT = process.argv[2] ?? join(ROOT, 'packages/core/src/content.generated.ts')
 
 const MAX_ORDER = Number.MAX_SAFE_INTEGER
 
@@ -539,7 +541,9 @@ console.log(`content.generated.ts ecrit, ${walk(CONTENT_DIR).length} fichiers`)
 
 ```ts
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { readFileSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { content } from '../src/content.generated.ts'
 import { displayName, resolveDir, resolveFile } from '../src/content.ts'
@@ -586,10 +590,15 @@ describe('integrite du contenu livre', () => {
   })
 
   it('le fichier genere est a jour par rapport a content/', () => {
-    const before = readFileSync('packages/core/src/content.generated.ts', 'utf8')
-    execFileSync('node', ['scripts/gen-content.mjs'], { stdio: 'pipe' })
-    const after = readFileSync('packages/core/src/content.generated.ts', 'utf8')
-    expect(after, 'lance pnpm gen:content et commite le resultat').toBe(before)
+    // Genere dans un fichier temporaire et compare. Le test ne reecrit
+    // jamais le fichier suivi par git: un test qui repare ce qu'il mesure
+    // ne mesure plus rien.
+    const tmp = join(tmpdir(), `knockport-content-${process.pid}.ts`)
+    execFileSync('node', ['scripts/gen-content.mjs', tmp], { stdio: 'pipe' })
+    const fresh = readFileSync(tmp, 'utf8')
+    rmSync(tmp, { force: true })
+    const committed = readFileSync('packages/core/src/content.generated.ts', 'utf8')
+    expect(fresh, 'lance pnpm gen:content et commite le resultat').toBe(committed)
   })
 })
 ```
@@ -857,7 +866,7 @@ export function cat(s: Session, c: Content, args: string[]): Output {
 - [ ] **Step 4: Lancer le test pour le voir passer**
 
 Run: `pnpm vitest run packages/core/test/fs.test.ts`
-Expected: PASS, 13 tests.
+Expected: PASS, 14 tests.
 
 - [ ] **Step 5: Committer**
 
@@ -1225,7 +1234,7 @@ function retry(message: string): Output {
 - [ ] **Step 4: Lancer le test pour le voir passer**
 
 Run: `pnpm vitest run packages/core/test/contact.test.ts`
-Expected: PASS, 9 tests.
+Expected: PASS, 10 tests.
 
 - [ ] **Step 5: Committer**
 
@@ -1623,7 +1632,7 @@ comparer le diff caractère par caractère et corriger le code, pas le snapshot.
 - [ ] **Step 4: Lancer la suite entière et le typecheck**
 
 Run: `pnpm test && pnpm typecheck`
-Expected: PASS sur 62 tests, aucune erreur de type.
+Expected: PASS sur 71 tests (8 + 7 + 6 + 14 + 7 + 10 + 6 + 10 + 3), aucune erreur de type.
 
 - [ ] **Step 5: Corriger le contenu qui ment**
 
