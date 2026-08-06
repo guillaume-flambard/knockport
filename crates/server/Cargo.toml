@@ -5,3 +5,14 @@ edition.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+knockport-core = { path = "../core" }
+russh = "0.62.5"
+axum = "0.8.9"
+tokio = { version = "1.53.1", features = ["full"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+lettre = { version = "0.11.23", default-features = false, features = ["smtp-transport", "builder", "tokio1-rustls", "rustls-native-certs", "ring"] }
+blake3 = "1"
+tracing = "0.1"
+tracing-subscriber = "0.3"
