@@ -8,6 +8,7 @@ rust-version.workspace = true
 knockport-core = { path = "../core" }
 russh = "0.62.5"
 axum = "0.8.9"
+tower-http = { version = "0.6", features = ["fs"] }
 tokio = { workspace = true, features = ["full"] }
 serde = { workspace = true }
 serde_json = { workspace = true }

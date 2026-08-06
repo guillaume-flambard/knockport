@@ -10,6 +10,8 @@ pub struct Config {
     pub book_url: String,
     pub smtp_url: String,
     pub mail_to: String,
+    pub web_dir: PathBuf,
+    pub cv_file: PathBuf,
 }
 
 impl Config {
@@ -37,6 +39,8 @@ impl Config {
             book_url: required("KNOCKPORT_BOOK_URL")?,
             smtp_url: required("KNOCKPORT_SMTP_URL")?,
             mail_to: required("KNOCKPORT_MAIL_TO")?,
+            web_dir: PathBuf::from(optional("KNOCKPORT_WEB_DIR", "/var/lib/knockport/web")),
+            cv_file: PathBuf::from(optional("KNOCKPORT_CV_FILE", "/var/lib/knockport/cv.pdf")),
         })
     }
 }

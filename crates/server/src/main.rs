@@ -24,6 +24,9 @@ async fn main() -> anyhow::Result<()> {
         journal: journal.clone(),
         content: content.clone(),
         salt: config.ip_salt.clone(),
+        web_dir: config.web_dir.clone(),
+        cv_file: config.cv_file.clone(),
+        book_url: config.book_url.clone(),
     };
 
     let http_listener = tokio::net::TcpListener::bind(&config.http_addr).await?;

@@ -4,11 +4,12 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use axum::extract::{ConnectInfo, State};
 use axum::http::StatusCode;
 use axum::middleware;
-use axum::response::Html;
+use axum::response::{Html, Redirect};
 use axum::routing::{get, post};
 use axum::{Json, Router};
 use knockport_core::{ContactPayload, Content};
 use serde::Deserialize;
+use tower_http::services::{ServeDir, ServeFile};
 
 use crate::journal::{Journal, fingerprint};
 use crate::ratelimit::RateLimiter;
@@ -30,6 +31,9 @@ pub struct AppState {
     pub journal: Arc<Journal>,
     pub content: Arc<Content>,
     pub salt: String,
+    pub web_dir: std::path::PathBuf,
+    pub cv_file: std::path::PathBuf,
+    pub book_url: String,
 }
 
 impl AppState {
@@ -42,6 +46,9 @@ impl AppState {
             )),
             content: Arc::new(Content::load()),
             salt: "test-salt".to_string(),
+            web_dir: std::env::temp_dir(),
+            cv_file: std::env::temp_dir().join("cv.pdf"),
+            book_url: "https://example.com/book".to_string(),
         }
     }
 }
@@ -81,9 +88,19 @@ pub fn router(state: AppState) -> Router {
         Ok(next.run(req).await)
     }
 
+    let web_dir = state.web_dir.clone();
+    let cv_file = state.cv_file.clone();
+    let book_url = state.book_url.clone();
+
     Router::new()
         .route("/api/contact", post(contact))
         .route("/profile", get(profile))
+        .route(
+            "/book",
+            get(move || async move { Redirect::temporary(&book_url) }),
+        )
+        .route_service("/cv.pdf", ServeFile::new(cv_file))
+        .fallback_service(ServeDir::new(web_dir).append_index_html_on_directories(true))
         .with_state(state)
         // Message capped at 4000 characters, plus metadata. 64KB is generous and protects
         // the JSON parser from unbounded allocations.

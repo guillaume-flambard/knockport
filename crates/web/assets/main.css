@@ -1,0 +1,43 @@
+:root { --bg: #0b0d0e; --fg: #e8e6e1; --dim: #7d8285; --accent: #7fd6d1; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.55 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+.terminal { max-width: 78ch; margin: 0 auto; padding: 24px 16px 64px; }
+.scrollback { white-space: pre-wrap; word-break: break-word; margin: 0 0 12px; }
+.prompt { display: flex; gap: 8px; align-items: baseline; }
+.sigil { color: var(--accent); white-space: pre; }
+
+input {
+  flex: 1;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+}
+input:focus { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+.dim { color: var(--dim); }
+.bold { font-weight: 600; }
+.accent { color: var(--accent); }
+
+/* The skip link to the accessible version is the first focusable element,
+   and it becomes visible as soon as it has focus. */
+.skip { position: absolute; left: -9999px; color: var(--accent); }
+.skip:focus { position: static; display: block; margin-bottom: 16px; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+@media (prefers-color-scheme: light) {
+  :root { --bg: #f7f6f3; --fg: #14171a; --dim: #6b7175; --accent: #0f6f77; }
+}
