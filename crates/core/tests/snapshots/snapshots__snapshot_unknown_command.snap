@@ -1,0 +1,6 @@
+---
+source: crates/core/tests/snapshots.rs
+expression: "render(\"deploy to prod\")"
+---
+knockport: deploy: no such command
+try help

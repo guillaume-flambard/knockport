@@ -1,0 +1,17 @@
+---
+source: crates/core/tests/snapshots.rs
+expression: "render(\"help\")"
+---
+commands
+
+  ls       list what is here, -a shows everything
+  cd       move around, .. goes up
+  cat      read a file
+  whoami   the short version
+  stack    what I build with
+  cv       the PDF, for your ATS
+  contact  leave me a message right here
+  book     put something in the calendar
+  history  what you have typed
+  clear    wipe the screen
+  exit     close the session

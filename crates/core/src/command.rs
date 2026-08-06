@@ -44,11 +44,19 @@ pub fn execute(session: &mut Session, content: &Content, input: &str, at_ms: u64
 }
 
 fn dispatch(session: &mut Session, content: &Content, cmd: &Cmd) -> Output {
-    use crate::commands::fs;
+    use crate::commands::{fs, info};
+    use crate::output::Effect;
     match cmd.name.as_str() {
         "ls" => fs::ls(session, content, &cmd.args),
         "cd" => fs::cd(session, content, &cmd.args),
         "pwd" => fs::pwd(session),
+        "cat" => fs::cat(session, content, &cmd.args),
+        "whoami" => info::show(content, "whoami"),
+        "stack" => info::show(content, "stack"),
+        "help" => info::help(),
+        "history" => info::history(session),
+        "clear" => Output::empty().with_effect(Effect::Clear),
+        "exit" | "quit" | "logout" => Output::empty().with_effect(Effect::Quit),
         _ => unknown(&cmd.name),
     }
 }

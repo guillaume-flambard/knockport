@@ -1,0 +1,7 @@
+---
+source: crates/core/tests/snapshots.rs
+expression: "render(\"ls\")"
+---
+projects/
+whoami   whoami
+stack   stack

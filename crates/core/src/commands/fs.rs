@@ -81,6 +81,30 @@ pub fn cd(session: &mut Session, content: &Content, args: &[String]) -> Output {
     Output::empty()
 }
 
+pub fn cat(session: &mut Session, content: &Content, args: &[String]) -> Output {
+    let Some(arg) = args.first() else {
+        return Output::failure("cat: which file? try ls");
+    };
+    let path = resolve(session, arg);
+
+    if content.resolve_dir(&path).is_some() {
+        return Output::failure(&format!("cat: {arg}: is a directory"));
+    }
+
+    let Some(file) = content.resolve_file(&path) else {
+        return Output::failure(&format!("cat: {arg}: no such file"));
+    };
+
+    if file.hidden {
+        session.egg_found = true;
+    }
+
+    Output {
+        lines: file.body.lines().map(Line::plain).collect(),
+        ..Output::default()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -147,5 +171,38 @@ mod tests {
         let rendered = flatten(&cd(&mut session, &content, &["nowhere".to_string()]));
         assert!(rendered.contains("no such directory"), "got: {rendered}");
         assert!(session.cwd.is_empty());
+    }
+
+    #[test]
+    fn cat_prints_the_body() {
+        let content = Content::load();
+        let mut session = Session::new();
+        let rendered = flatten(&cat(&mut session, &content, &["whoami".to_string()]));
+        assert!(rendered.contains("Guillaume Flambard"));
+    }
+
+    #[test]
+    fn cat_on_a_directory_says_so() {
+        let content = Content::load();
+        let mut session = Session::new();
+        let rendered = flatten(&cat(&mut session, &content, &["projects".to_string()]));
+        assert!(rendered.contains("is a directory"), "got: {rendered}");
+    }
+
+    #[test]
+    fn reading_the_egg_marks_the_session() {
+        let content = Content::load();
+        let mut session = Session::new();
+        assert!(!session.egg_found);
+        cat(&mut session, &content, &[".knock".to_string()]);
+        assert!(session.egg_found);
+    }
+
+    #[test]
+    fn a_normal_file_does_not_mark_the_session() {
+        let content = Content::load();
+        let mut session = Session::new();
+        cat(&mut session, &content, &["whoami".to_string()]);
+        assert!(!session.egg_found);
     }
 }
