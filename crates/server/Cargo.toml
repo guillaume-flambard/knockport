@@ -16,3 +16,8 @@ lettre = { version = "0.11.23", default-features = false, features = ["smtp-tran
 blake3 = "1"
 tracing = "0.1"
 tracing-subscriber = "0.3"
+async-trait = "0.1"
+
+[dev-dependencies]
+tower = "0.5"
+async-trait = "0.1"

@@ -61,6 +61,10 @@ impl RateLimiter {
         let hits = self.hits.lock().expect("rate limiter mutex");
         hits.len()
     }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
 }
 
 #[cfg(test)]
