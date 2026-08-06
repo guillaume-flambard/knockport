@@ -6,3 +6,4 @@ pub mod journal;
 pub mod mail;
 pub mod profile;
 pub mod ratelimit;
+pub mod ssh;
