@@ -10,7 +10,7 @@ use tokio::sync::mpsc::{UnboundedSender, unbounded_channel};
 
 use crate::ansi;
 use crate::config::Config;
-use crate::editor::decode;
+use crate::editor::Decoder;
 use crate::http::ContactSink;
 use crate::journal::{Journal, SessionRecord, fingerprint};
 use crate::ratelimit::RateLimiter;
@@ -62,9 +62,11 @@ pub struct Connection {
     limiter: Arc<RateLimiter>,
     session: Session,
     editor: crate::editor::LineEditor,
+    decoder: Decoder,
     writer: Option<Writer>,
     started: Instant,
     peer: Option<std::net::SocketAddr>,
+    persisted: bool,
 }
 
 impl russh::server::Server for KnockportServer {
@@ -79,9 +81,11 @@ impl russh::server::Server for KnockportServer {
             limiter: self.limiter.clone(),
             session: Session::new(),
             editor: crate::editor::LineEditor::default(),
+            decoder: Decoder::new(),
             writer: None,
             started: Instant::now(),
             peer,
+            persisted: false,
         }
     }
 }
@@ -138,7 +142,13 @@ impl Connection {
         }
     }
 
-    fn persist(&self) {
+    fn persist(&mut self) {
+        // Don't persist if already done or if session is empty (no commands executed)
+        if self.persisted || self.session.journal.is_empty() {
+            return;
+        }
+        self.persisted = true;
+
         let record = SessionRecord {
             fingerprint: self.fingerprint(),
             started_at: std::time::SystemTime::now()
@@ -197,7 +207,7 @@ impl Handler for Connection {
         data: &[u8],
         session: &mut SshSession,
     ) -> Result<(), Self::Error> {
-        for key in decode(data) {
+        for key in self.decoder.feed(data) {
             match self.editor.apply(key) {
                 crate::editor::Action::Redraw => self.prompt(),
                 crate::editor::Action::None => {}
@@ -248,6 +258,12 @@ impl Handler for Connection {
             }
         }
         Ok(())
+    }
+}
+
+impl Drop for Connection {
+    fn drop(&mut self) {
+        self.persist();
     }
 }
 
