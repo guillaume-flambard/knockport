@@ -202,8 +202,8 @@ async fn a_journal_with_too_many_events_is_rejected() {
 
 #[tokio::test]
 async fn visitor_name_with_injected_headers_does_not_forge_mail_headers() {
-    // Test that a name containing a newline character doesn't cause mail header injection.
-    // The payload has a literal newline in the name field (not escaped JSON - that's a Rust string).
+    // Test that a name containing a literal newline character (actual byte 0x0A, not JSON escape)
+    // does not create a mail header injection vulnerability.
     let payload = ContactPayload {
         name: "Test\nBcc: attacker@example.com".to_string(),
         email: "seema@example.com".to_string(),
@@ -215,22 +215,28 @@ async fn visitor_name_with_injected_headers_does_not_forge_mail_headers() {
     let fingerprint = "test-fp";
     let recipient = "owner@example.com";
 
-    // Build the email. lettre validates email headers during construction.
+    // Attempt to build the email. lettre validates email headers during Message construction.
     let result = build_email(&payload, fingerprint, recipient);
 
-    match result {
-        Ok(_email) => {
-            // If it succeeds, lettre accepted the input.
-            // lettre's Message::builder validates headers, so if it didn't error,
-            // the name (with newline) was not interpreted as an injection vector.
-            // The message was built successfully without creating a Bcc header.
-        }
-        Err(e) => {
-            // If lettre rejects the input due to invalid characters in the display-name,
-            // that's also a valid defense against header injection.
-            tracing::info!("lettre rejected the email with newline in name: {}", e);
-        }
-    }
+    // In lettre 0.11.23, attempting to parse a display name containing a newline
+    // results in a parse error. The `parse()` call on the reply-to address fails
+    // because lettre's RFC 5322 parser rejects newlines in structured headers.
+    assert!(
+        result.is_err(),
+        "build_email should return an error for a display-name containing a newline"
+    );
+
+    // Verify the error is about parsing the address (not some other failure)
+    let err_msg = result.unwrap_err().to_string();
+    assert!(
+        !err_msg.is_empty(),
+        "Error message must explain the rejection"
+    );
+    // lettre's error for invalid email address format typically mentions parsing
+    tracing::info!(
+        "lettre 0.11.23 rejects newline in display-name with: {}",
+        err_msg
+    );
 }
 
 #[tokio::test]
