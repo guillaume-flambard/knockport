@@ -1,11 +1,4 @@
-import {
-  BOOK_URL,
-  CV_URL,
-  execute,
-  complete as completeCore,
-  newSession,
-  prompt as promptOf,
-} from '@knockport/core'
+import { execute, complete as completeCore, newSession, prompt as promptOf } from '@knockport/core'
 import type { Line, Output, Session } from '@knockport/core'
 
 import { findJourneyBySlug, saveContact, saveSessionEvents } from '../db/index.ts'
@@ -27,8 +20,6 @@ export type ExecResult = {
   prompt: string
   /** The transport must close the connection after sending the output. */
   done: boolean
-  /** URL to open in a tab, already translated from the core marker. */
-  openUrl?: string
   /** The client must clear its scrollback. */
   clear: boolean
 }
@@ -73,6 +64,16 @@ export class TerminalSession {
         spans: [{ text: this.journey.notice, style: 'dim' as const }],
       })
     }
+
+    // A first-run nudge, in the same gray as the notice. A bare prompt tells
+    // a new visitor nothing about what they can do; one line under the banner
+    // names the two commands that make the rest obvious. The clig.dev rule:
+    // nudge toward the commands a user is most likely to run first.
+    lines.push({ spans: [] })
+    lines.push({
+      spans: [{ text: "try `ls` to look around, or `help` for everything", style: 'dim' as const }],
+    })
+
     return lines
   }
 
@@ -98,19 +99,6 @@ export class TerminalSession {
       case 'quit':
         result.done = true
         break
-      case 'openUrl': {
-        const url = this.resolveMarker(output.effect.url)
-        if (url) {
-          result.openUrl = url
-        } else {
-          // A company's journey may not have a CV or calendar to open.
-          // Saying so is better than a click that does nothing.
-          output.lines.push({
-            spans: [{ text: 'Nothing set up here yet.', style: 'dim' }],
-          })
-        }
-        break
-      }
       case 'submitContact':
         // The payload is already here on the server. It has no reason to go
         // back to the client and return via an HTTP route: the candidate's
@@ -139,16 +127,6 @@ export class TerminalSession {
 
   complete(partial: string): string[] {
     return completeCore(this.session, this.journey.content, partial)
-  }
-
-  /**
-   * The core knows no URLs; it emits a marker. The facade translates it,
-   * and it alone knows what this journey has configured.
-   */
-  private resolveMarker(marker: string): string | undefined {
-    if (marker === CV_URL) return this.journey.cvUrl ?? undefined
-    if (marker === BOOK_URL) return this.journey.bookUrl ?? undefined
-    return marker
   }
 
   close(): void {

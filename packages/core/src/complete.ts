@@ -5,7 +5,7 @@ import type { Session } from './session.ts'
 // Aliases are left out on purpose: `quit`, `logout` and `hire` are not offered.
 // Same two blocks as the help listing, in the same order.
 const NAVIGATION = ['ls', 'cd', 'cat', 'pwd'] as const
-const SESSION = ['cv', 'contact', 'book', 'history', 'help', 'clear', 'exit'] as const
+const SESSION = ['contact', 'history', 'help', 'clear', 'exit'] as const
 
 export function complete(s: Session, c: Content, partial: string): string[] {
   const space = partial.indexOf(' ')

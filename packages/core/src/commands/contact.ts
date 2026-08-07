@@ -3,11 +3,6 @@ import { blankLine, emptyOutput, plainLine, styledLine, textOutput } from '../ou
 import type { Session } from '../session.ts'
 import { charCount } from '../text.ts'
 
-// Markers, not URLs. The core knows nothing of URLs; the facade translates
-// (web maps to /cv.pdf and /book, SSH prints them in plaintext).
-export const CV_URL = '{{cv_url}}'
-export const BOOK_URL = '{{book_url}}'
-
 export function validEmail(value: string): boolean {
   const v = value.trim()
   if (v === '' || v.length > 254 || /\s/.test(v)) return false

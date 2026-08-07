@@ -130,7 +130,6 @@ function connect(): void {
         if (message.clear) scrollback.replaceChildren()
         writeLines(message.lines)
         setPrompt(message.prompt)
-        if (message.openUrl) window.open(message.openUrl, '_blank', 'noopener,noreferrer')
         break
 
       case 'complete':

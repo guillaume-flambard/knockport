@@ -98,7 +98,6 @@ function attach(ws: WebSocket, slug: string): void {
       lines: result.output.lines,
       prompt: result.prompt,
       clear: result.clear,
-      ...(result.openUrl ? { openUrl: result.openUrl } : {}),
     })
 
     if (result.done) {

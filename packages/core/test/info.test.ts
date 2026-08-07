@@ -12,7 +12,7 @@ const flatten = (out: Output): string =>
 describe('help', () => {
   it('lists every builtin', () => {
     const rendered = flatten(help(content))
-    for (const name of ['ls', 'cd', 'pwd', 'cat', 'cv', 'contact', 'book', 'exit']) {
+    for (const name of ['ls', 'cd', 'pwd', 'cat', 'contact', 'exit']) {
       expect(rendered, `help does not mention ${name}`).toContain(name)
     }
   })
@@ -31,8 +31,16 @@ describe('help', () => {
     expect(flatten(help(companyJourney))).not.toContain('oris')
   })
 
+  it('groups help under headings', () => {
+    const rendered = flatten(help(companyJourney))
+    for (const heading of ['navigate', 'this journey', 'reach out & session']) {
+      expect(rendered, `help does not show ${heading}`).toContain(heading)
+    }
+  })
+
   it('aligns names to nine characters', () => {
-    expect(help(content).lines[2]!.spans[0]!.text).toBe('  ls       ')
+    const lsLine = help(content).lines.find((l) => l.spans[0]?.text.startsWith('    ls'))
+    expect(lsLine?.spans[0]!.text).toBe('    ls       ')
   })
 
   it('widens the column for a long section name', () => {
@@ -45,8 +53,12 @@ describe('help', () => {
         ],
       },
     }
-    // Two leading spaces, then the column sized on the longest name plus two.
-    expect(help(wide).lines[2]!.spans[0]!.text).toBe(`  ${'ls'.padEnd('how-we-work'.length + 2)}`)
+    // Four leading spaces (group heading indentation), then the column sized
+    // on the longest name plus two.
+    const lsLine = help(wide).lines.find((l) => l.spans[0]?.text.startsWith('    ls'))
+    expect(lsLine?.spans[0]!.text).toBe(
+      `    ${'ls'.padEnd('how-we-work'.length + 2)}`,
+    )
   })
 })
 

@@ -14,8 +14,8 @@ export type ClientMessage =
 export type ServerMessage =
   /** First frame after connection: the banner and initial prompt. */
   | { t: 'ready'; lines: Line[]; prompt: string }
-  /** Response to an `exec`. `clear` empties the scrollback, `openUrl` opens a tab. */
-  | { t: 'output'; lines: Line[]; prompt: string; clear: boolean; openUrl?: string }
+  /** Response to an `exec`. `clear` empties the scrollback. */
+  | { t: 'output'; lines: Line[]; prompt: string; clear: boolean }
   /** Response to a `complete`. Empty if nothing matches. */
   | { t: 'complete'; candidates: string[] }
   /** Server closing: `exit`, expiration, or limit reached. */

@@ -36,8 +36,6 @@ export type Journey = {
   banner: string
   notice: string | null
   content: Content
-  cvUrl: string | null
-  bookUrl: string | null
 }
 
 export type SessionEvent = {
@@ -54,8 +52,42 @@ export function getDb(): DatabaseSync {
   mkdirSync(dirname(DB_PATH), { recursive: true })
   db = new DatabaseSync(DB_PATH)
   db.exec(readFileSync(join(HERE, 'schema.sql'), 'utf8'))
+  migrate(db)
   purgeExpiredEvents(db)
   return db
+}
+
+/**
+ * Additive migrations for databases created before a column existed. CREATE
+ * TABLE IF NOT EXISTS never adds a column, so an old volume that already has
+ * the table silently misses it and the builder then crashes on insert.
+ * Pragmatic: check the columns, add the missing one. This is not a versioned
+ * migration framework, and it should not grow into one without reason.
+ */
+function migrate(handle: DatabaseSync): void {
+  const columns = handle
+    .prepare(`SELECT name FROM pragma_table_info('journeys')`)
+    .all() as { name: string }[]
+
+  if (!columns.some((c) => c.name === 'sections_json')) {
+    handle.exec(`ALTER TABLE journeys ADD COLUMN sections_json TEXT NOT NULL DEFAULT '[]'`)
+  }
+
+  // A company always has a website; it may not have a GitHub. The old column
+  // was named for a habit that most small companies do not share.
+  const companyColumns = handle
+    .prepare(`SELECT name FROM pragma_table_info('companies')`)
+    .all() as { name: string }[]
+  if (companyColumns.some((c) => c.name === 'github_org')) {
+    handle.exec(`ALTER TABLE companies RENAME COLUMN github_org TO website`)
+  }
+
+  const contactColumns = handle
+    .prepare(`SELECT name FROM pragma_table_info('candidate_contacts')`)
+    .all() as { name: string }[]
+  if (!contactColumns.some((c) => c.name === 'read_at')) {
+    handle.exec(`ALTER TABLE candidate_contacts ADD COLUMN read_at INTEGER`)
+  }
 }
 
 /** Applies retention. Called on open, which is sufficient for this volume. */
@@ -69,7 +101,7 @@ export function findJourneyBySlug(slug: string): Journey | undefined {
   const row = getDb()
     .prepare(
       `SELECT j.id, j.slug, j.company_id, j.title, j.banner, j.notice, j.content,
-              j.cv_url, j.book_url, c.name AS company_name, c.slug AS company_slug
+              c.name AS company_name, c.slug AS company_slug
        FROM journeys j
        JOIN companies c ON c.id = j.company_id
        WHERE j.slug = ? AND j.published_at IS NOT NULL`,
@@ -88,10 +120,6 @@ export function findJourneyBySlug(slug: string): Journey | undefined {
     banner: row.banner as string,
     notice: row.notice ?? null,
     content: JSON.parse(row.content as string) as Content,
-    // noUncheckedIndexedAccess raises undefined on key access. The columns
-    // exist but are nullable in the database.
-    cvUrl: row.cv_url ?? null,
-    bookUrl: row.book_url ?? null,
   }
 }
 

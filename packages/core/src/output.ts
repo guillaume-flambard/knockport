@@ -6,7 +6,6 @@ export type Line = { spans: Span[] }
 export type Effect =
   | { kind: 'clear' }
   | { kind: 'quit' }
-  | { kind: 'openUrl'; url: string }
   | { kind: 'submitContact'; payload: ContactPayload }
 
 /**

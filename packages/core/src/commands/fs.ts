@@ -77,6 +77,7 @@ export function cat(s: Session, c: Content, args: string[]): Output {
   if (!file) return failureOutput(`cat: ${arg}: no such file`)
 
   if (file.hidden) s.eggFound = true
+  if (!s.readFiles.includes(file.name)) s.readFiles.push(file.name)
 
   return { lines: lines(file.body).map(plainLine), failed: false }
 }

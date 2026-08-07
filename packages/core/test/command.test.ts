@@ -48,17 +48,37 @@ describe('execute', () => {
     expect(s.journal[0]!.ok).toBe(false)
   })
 
+  it('unknown command suggests a close command', () => {
+    const s = newSession()
+    // "hlp" is one edit from "help"; "clen" is two from "clear", too far.
+    const out = execute(s, content, 'hlp', 20)
+    expect(flatten(out)).toContain('did you mean help?')
+  })
+
+  it('suggests contact once the whole journey has been read', () => {
+    const s = newSession()
+    execute(s, companyJourney, 'whoami', 1)
+    execute(s, companyJourney, 'stack', 2)
+    // The third root file completes the journey: the nudge rides that output.
+    const last = execute(s, companyJourney, 'role', 3)
+    expect(flatten(last)).toContain('you have seen everything')
+    // Read again: the nudge is not repeated.
+    const again = execute(s, companyJourney, 'stack', 4)
+    expect(flatten(again)).not.toContain('you have seen everything')
+  })
+
+  it('does not nudge contact before the journey is complete', () => {
+    const s = newSession()
+    execute(s, companyJourney, 'whoami', 1)
+    const out = execute(s, companyJourney, 'stack', 2)
+    expect(flatten(out)).not.toContain('you have seen everything')
+  })
+
   it('clear and exit carry their effect', () => {
     const s = newSession()
     expect(execute(s, content, 'clear', 1).effect).toEqual({ kind: 'clear' })
     expect(execute(s, content, 'exit', 2).effect).toEqual({ kind: 'quit' })
     expect(execute(s, content, 'logout', 3).effect).toEqual({ kind: 'quit' })
-  })
-
-  it('cv and book open a URL marker', () => {
-    const s = newSession()
-    expect(execute(s, content, 'cv', 1).effect).toEqual({ kind: 'openUrl', url: '{{cv_url}}' })
-    expect(execute(s, content, 'book', 2).effect).toEqual({ kind: 'openUrl', url: '{{book_url}}' })
   })
 
   it('any root section is a command, not just whoami and stack', () => {

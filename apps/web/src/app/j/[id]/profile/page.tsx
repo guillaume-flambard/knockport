@@ -142,11 +142,6 @@ export default async function ProfilePage({ params, searchParams }: Params) {
       <ContactForm slug={journey.slug} sent={sent === '1'} error={error} />
 
       <footer>
-        {journey.bookUrl ? (
-          <p>
-            <a href={journey.bookUrl}>Apply or get in touch</a>
-          </p>
-        ) : null}
         {journey.notice ? <p className="muted">{journey.notice}</p> : null}
       </footer>
     </main>

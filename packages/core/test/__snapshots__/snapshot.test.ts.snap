@@ -3,18 +3,21 @@
 exports[`snapshot help 1`] = `
 "commands
 
-  ls       list what is here, -a shows everything
-  cd       move around, .. goes up
-  pwd      where you are right now
-  cat      read a file
-  whoami   who we are
-  stack    what we build with
-  cv       the PDF version
-  contact  leave a message right here
-  book     put something in the calendar
-  history  what you have typed
-  clear    wipe the screen
-  exit     close the session"
+  navigate
+    ls       list what is here, -a shows everything
+    cd       move around, .. goes up
+    pwd      where you are right now
+    cat      read a file
+  this journey
+    whoami   who we are
+    stack    what we build with
+  reach out & session
+    contact  leave a message right here
+    history  what you have typed
+    clear    wipe the screen
+    exit     close the session
+
+    example: cat <file> reads a file"
 `;
 
 exports[`snapshot ls root 1`] = `

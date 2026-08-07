@@ -12,5 +12,5 @@ export { newSession, prompt } from './session.ts'
 export type {
   ContactDraft, ContactPayload, ContactStep, Event, Mode, Session,
 } from './session.ts'
-export { BOOK_URL, CV_URL, validEmail, validMessage } from './commands/contact.ts'
+export { validEmail, validMessage } from './commands/contact.ts'
 export { charCount, lines, words } from './text.ts'

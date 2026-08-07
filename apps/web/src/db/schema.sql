@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS companies (
   id          TEXT PRIMARY KEY,
   slug        TEXT NOT NULL UNIQUE,
   name        TEXT NOT NULL,
-  github_org  TEXT,
+  website     TEXT,
   created_at  INTEGER NOT NULL
 );
 
@@ -32,8 +32,11 @@ CREATE TABLE IF NOT EXISTS journeys (
   -- person plural reads like the company's real recruitment page.
   notice        TEXT,
   content       TEXT NOT NULL,
-  cv_url        TEXT,
-  book_url      TEXT,
+  -- The builder's flat sections, kept alongside the assembled content so the
+  -- editor reads them back without having to reverse-assemble a File tree.
+  -- The terminal uses `content`; the editor uses this. One is derived from
+  -- the other by assemble(), never the reverse.
+  sections_json TEXT NOT NULL,
   published_at  INTEGER,
   created_at    INTEGER NOT NULL
 );
@@ -62,7 +65,10 @@ CREATE TABLE IF NOT EXISTS candidate_contacts (
   email       TEXT NOT NULL,
   message     TEXT NOT NULL,
   egg_found   INTEGER NOT NULL,
-  created_at  INTEGER NOT NULL
+  created_at  INTEGER NOT NULL,
+  -- Set when the journey's owner has looked at the inbox. Absent means "new".
+  -- A fact about the recruiter's attention, never a judgment of the candidate.
+  read_at     INTEGER
 );
 
 CREATE INDEX IF NOT EXISTS idx_contacts_journey

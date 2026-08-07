@@ -18,39 +18,43 @@ const NAVIGATION: ReadonlyArray<readonly [string, string]> = [
 
 /** Reaching out and running the session. Same in every journey. */
 const SESSION: ReadonlyArray<readonly [string, string]> = [
-  ['cv', 'the PDF version'],
   ['contact', 'leave a message right here'],
-  ['book', 'put something in the calendar'],
   ['history', 'what you have typed'],
   ['clear', 'wipe the screen'],
   ['exit', 'close the session'],
 ]
 
 /**
- * The journey's own sections sit between the two fixed blocks, right where a
- * reader looks first. They used to be hardcoded as `whoami` and `stack`,
- * which were the root files of the one journey that existed at the time.
+ * Grouped help, with an example per group. A flat wall of commands is a scan
+ * problem; three short labeled blocks tell a new visitor what exists and,
+ * with one example each, what the shape of a command is (clig.dev: nudge,
+ * show examples, keep it scannable).
  */
 export function help(c: Content): Output {
-  const rows: ReadonlyArray<readonly [string, string]> = [
-    ...NAVIGATION,
-    ...shortcuts(c).map((f) => [f.name, f.title] as const),
-    ...SESSION,
+  const journeySections = shortcuts(c).map((f) => [f.name, f.title] as const)
+  const groups: ReadonlyArray<readonly [string, ReadonlyArray<readonly [string, string]>]> = [
+    ['navigate', NAVIGATION],
+    ['this journey', journeySections],
+    ['reach out & session', SESSION],
   ]
 
-  // Rust padded to a fixed 9, which was enough for its own command names.
-  // A journey names its own sections, so the column has to be measured.
-  const width = Math.max(9, ...rows.map(([name]) => name.length + 2))
+  const all = groups.flatMap(([, rows]) => rows)
+  const width = Math.max(9, ...all.map(([name]) => name.length + 2))
 
   const out: Line[] = [styledLine('commands', 'bold'), blankLine()]
-  for (const [name, description] of rows) {
-    out.push({
-      spans: [
-        { text: `  ${name.padEnd(width)}`, style: 'accent' },
-        { text: description, style: 'dim' },
-      ],
-    })
+  for (const [heading, rows] of groups) {
+    if (rows.length > 0) out.push(styledLine(`  ${heading}`, 'bold'))
+    for (const [name, description] of rows) {
+      out.push({
+        spans: [
+          { text: `    ${name.padEnd(width)}`, style: 'accent' },
+          { text: description, style: 'dim' },
+        ],
+      })
+    }
   }
+  out.push(blankLine())
+  out.push({ spans: [{ text: '    example: cat <file> reads a file', style: 'dim' }] })
   return { lines: out, failed: false }
 }
 

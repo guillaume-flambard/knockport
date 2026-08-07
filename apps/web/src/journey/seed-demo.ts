@@ -89,9 +89,28 @@ Mention this file when you apply. It tells us more than a CV does.`,
   },
 ]
 
+/** The demo journey, as a starter a new employer can fill in. Sections keep
+ *  their order; slugs, names and the published flag are the adopter's. */
+export function demoTemplate(): {
+  companyName: string
+  website: string | null
+  title: string
+  banner: string
+  notice: string | null
+  sections: Section[]
+} {
+  return {
+    companyName: 'Memo Labs',
+    website: 'https://memolabs.example',
+    title: 'Working with Memo Labs',
+    banner: BANNER,
+    notice: NOTICE,
+    sections: SECTIONS.map((s) => ({ ...s })),
+  }
+}
+
 /** Idempotent: re-running updates instead of duplicating. */
-export function seedDemo(): string {
-  const db = getDb()
+export function seedDemo(): string {  const db = getDb()
   const now = Date.now()
 
   const companyId =
@@ -100,10 +119,10 @@ export function seedDemo(): string {
       | undefined)?.id ?? crypto.randomUUID()
 
   db.prepare(
-    `INSERT INTO companies (id, slug, name, github_org, created_at)
+    `INSERT INTO companies (id, slug, name, website, created_at)
      VALUES (?, ?, ?, ?, ?)
-     ON CONFLICT(slug) DO UPDATE SET name = excluded.name, github_org = excluded.github_org`,
-  ).run(companyId, COMPANY_SLUG, 'Memo Labs', 'memo-labs', now)
+     ON CONFLICT(slug) DO UPDATE SET name = excluded.name, website = excluded.website`,
+  ).run(companyId, COMPANY_SLUG, 'Memo Labs', 'https://memolabs.example', now)
 
   const journeyId =
     (db.prepare('SELECT id FROM journeys WHERE slug = ?').get(JOURNEY_SLUG) as
@@ -112,16 +131,15 @@ export function seedDemo(): string {
 
   db.prepare(
     `INSERT INTO journeys
-       (id, slug, company_id, title, banner, notice, content,
-        cv_url, book_url, published_at, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       (id, slug, company_id, title, banner, notice, content, sections_json,
+        published_at, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON CONFLICT(slug) DO UPDATE SET
        title = excluded.title,
        banner = excluded.banner,
        notice = excluded.notice,
        content = excluded.content,
-       cv_url = excluded.cv_url,
-       book_url = excluded.book_url,
+       sections_json = excluded.sections_json,
        published_at = excluded.published_at`,
   ).run(
     journeyId,
@@ -131,10 +149,7 @@ export function seedDemo(): string {
     BANNER,
     NOTICE,
     JSON.stringify(assemble(SECTIONS)),
-    // No CV and no calendar. `contact` is the way in, which is the feature
-    // this whole product exists to demonstrate.
-    null,
-    null,
+    JSON.stringify(SECTIONS),
     now,
     now,
   )

@@ -1,0 +1,343 @@
+/* Studio styling. Same tokens as the terminal and the site, but a working
+   tool: monospace throughout, square corners, one accent, nothing that
+   reads as a separate product. A recruiter should recognize the company
+   they are writing an offer for, and the tool should stay out of the way. */
+
+@import '../site.css';
+
+/* The studio is a tool, not a page to read: mono everywhere, tighter type. */
+.studio {
+  max-width: 52rem;
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.studio-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.studio-head .wordmark { margin: 0; }
+
+.studio h1 {
+  font-size: 1.35rem;
+  letter-spacing: 0;
+  margin: 0 0 0.75rem;
+}
+
+.studio h2 { font-size: 1.05rem; margin: 0 0 0.35rem; }
+.studio h3 { font-size: 0.95rem; margin: 1.5rem 0 0.4rem; }
+
+.studio p { margin: 0 0 1rem; }
+.studio .muted { color: var(--dim); }
+
+/* Fieldsets lose the browser's engraved border; the legend is the heading. */
+.studio fieldset {
+  border: 0;
+  margin: 0 0 2.25rem;
+  padding: 0;
+}
+
+.studio legend {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0;
+  margin: 0 0 0.5rem;
+}
+
+.studio label {
+  font-size: 0.82rem;
+  color: var(--dim);
+  margin-top: 1.1rem;
+}
+
+.studio label.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1.1rem;
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.studio input[type='text'],
+.studio input[type='url'],
+.studio input[type='password'],
+.studio textarea {
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 0.55rem 0.65rem;
+  width: 100%;
+  resize: vertical;
+}
+
+.studio input:focus-visible,
+.studio textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* The action button: outlined, mono, square. The accent only appears on
+   focus and hover, keeping the page calm until the eye needs a target. */
+.studio button[type='submit'] {
+  font: inherit;
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+  align-self: flex-start;
+  padding: 0.5rem 1.1rem;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent);
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.studio button[type='submit']:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+
+button.link {
+  background: none;
+  border: none;
+  color: var(--accent);
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+button.link:hover { text-decoration-thickness: 2px; }
+
+.studio a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* The journey list. Rows, not cards: candidates are never ranked, and the
+   dashboard should not invent a visual hierarchy for journeys either. */
+.journey-list { list-style: none; margin: 0 0 2rem; padding: 0; }
+
+.journey-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.journey-list .slug { font-size: 0.9rem; }
+.journey-list .meta { color: var(--dim); font-size: 0.85rem; }
+
+/* Numbered sections in the builder. A rule frame, square like the rest. */
+.section {
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 1rem 1.1rem;
+  margin: 0 0 1rem;
+}
+
+.section legend {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--dim);
+  margin: 0;
+}
+
+.section .section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.inline-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.25rem;
+}
+
+/* The evidence timeline in the inbox. Purely chronological. */
+.timeline {
+  font-size: 0.82rem;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 0.9rem 1rem;
+  margin: 0 0 2rem;
+}
+
+.muted { color: var(--dim); }
+.mono { font-size: 0.9rem; }
+
+.studio .form-error { color: var(--accent); margin-top: 0.75rem; }
+
+/* The creation wizard: steps walk a first-time employer, then collapse. */
+.wizard-step.hidden { display: none; }
+
+.wizard-steps {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0 0 1.75rem;
+  padding: 0;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--dim);
+}
+.wizard-steps li::before { content: counter(wizard); }
+.wizard-steps li { counter-increment: wizard; }
+.wizard-steps li.current { color: var(--accent); }
+.wizard-steps li::after { content: ' /'; }
+
+.wizard-nav { display: flex; gap: 0.75rem; align-items: center; margin-top: 0.5rem; }
+
+/* The first-run onboarding list on the empty dashboard. */
+.onboarding {
+  margin: 0 0 1.75rem;
+  padding-left: 1.25rem;
+}
+.onboarding li { margin-bottom: 0.9rem; line-height: 1.55; }
+.onboarding code { font-family: var(--font-mono, monospace); }
+
+/* The builder: form on the left, live terminal preview on the right. The
+   preview is the whole point of the layout: the recruiter sees the terminal
+   they are building, not a description of it. */
+.builder-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 24rem;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.builder-preview { position: sticky; top: 2rem; }
+
+.preview {
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  background: var(--bg);
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.preview-chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--rule);
+}
+.preview-chrome .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--dim);
+  opacity: 0.45;
+}
+.preview-title {
+  margin-left: 0.4rem;
+  color: var(--dim);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-body { padding: 0.9rem 1rem; }
+
+.preview-scrollback { margin: 0; white-space: pre-wrap; word-break: break-word; }
+
+.preview-notice { color: var(--dim); margin: 0.35rem 0 0.75rem; }
+
+.preview-prompt { display: flex; gap: 0.6rem; margin-top: 0.85rem; }
+.preview-ls-row { display: flex; gap: 0.6rem; align-items: baseline; }
+.preview-prompt .sigil,
+.preview-ls-row .sigil { color: var(--accent); flex: none; }
+
+.preview-file {
+  background: none;
+  border: 0;
+  color: var(--fg);
+  font: inherit;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.preview-file:hover { color: var(--accent); }
+.preview-file .dim { color: var(--dim); }
+.preview-file:hover .dim { color: var(--accent); }
+
+/* Inline validation: a helper line under a field, promoted to an error in the
+   accent when the field has been touched and fails. Errors live next to the
+   field, not in a banner after a round trip. */
+.studio .helper {
+  font-size: 0.78rem;
+  color: var(--dim);
+  margin: 0.3rem 0 0;
+}
+.studio .field-error {
+  font-size: 0.78rem;
+  color: var(--accent);
+  margin: 0.3rem 0 0;
+}
+.studio .invalid { border-color: var(--accent) !important; }
+
+/* Post-save payoff: the confirmation with the live link. */
+.saved-banner {
+  border: 1px solid var(--rule);
+  padding: 0.6rem 0.9rem;
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
+}
+.saved-banner .slug { font-size: 0.9rem; }
+
+/* Inbox: a "new" badge for applications not yet looked at. A fact about the
+   recruiter's attention, never a judgment of the candidate. */
+.badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bg);
+  background: var(--accent);
+  padding: 0.1rem 0.4rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+/* Inline forms (duplicate button) sit beside text without a new line. */
+.inline-form { display: inline; }
+.inline-form button { margin: 0; }
+
+@media (max-width: 960px) {
+  .builder-layout { grid-template-columns: 1fr; }
+  .builder-preview { position: static; }
+}
+
+@media (max-width: 640px) {
+  .inline-grid { grid-template-columns: 1fr; }
+  .journey-list li { flex-direction: column; gap: 0.25rem; }
+}

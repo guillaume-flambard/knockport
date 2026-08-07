@@ -21,10 +21,26 @@ export type Session = {
   history: string[]
   journal: Event[]
   eggFound: boolean
+  /** Files already read via `cat` or a root-file command. Used to tell when
+   *  the journey has been seen in full, which is the right moment to point
+   *  the visitor at `contact`. Never a score: it is a count of what was
+   *  opened, and it is not shown as one. */
+  readFiles: string[]
+  /** Set once the "you have seen everything" nudge is printed, so it is not
+   *  repeated on every following command. */
+  contactSuggested: boolean
 }
 
 export function newSession(): Session {
-  return { cwd: [], mode: { kind: 'normal' }, history: [], journal: [], eggFound: false }
+  return {
+    cwd: [],
+    mode: { kind: 'normal' },
+    history: [],
+    journal: [],
+    eggFound: false,
+    readFiles: [],
+    contactSuggested: false,
+  }
 }
 
 export function prompt(s: Session): string {

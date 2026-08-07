@@ -5,3 +5,4 @@ target/
 data/
 .next/
 next-env.d.ts
+.playwright-mcp/
