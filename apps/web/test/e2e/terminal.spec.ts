@@ -17,13 +17,13 @@ async function fillContact(page: Page, name: string, email: string, message: str
 }
 
 test('the journey banner greets with a first-run nudge', async ({ page }) => {
-  await page.goto('/j/e2e-main')
-  await expect(page.getByText(/Welcome to E2E Co\./)).toBeVisible()
-  await expect(page.getByText(/try `ls` to look around/)).toBeVisible()
+  await page.goto('/j/harbor')
+  await expect(page.getByText(/Welcome to Harbor\./)).toBeVisible()
+  await expect(page.getByText(/try `ls` to look around, or `contact` to reach out/)).toBeVisible()
 })
 
 test('a candidate can ls, read a file, and be guided to contact', async ({ page }) => {
-  await page.goto('/j/e2e-main')
+  await page.goto('/j/harbor')
   const input = page.getByRole('textbox', { name: 'Type a command' })
 
   await input.fill('ls')
@@ -32,11 +32,11 @@ test('a candidate can ls, read a file, and be guided to contact', async ({ page 
 
   await input.fill('whoami')
   await input.press('Enter')
-  await expect(page.getByText(/We are E2E Co\./)).toBeVisible()
+  await expect(page.getByText(/Harbor is a small product company/)).toBeVisible()
 })
 
 test('an unknown command suggests a close command', async ({ page }) => {
-  await page.goto('/j/e2e-main')
+  await page.goto('/j/harbor')
   const input = page.getByRole('textbox', { name: 'Type a command' })
   await input.fill('hlp')
   await input.press('Enter')
@@ -44,7 +44,7 @@ test('an unknown command suggests a close command', async ({ page }) => {
 })
 
 test('grouped help lists navigation and the journey sections', async ({ page }) => {
-  await page.goto('/j/e2e-main')
+  await page.goto('/j/harbor')
   const input = page.getByRole('textbox', { name: 'Type a command' })
   await input.fill('help')
   await input.press('Enter')
@@ -56,7 +56,7 @@ test('grouped help lists navigation and the journey sections', async ({ page }) 
 test('a full contact flow lands in the studio inbox with a timeline', async ({ page, context }) => {
   // Candidate: submit contact.
   const candidate = await context.newPage()
-  await candidate.goto('/j/e2e-main')
+  await candidate.goto('/j/harbor')
   await fillContact(candidate, 'Ada Lovelace', 'ada@example.com', 'I read ls -a.')
   await expect(candidate.getByText(/Sent\./)).toBeVisible()
   // Closing the page drops the WebSocket, which flushes the session journal
@@ -70,7 +70,7 @@ test('a full contact flow lands in the studio inbox with a timeline', async ({ p
   await page.locator('#pass').fill('e2epass')
   await page.getByRole('button', { name: 'Sign in' }).click()
   await expect(page).toHaveURL(/\/studio$/)
-  await page.goto('/studio/j/e2e-main/inbox')
+  await page.goto('/studio/j/harbor/inbox')
   const adaCard = page.getByRole('article').filter({ hasText: 'Ada Lovelace' })
   await expect(adaCard.getByText('Ada Lovelace')).toBeVisible()
   await expect(adaCard.getByText('I read ls -a.')).toBeVisible()
@@ -79,7 +79,7 @@ test('a full contact flow lands in the studio inbox with a timeline', async ({ p
 })
 
 test('contact can be cancelled without sending anything', async ({ page }) => {
-  await page.goto('/j/e2e-main')
+  await page.goto('/j/harbor')
   const input = page.getByRole('textbox', { name: 'Type a command' })
   await input.fill('contact')
   await input.press('Enter')

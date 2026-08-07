@@ -12,7 +12,7 @@ import { expect, test } from '@playwright/test'
  */
 
 test('the public terminal is accessible', async ({ page }) => {
-  await page.goto('/j/e2e-main')
+  await page.goto('/j/harbor')
   // Wait for the terminal to build itself inside the mount point.
   await expect(page.locator('input#cmd')).toBeVisible()
   const results = await new AxeBuilder({ page }).analyze()
@@ -24,7 +24,7 @@ test('the public terminal is accessible', async ({ page }) => {
 })
 
 test('the plain profile page is accessible', async ({ page }) => {
-  await page.goto('/j/e2e-main/profile')
+  await page.goto('/j/harbor/profile')
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations).toEqual([])
 })
@@ -46,7 +46,7 @@ test('the studio builder is accessible', async ({ page }) => {
 })
 
 test('the terminal is keyboard navigable end to end', async ({ page }) => {
-  await page.goto('/j/e2e-main')
+  await page.goto('/j/harbor')
   // Tab reaches the command input, Enter submits, no mouse needed.
   await page.locator('input#cmd').click()
   await page.keyboard.type('ls')

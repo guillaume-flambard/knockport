@@ -27,13 +27,13 @@ for (const vp of VIEWPORTS) {
     test.use({ viewport: { width: vp.width, height: vp.height } })
 
     test(`public terminal`, async ({ page }) => {
-      await page.goto('/j/e2e-main')
+      await page.goto('/j/harbor')
       await expect(page.locator('#cmd')).toBeVisible()
       await expect(page).toHaveScreenshot(`terminal-${vp.name}.png`)
     })
 
     test(`plain profile`, async ({ page }) => {
-      await page.goto('/j/e2e-main/profile')
+      await page.goto('/j/harbor/profile')
       await expect(page.getByRole('heading', { name: /Working at/ })).toBeVisible()
       await expect(page).toHaveScreenshot(`profile-${vp.name}.png`)
     })

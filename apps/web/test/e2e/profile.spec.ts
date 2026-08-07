@@ -8,15 +8,15 @@ import { expect, test } from '@playwright/test'
  */
 
 test('the profile page renders the journey as plain text', async ({ page }) => {
-  await page.goto('/j/e2e-main/profile')
+  await page.goto('/j/harbor/profile')
   await expect(page.getByRole('heading', { name: /Working at/ })).toBeVisible()
-  await expect(page.getByText(/We are E2E Co\./)).toBeVisible()
+  await expect(page.getByText(/Harbor is a small product company/)).toBeVisible()
 })
 
 test('the profile contact form works with JavaScript disabled', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false })
   const page = await context.newPage()
-  await page.goto('/j/e2e-main/profile')
+  await page.goto('/j/harbor/profile')
   await page.locator('input[name=name]').fill('Grace Hopper')
   await page.locator('input[name=email]').fill('grace@example.com')
   await page.locator('textarea[name=message]').fill('Applying from the plain page.')

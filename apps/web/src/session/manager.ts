@@ -67,11 +67,15 @@ export class TerminalSession {
 
     // A first-run nudge, in the same gray as the notice. A bare prompt tells
     // a new visitor nothing about what they can do; one line under the banner
-    // names the two commands that make the rest obvious. The clig.dev rule:
-    // nudge toward the commands a user is most likely to run first.
+    // names the path: explore, and how to reach out. The clig.dev rule: nudge
+    // toward the commands a user is most likely to run first — and `contact`
+    // is the whole point of the journey, so it is named, not hidden behind
+    // `help`.
     lines.push({ spans: [] })
     lines.push({
-      spans: [{ text: "try `ls` to look around, or `help` for everything", style: 'dim' as const }],
+      spans: [
+        { text: "try `ls` to look around, or `contact` to reach out", style: 'dim' as const },
+      ],
     })
 
     return lines

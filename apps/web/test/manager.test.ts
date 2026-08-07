@@ -47,7 +47,7 @@ describe('TerminalSession', () => {
     expect(text).toContain('Welcome to Acme.')
     expect(text).toContain('Line two.')
     expect(text).toContain('a live example')
-    expect(text).toContain('try `ls` to look around')
+    expect(text).toContain('try `ls` to look around, or `contact` to reach out')
     session.close()
   })
 

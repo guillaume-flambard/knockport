@@ -6,7 +6,7 @@ import { expect, test } from '@playwright/test'
  */
 
 test('every page carries the security headers', async ({ request }) => {
-  for (const path of ['/', '/j/e2e-main', '/j/e2e-main/profile']) {
+  for (const path of ['/', '/j/harbor', '/j/harbor/profile']) {
     const res = await request.get(path)
     expect(res.status()).toBe(200)
     expect(res.headers()['content-security-policy']).toBeTruthy()
@@ -17,7 +17,7 @@ test('every page carries the security headers', async ({ request }) => {
 })
 
 test('terminal input is rendered as text, never executed', async ({ page }) => {
-  await page.goto('/j/e2e-main')
+  await page.goto('/j/harbor')
   const input = page.getByRole('textbox', { name: 'Type a command' })
 
   // SQL and path traversal attempts must not error or run anything.
@@ -33,7 +33,7 @@ test('terminal input is rendered as text, never executed', async ({ page }) => {
 
 test('a script tag sent through contact is escaped, not executed', async ({ page, context }) => {
   const candidate = await context.newPage()
-  await candidate.goto('/j/e2e-main')
+  await candidate.goto('/j/harbor')
   const input = candidate.getByRole('textbox', { name: 'Type a command' })
   await input.fill('contact')
   await input.press('Enter')
@@ -52,9 +52,9 @@ test('a script tag sent through contact is escaped, not executed', async ({ page
 })
 
 test('the studio rejects unauthenticated access to journey and inbox routes', async ({ page }) => {
-  await page.goto('/studio/j/e2e-main')
+  await page.goto('/studio/j/harbor')
   await expect(page).toHaveURL(/\/studio\/login/)
-  await page.goto('/studio/j/e2e-main/inbox')
+  await page.goto('/studio/j/harbor/inbox')
   await expect(page).toHaveURL(/\/studio\/login/)
   await page.goto('/studio/new')
   await expect(page).toHaveURL(/\/studio\/login/)

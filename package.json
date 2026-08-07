@@ -17,7 +17,11 @@
     "watch:terminal": "esbuild packages/terminal/src/main.ts --bundle --format=esm --target=es2022 --outfile=apps/web/public/terminal/main.js --watch",
     "build": "pnpm build:terminal && pnpm --filter @knockport/web build",
     "dev": "pnpm build:terminal && KNOCKPORT_DB=$PWD/data/knockport.db pnpm --filter @knockport/web dev",
-    "start": "KNOCKPORT_DB=$PWD/data/knockport.db pnpm --filter @knockport/web start"
+    "start": "KNOCKPORT_DB=$PWD/data/knockport.db pnpm --filter @knockport/web start",
+    "demo:capture": "node scripts/demo/run-demo.mjs",
+    "demo:render": "node scripts/demo/compose.mjs",
+    "demo:scenario": "node scripts/demo/generate-scenario.mjs",
+    "demo": "pnpm demo:capture && pnpm demo:render"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",

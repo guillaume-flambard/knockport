@@ -1,0 +1,23 @@
+{
+  "name": "@knockport/demo-remotion",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render DemoVideo out/demo-final.mp4"
+  },
+  "dependencies": {
+    "@remotion/animation-utils": "^4.0.506",
+    "@remotion/cli": "^4.0.0",
+    "@remotion/media": "^4.0.506",
+    "@remotion/transitions": "^4.0.506",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
+  }
+}
