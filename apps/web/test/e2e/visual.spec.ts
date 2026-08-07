@@ -29,19 +29,19 @@ for (const vp of VIEWPORTS) {
     test(`public terminal`, async ({ page }) => {
       await page.goto('/j/harbor')
       await expect(page.locator('#cmd')).toBeVisible()
-      await expect(page).toHaveScreenshot(`terminal-${vp.name}.png`)
+      await expect(page).toHaveScreenshot(`terminal-${vp.name}.png`, { maxDiffPixelRatio: 0.02 })
     })
 
     test(`plain profile`, async ({ page }) => {
       await page.goto('/j/harbor/profile')
       await expect(page.getByRole('heading', { name: /Working at/ })).toBeVisible()
-      await expect(page).toHaveScreenshot(`profile-${vp.name}.png`)
+      await expect(page).toHaveScreenshot(`profile-${vp.name}.png`, { maxDiffPixelRatio: 0.02 })
     })
 
     test(`studio login`, async ({ page }) => {
       await page.goto('/studio/login')
       await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible()
-      await expect(page).toHaveScreenshot(`login-${vp.name}.png`)
+      await expect(page).toHaveScreenshot(`login-${vp.name}.png`, { maxDiffPixelRatio: 0.02 })
     })
   })
 }

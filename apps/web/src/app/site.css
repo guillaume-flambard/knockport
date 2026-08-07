@@ -74,6 +74,7 @@ h2 .path {
 p { margin: 0 0 1.15rem; }
 .lead { font-size: 1.1rem; }
 .muted { color: var(--dim); }
+.accent { color: var(--accent); }
 
 a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 a:hover { text-decoration-thickness: 2px; }
@@ -96,7 +97,7 @@ section { margin-bottom: 2.75rem; }
   white-space: pre;
   overflow-x: auto;
   border: 1px solid var(--rule);
-  border-radius: 8px;
+  border-radius: 0;
   padding: 1.1rem 1.25rem;
   margin: 0 0 2.5rem;
 }
@@ -122,7 +123,7 @@ textarea {
   color: var(--fg);
   background: transparent;
   border: 1px solid var(--rule);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 0.6rem 0.7rem;
   width: 100%;
   resize: vertical;
@@ -145,7 +146,7 @@ button[type='submit'] {
   color: var(--bg);
   background: var(--accent);
   border: 1px solid var(--accent);
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
 }
 
@@ -165,6 +166,38 @@ footer {
   margin-top: 3.5rem;
   padding-top: 1.5rem;
   font-size: 0.94rem;
+}
+
+/* The journey section on the landing: rows separated by hairlines, the
+   landing's way of showing sequence without cards. Per DESIGN.md, lists are
+   rows and rules, never shadowed cards. */
+.journey {
+  margin: 0 0 2.5rem;
+  border-top: 1px solid var(--rule);
+}
+.journey h2 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 2.5rem 0 0.75rem;
+}
+.journey-row {
+  display: grid;
+  grid-template-columns: 3rem 1fr 2fr;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.journey-num { color: var(--accent); font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; }
+.journey-name { font-weight: 600; }
+.journey-desc { color: var(--dim); font-size: 0.92rem; }
+
+@media (max-width: 640px) {
+  .journey-row { grid-template-columns: 2rem 1fr; }
+  .journey-desc { grid-column: 2; }
 }
 
 @media (prefers-reduced-motion: reduce) {

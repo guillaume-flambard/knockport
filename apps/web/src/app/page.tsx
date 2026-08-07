@@ -21,11 +21,15 @@ export default function Home() {
       />
       <p className="wordmark">knockport</p>
 
-      <h1>Candidates who read your code before they apply.</h1>
+      <h1>
+        The job offer you walk into<span className="accent">.</span>
+      </h1>
 
       <p className="lead">
         A job posting gets around 254 applications. A recruiter spends most of a working day
         reading them to find the four people who actually looked at what the company builds.
+        knockport reduces the input instead: candidates explore the company in a terminal, and
+        only then get in touch.
       </p>
 
       <div className="sample" aria-label="Example of a candidate journey in a terminal">
@@ -33,6 +37,7 @@ export default function Home() {
         <span className="accent">projects/</span>
         {'\n'}whoami <span className="dim">  who we are</span>
         {'\n'}stack <span className="dim">   what you would touch</span>
+        {'\n'}role <span className="dim">    the role</span>
         {'\n'}.knock <span className="dim">  knock</span>
         {'\n'}
         {'\n'}
@@ -40,12 +45,24 @@ export default function Home() {
         You typed ls -a. Most people never do.
       </div>
 
-      <p>
-        Every tool on the market tries to filter that output better. knockport reduces the input
-        instead. Candidates explore the company, its stack and its code in a terminal, and only
-        then get in touch. The ones who will not spend fifteen minutes on you never reach your
-        inbox.
-      </p>
+      <section className="journey">
+        <h2>The journey</h2>
+        <div className="journey-row">
+          <span className="journey-num">01</span>
+          <span className="journey-name">Discovery</span>
+          <span className="journey-desc">A candidate types their way through who you are, your stack and your role.</span>
+        </div>
+        <div className="journey-row">
+          <span className="journey-num">02</span>
+          <span className="journey-name">Interaction</span>
+          <span className="journey-desc">They read before assuming. The quiet file is the tell, not a test.</span>
+        </div>
+        <div className="journey-row">
+          <span className="journey-num">03</span>
+          <span className="journey-name">Decision</span>
+          <span className="journey-desc">The ones who stay reach your inbox, with everything they did behind them.</span>
+        </div>
+      </section>
 
       <p>
         You get evidence rather than a score: what someone read, in what order, how long they
