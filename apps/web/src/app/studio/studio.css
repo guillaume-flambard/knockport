@@ -177,14 +177,50 @@ button.link:hover { text-decoration-thickness: 2px; }
 
 /* The evidence timeline in the inbox. Purely chronological. */
 .timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   font-size: 0.82rem;
   line-height: 1.7;
-  white-space: pre;
-  overflow-x: auto;
-  border: 1px solid var(--rule);
-  border-radius: 0;
-  padding: 0.9rem 1rem;
-  margin: 0 0 2rem;
+  font-family: var(--font-mono, monospace);
+}
+.timeline li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--rule);
+  padding: 0.25rem 0;
+}
+.timeline li:last-child { border-bottom: none; }
+.timeline-cmd { color: var(--fg); }
+.timeline-when { color: var(--dim); }
+
+/* The inbox candidate row: identity on the left, the message in the middle,
+   the session log on the right. Reads like the Stitch reference, where the
+   evidence and the message sit side by side without one weighing on the other. */
+.inbox-card { padding: 1.25rem 1.5rem; }
+.inbox-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.9rem;
+}
+.inbox-card-head h2 { margin: 0; }
+.inbox-card-body {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 2rem;
+}
+.inbox-kicker {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.4rem;
+}
+@media (max-width: 720px) {
+  .inbox-card-body { grid-template-columns: 1fr; gap: 1.25rem; }
 }
 
 .muted { color: var(--dim); }
@@ -212,6 +248,24 @@ button.link:hover { text-decoration-thickness: 2px; }
 .wizard-steps li::after { content: ' /'; }
 
 .wizard-nav { display: flex; gap: 0.75rem; align-items: center; margin-top: 0.5rem; }
+
+/* The builder shell line: frames the form as a config script, matching the
+   Stitch reference where the offer is "executed" into existence. */
+.builder-shell {
+  font-family: var(--font-mono, monospace);
+  color: var(--accent);
+  font-size: 0.9rem;
+  margin: 0 0 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--rule);
+}
+.builder-shell .dim { color: var(--dim); }
+
+/* Builder legends read as config keys, all caps, like the Stitch reference. */
+.builder-layout fieldset > legend {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
 
 /* The first-run onboarding list on the empty dashboard. */
 .onboarding {
@@ -331,6 +385,31 @@ button.link:hover { text-decoration-thickness: 2px; }
 /* Inline forms (duplicate button) sit beside text without a new line. */
 .inline-form { display: inline; }
 .inline-form button { margin: 0; }
+
+/* Status badges on the dashboard: a fact about publishing, never a score. */
+.journey-actions { display: flex; align-items: baseline; gap: 0.75rem; }
+.status {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.12rem 0.45rem;
+  border: 1px solid var(--rule);
+}
+.status-active { color: var(--accent); border-color: var(--accent); }
+.status-draft { color: var(--dim); }
+
+.studio-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--rule);
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  font-size: 0.8rem;
+}
+.studio-footer nav { display: flex; gap: 1rem; }
 
 @media (max-width: 960px) {
   .builder-layout { grid-template-columns: 1fr; }

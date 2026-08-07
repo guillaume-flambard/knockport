@@ -193,3 +193,117 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* Landing: header with product nav, hero, terminal mockup, CTA, footer.
+   Mirrors the Stitch reference structure while reusing the product tokens. */
+.landing {
+  max-width: none;
+  padding: 0;
+}
+.site-header {
+  border-bottom: 1px solid var(--rule);
+}
+.site-header-inner {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+}
+.site-logo {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  text-decoration: none;
+}
+.site-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+.site-nav a {
+  font-size: 0.8rem;
+  color: var(--dim);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+.site-nav a:hover { color: var(--accent); }
+.site-login {
+  font-size: 0.8rem;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.45rem 1rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.site-login:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+
+.site-main {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+.hero { display: flex; flex-direction: column; gap: 0.5rem; }
+.hero-sub { color: var(--dim); max-width: 40ch; }
+
+.terminal-mock { position: relative; }
+.terminal-chrome {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--rule);
+}
+.terminal-chrome .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--dim);
+  opacity: 0.5;
+}
+.terminal-body { padding: 1.1rem 1.25rem; }
+.terminal-line { display: flex; gap: 0.6rem; align-items: baseline; }
+.terminal-out { color: var(--dim); padding: 0.2rem 0 0.4rem 0.2rem; }
+.terminal-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+.journey-row { grid-template-columns: 3rem 1fr 2rem; }
+.journey-arrow { color: var(--accent); text-align: right; }
+
+.cta { margin: 0; }
+.cta-button {
+  display: inline-block;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.6rem 1.4rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.85rem;
+}
+.cta-button:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+
+.site-footer { border-top: 1px solid var(--rule); }
+.site-footer-inner {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.site-footer nav { display: flex; gap: 1.25rem; }
+.site-footer nav a { color: var(--dim); font-size: 0.8rem; text-decoration: none; }
+.site-footer nav a:hover { color: var(--accent); }

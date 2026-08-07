@@ -1,8 +1,11 @@
 import './site.css'
 
 /**
- * Domain root. Deliberately short: the real entry point is a journey link
- * pasted into a job posting, not this page.
+ * Domain root. The landing mirrors the Stitch reference: a header with the
+ * product nav, a hero built around a terminal mockup, a The Journey section
+ * as hairline rows, a single call to action, and a footer. The real entry
+ * point for candidates is a journey link pasted into a job posting; this page
+ * explains what that is.
  */
 export const metadata = {
   title: 'knockport',
@@ -11,7 +14,7 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <main className="page">
+    <div className="page landing">
       <link
         rel="preload"
         href="/terminal/ibm-plex-mono-400.woff2"
@@ -19,69 +22,106 @@ export default function Home() {
         type="font/woff2"
         crossOrigin="anonymous"
       />
-      <p className="wordmark">knockport</p>
 
-      <h1>
-        The job offer you walk into<span className="accent">.</span>
-      </h1>
-
-      <p className="lead">
-        A job posting gets around 254 applications. A recruiter spends most of a working day
-        reading them to find the four people who actually looked at what the company builds.
-        knockport reduces the input instead: candidates explore the company in a terminal, and
-        only then get in touch.
-      </p>
-
-      <div className="sample" aria-label="Example of a candidate journey in a terminal">
-        <span className="accent">~ $</span> ls -a{'\n'}
-        <span className="accent">projects/</span>
-        {'\n'}whoami <span className="dim">  who we are</span>
-        {'\n'}stack <span className="dim">   what you would touch</span>
-        {'\n'}role <span className="dim">    the role</span>
-        {'\n'}.knock <span className="dim">  knock</span>
-        {'\n'}
-        {'\n'}
-        <span className="accent">~ $</span> cat .knock{'\n'}
-        You typed ls -a. Most people never do.
-      </div>
-
-      <section className="journey">
-        <h2>The journey</h2>
-        <div className="journey-row">
-          <span className="journey-num">01</span>
-          <span className="journey-name">Discovery</span>
-          <span className="journey-desc">A candidate types their way through who you are, your stack and your role.</span>
+      <header className="site-header">
+        <div className="site-header-inner">
+          <a className="site-logo" href="/">
+            KNOCKPORT
+          </a>
+          <nav className="site-nav" aria-label="Product">
+            <a href="/j/memo-labs">CANDIDATES</a>
+            <a href="/studio/login">JOBS</a>
+            <a href="/studio/login">STUDIO</a>
+            <a href="/studio/login">DOCS</a>
+          </nav>
+          <a className="site-login" href="/studio/login">
+            LOGIN
+          </a>
         </div>
-        <div className="journey-row">
-          <span className="journey-num">02</span>
-          <span className="journey-name">Interaction</span>
-          <span className="journey-desc">They read before assuming. The quiet file is the tell, not a test.</span>
+      </header>
+
+      <main className="site-main">
+        <section className="hero">
+          <h1>The job offer you walk into.</h1>
+          <p className="hero-sub">
+            A single-purpose hiring tool. Candidates type their way in.
+          </p>
+        </section>
+
+        <div className="sample terminal-mock" aria-label="Example of a candidate journey in a terminal">
+          <div className="terminal-chrome" aria-hidden="true">
+            <span className="dot" />
+            <span className="dot" />
+            <span className="dot" />
+          </div>
+          <div className="terminal-body">
+            <div className="terminal-line">
+              <span className="accent">knockport@hiring:~$</span> <span>ls</span>
+            </div>
+            <div className="terminal-out">
+              README.md roles/ vision/
+            </div>
+            <div className="terminal-line">
+              <span className="accent">knockport@hiring:~$</span> <span>cat whoami</span>
+            </div>
+            <div className="terminal-out">
+              You are the candidate. We are the company. Let&apos;s talk.
+            </div>
+            <div className="terminal-line">
+              <span className="accent">knockport@hiring:~$</span> <span>contact</span>
+              <span className="terminal-cursor" aria-hidden="true" />
+            </div>
+          </div>
         </div>
-        <div className="journey-row">
-          <span className="journey-num">03</span>
-          <span className="journey-name">Decision</span>
-          <span className="journey-desc">The ones who stay reach your inbox, with everything they did behind them.</span>
-        </div>
-      </section>
 
-      <p>
-        You get evidence rather than a score: what someone read, in what order, how long they
-        stayed, what they asked. No ranking, no grade, no automated rejection. The hiring
-        decision stays yours, and it stays explainable.
-      </p>
+        <section className="journey">
+          <h2>The journey</h2>
+          <div className="journey-row">
+            <span className="journey-num">01.</span>
+            <span className="journey-name">Discovery</span>
+            <span className="journey-arrow" aria-hidden="true">→</span>
+          </div>
+          <div className="journey-row">
+            <span className="journey-num">02.</span>
+            <span className="journey-name">Interaction</span>
+            <span className="journey-arrow" aria-hidden="true">→</span>
+          </div>
+          <div className="journey-row">
+            <span className="journey-num">03.</span>
+            <span className="journey-name">Decision</span>
+            <span className="journey-arrow" aria-hidden="true">→</span>
+          </div>
+        </section>
 
-      <p>
-        There is always a plain, keyboard free version of every journey, because a friction that
-        excludes a disabled candidate is discrimination rather than a filter.
-      </p>
+        <section className="cta">
+          <a className="cta-button" href="/j/memo-labs">
+            INITIATE SEQUENCE
+          </a>
+        </section>
 
-      <footer>
-        <p className="muted">
-          Built by <a href="https://github.com/guillaume-flambard">Guillaume Flambard</a>. The
-          code is <a href="https://github.com/guillaume-flambard/knockport">on GitHub</a>. Still
-          early, and looking for recruiters willing to tell me where it is wrong.
+        <p>
+          You get evidence rather than a score: what someone read, in what order, how long they
+          stayed, what they asked. No ranking, no grade, no automated rejection. The hiring
+          decision stays yours, and it stays explainable.
         </p>
+
+        <p>
+          There is always a plain, keyboard free version of every journey, because a friction that
+          excludes a disabled candidate is discrimination rather than a filter.
+        </p>
+      </main>
+
+      <footer className="site-footer">
+        <div className="site-footer-inner">
+          <span className="muted">© 2024 KNOCKPORT. TERMINAL_SYSTEM_V1.0</span>
+          <nav aria-label="Legal">
+            <a href="/">STATUS</a>
+            <a href="/">SECURITY</a>
+            <a href="/">PRIVACY</a>
+            <a href="/">TERMS</a>
+          </nav>
+        </div>
       </footer>
-    </main>
+    </div>
   )
 }

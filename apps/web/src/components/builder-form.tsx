@@ -214,6 +214,11 @@ export function BuilderForm({
           </p>
         ) : null}
 
+        <div className="builder-shell">
+          <span aria-hidden="true">&gt; new_offer.sh</span>{' '}
+          <span className="dim">configure the parameters for the job listing. execute when ready.</span>
+        </div>
+
         <input type="hidden" name="editSlug" value={draft?.slug ?? ''} />
 
         {mode === 'create' ? (
@@ -283,8 +288,7 @@ export function BuilderForm({
 
         <div className={stepClasses(2)}>
           <fieldset>
-            <legend>Title and banner</legend>
-            <label htmlFor="title">Journey title (shown in the browser tab)</label>
+            <legend>Title and banner</legend>            <label htmlFor="title">Journey title (shown in the browser tab)</label>
             <input
               id="title"
               name="title"

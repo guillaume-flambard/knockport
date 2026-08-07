@@ -40,22 +40,26 @@ export default function StudioHome() {
                 <a href={`/j/${j.slug}`} className="slug">
                   /j/{j.slug}
                 </a>
-                <div className="meta">
-                  {j.title}
-                  {j.published ? '' : ' · draft'}
-                </div>
+                <div className="meta">{j.title}</div>
               </div>
-              <div className="meta">
-                <Link href={`/studio/j/${j.slug}`}>edit</Link> ·{' '}
-                <Link href={`/studio/j/${j.slug}/inbox`}>
-                  {j.candidateCount} application{j.candidateCount === 1 ? '' : 's'}
-                </Link>
-                {' · '}
-                <form className="inline-form" action={duplicateJourney.bind(null, j.slug)}>
-                  <button type="submit" className="link">
-                    duplicate
-                  </button>
-                </form>
+              <div className="journey-actions">
+                <span className={`status ${j.published ? 'status-active' : 'status-draft'}`}>
+                  {j.published ? 'ACTIVE' : 'DRAFT'}
+                </span>
+                <span className="meta">
+                  <Link href={`/studio/j/${j.slug}`}>edit</Link> ·{' '}
+                  <Link href={`/studio/j/${j.slug}/inbox`}>
+                    {j.candidateCount === 0
+                      ? 'applications'
+                      : `applications (${j.candidateCount})`}
+                  </Link>
+                  {' · '}
+                  <form className="inline-form" action={duplicateJourney.bind(null, j.slug)}>
+                    <button type="submit" className="link">
+                      duplicate
+                    </button>
+                  </form>
+                </span>
               </div>
             </li>
           ))}
@@ -65,6 +69,15 @@ export default function StudioHome() {
       <p>
         <Link href="/studio/new">Create a journey</Link>
       </p>
+
+      <footer className="studio-footer">
+        <span className="muted">© 2024 Knockport Studio. Terminal v1.0.4</span>
+        <nav aria-label="Legal">
+          <Link href="/studio">documentation</Link>
+          <Link href="/studio">system status</Link>
+          <Link href="/studio">privacy</Link>
+        </nav>
+      </footer>
     </>
   )
 }

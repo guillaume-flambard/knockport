@@ -74,8 +74,8 @@ test('a full contact flow lands in the studio inbox with a timeline', async ({ p
   const adaCard = page.getByRole('article').filter({ hasText: 'Ada Lovelace' })
   await expect(adaCard.getByText('Ada Lovelace')).toBeVisible()
   await expect(adaCard.getByText('I read ls -a.')).toBeVisible()
-  await expect(adaCard.getByText('What they did')).toBeVisible()
-  await expect(adaCard.getByText(/contact/)).toBeVisible()
+  await expect(adaCard.getByText('Session_Log')).toBeVisible()
+  await expect(adaCard.locator('.timeline')).toContainText('contact')
 })
 
 test('contact can be cancelled without sending anything', async ({ page }) => {
