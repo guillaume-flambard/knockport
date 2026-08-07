@@ -81,11 +81,14 @@ export function BuilderForm({
   // the next visit to /studio/new picks up where they stopped. Not a server
   // write: a half-finished journey is not a journey yet, and it must not
   // clutter the single-writer database with drafts nobody ever publishes.
+  // `draft` is now always present (the Memo Labs template), so the saved copy
+  // must win over it: a neophyte who walked into the wizard and edited for a
+  // while should not be reset to the template on every reload.
   const draftStorageKey = 'knockport:draft'
   useEffect(() => {
     if (mode !== 'create') return
     const saved = window.localStorage.getItem(draftStorageKey)
-    if (saved && !draft) {
+    if (saved) {
       try {
         const d = JSON.parse(saved) as {
           companyName: string
