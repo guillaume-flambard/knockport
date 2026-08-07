@@ -5,6 +5,13 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/guillaume-flambard/knockport/blob/main/LICENSE)
 [![CI](https://github.com/guillaume-flambard/knockport/actions/workflows/ci.yml/badge.svg)](https://github.com/guillaume-flambard/knockport/actions/workflows/ci.yml)
 
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript&logoColor=white)](https://github.com/guillaume-flambard/knockport)
+[![Node 26](https://img.shields.io/badge/Node-26-339933?logo=nodedotjs&logoColor=white)](https://github.com/guillaume-flambard/knockport)
+[![pnpm](https://img.shields.io/badge/pnpm-10.14-F6921E?logo=pnpm&logoColor=white)](https://github.com/guillaume-flambard/knockport)
+[![Tests](https://img.shields.io/badge/tests-171-green)](https://github.com/guillaume-flambard/knockport/actions/workflows/ci.yml)
+[![Terminal: 2.7 kB](https://img.shields.io/badge/terminal-2.7kB-7fd6d1)](https://github.com/guillaume-flambard/knockport/tree/main/packages/terminal)
+[![Core: 0 deps](https://img.shields.io/badge/core-0%20deps-black)](https://github.com/guillaume-flambard/knockport/tree/main/packages/core)
+
 [![Watch the demo](brand/demo-poster.png)](https://github.com/guillaume-flambard/knockport/releases/download/v0.1.0/demo-final.mp4)
 
 A job posting gets around 254 applications. A recruiter spends most of a working
