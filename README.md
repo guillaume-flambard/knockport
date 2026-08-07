@@ -75,8 +75,10 @@ pnpm dev      # http://localhost:3000/j/memo-labs
 ```
 
 ```bash
-pnpm test         # 80 tests
+pnpm test         # unit + integration (171 tests)
+pnpm test:e2e     # Playwright suite (studio, terminal, no-JS, security, a11y)
 pnpm typecheck
+pnpm audit:full   # deps + secrets + typecheck + tests
 ```
 
 The only build step is the browser client, bundled by esbuild into one file. No
@@ -90,6 +92,36 @@ pages, and that was a mistake: a page written in the first person, carrying
 someone else's name and served on a domain they do not control, reads like
 their own recruitment page however visible the disclaimer is. A demo speaks
 for a business you own.
+
+## Studio
+
+The studio (`/studio`) is where a company builds and runs its journeys. It is
+a private tool behind a passphrase (`KNOCKPORT_STUDIO_PASS`):
+
+- **Builder** — a three-step wizard (company, journey, publish) with a live
+  terminal preview on the right that updates as you type. Editing is one
+  screen. Drafts are auto-saved in the browser.
+- **Inbox** — applications arrive with the candidate's whole journey behind
+  them: what they read, in what order, how long they stayed. Evidence, never
+  a score.
+
+## Demo video
+
+`pnpm demo` records and renders a walkthrough video of the product end to
+end: a candidate explores a journey in the terminal, finds `contact` through
+`help`, applies, and the company sees the application land in the inbox.
+
+- `scripts/demo/` — the scenario and the capture/render pipeline.
+- `demo/remotion/` — the Remotion composition (transitions, animated
+  captions, music). See `scripts/demo/README.md`.
+
+## Design system
+
+`brand/DESIGN.md` is the single source of truth for the product's visual
+language: Terminal Black `#0b0d0e`, Screen White `#e8e6e1`, one teal accent
+`#7fd6d1`, IBM Plex Mono, square corners, hairline rules. `brand/stitch/`
+holds Google Stitch reference screens generated from it, and
+`brand/stitch/showcase.html` shows them side by side.
 
 ---
 
