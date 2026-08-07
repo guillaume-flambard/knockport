@@ -1,0 +1,29 @@
+app = "knockport"
+primary_region = "cdg"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  KNOCKPORT_DB = "/data/knockport.db"
+
+# SQLite doit survivre aux deploiements. Sans volume, chaque mise en ligne
+# effacerait les preuves collectees.
+[[mounts]]
+  source = "knockport_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  # Une seule machine: SQLite n'a qu'un ecrivain, et le gestionnaire de
+  # sessions terminal garde son etat en memoire. Passer a deux machines
+  # casserait les deux a la fois.
+  min_machines_running = 1
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

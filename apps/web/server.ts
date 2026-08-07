@@ -4,6 +4,7 @@ import next from 'next'
 import { WebSocketServer, type WebSocket } from 'ws'
 
 import { TerminalSession } from './src/session/manager.ts'
+import { seedIfEmpty } from './src/journey/seed-ojin.ts'
 import type { ClientMessage, ServerMessage } from '@knockport/terminal/protocol'
 
 const dev = process.env.NODE_ENV !== 'production'
@@ -112,6 +113,10 @@ function attach(ws: WebSocket, slug: string): void {
   ws.on('close', () => session.close())
   ws.on('error', () => session.close())
 }
+
+// Sur un volume neuf, la base est vide et le parcours de demonstration n'y est
+// pas. Le creer ici evite une etape de deploiement separee.
+seedIfEmpty()
 
 server.listen(port, hostname, () => {
   console.log(`knockport sur http://${hostname}:${port}`)
