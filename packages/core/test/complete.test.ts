@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { Content } from '../src/content.ts'
 import { complete } from '../src/complete.ts'
 import { content } from '../src/content.generated.ts'
 import { newSession } from '../src/session.ts'
@@ -25,7 +26,21 @@ describe('complete', () => {
   })
 
   it('rend les resultats tries', () => {
-    const found = complete(newSession(), content, 'cat ')
-    expect(found).toEqual([...found].sort())
+    const fixture: Content = {
+      root: {
+        name: 'root',
+        dirs: [
+          { name: 'alpine', dirs: [], files: [] },
+          { name: 'zeta', dirs: [], files: [] },
+        ],
+        files: [
+          { name: 'beta', title: '', order: 0, hidden: false, body: '' },
+          { name: 'alpha', title: '', order: 1, hidden: false, body: '' },
+          { name: 'alto', title: '', order: 2, hidden: false, body: '' },
+        ],
+      },
+    }
+    const found = complete(newSession(), fixture, 'cat al')
+    expect(found).toEqual(['cat alpha', 'cat alpine', 'cat alto'])
   })
 })
