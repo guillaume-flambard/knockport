@@ -1,5 +1,5 @@
 ---
-title: stack
+title: what it is built with
 order: 2
 ---
 Daily: TypeScript, React, Next.js, Laravel, PostgreSQL, Rust when it earns its place.

@@ -2,6 +2,7 @@ import { cat, cd, ls, pwd } from './commands/fs.ts'
 import { help, history, show } from './commands/info.ts'
 import { BOOK_URL, CV_URL, contactStep, startContact } from './commands/contact.ts'
 import type { Content } from './content.ts'
+import { shortcuts } from './content.ts'
 import type { Output } from './output.ts'
 import { emptyOutput, failureOutput, styledLine, textOutput, withEffect } from './output.ts'
 import type { Session } from './session.ts'
@@ -38,9 +39,7 @@ function dispatch(s: Session, c: Content, cmd: Cmd): Output {
     case 'cd': return cd(s, c, cmd.args)
     case 'pwd': return pwd(s)
     case 'cat': return cat(s, c, cmd.args)
-    case 'whoami': return show(c, 'whoami')
-    case 'stack': return show(c, 'stack')
-    case 'help': return help()
+    case 'help': return help(c)
     case 'history': return history(s)
     case 'clear': return withEffect(emptyOutput(), { kind: 'clear' })
     case 'exit':
@@ -50,7 +49,12 @@ function dispatch(s: Session, c: Content, cmd: Cmd): Output {
     case 'hire': return startContact(s)
     case 'cv': return withEffect(textOutput('Opening the CV.'), { kind: 'openUrl', url: CV_URL })
     case 'book': return withEffect(textOutput('Opening the calendar.'), { kind: 'openUrl', url: BOOK_URL })
-    default: return unknown(cmd.name)
+    default: {
+      // A root file name is a command of its own. Builtins are matched first,
+      // so a section called `ls` cannot shadow the real one.
+      const file = shortcuts(c).find((f) => f.name === cmd.name)
+      return file ? show(file) : unknown(cmd.name)
+    }
   }
 }
 

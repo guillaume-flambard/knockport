@@ -19,8 +19,8 @@ exports[`snapshot help 1`] = `
 
 exports[`snapshot ls root 1`] = `
 "projects/
-whoami   whoami
-stack    stack"
+whoami   the short version
+stack    what it is built with"
 `;
 
 exports[`snapshot unknown command 1`] = `

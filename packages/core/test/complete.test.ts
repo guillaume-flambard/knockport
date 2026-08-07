@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Content } from '../src/content.ts'
 import { complete } from '../src/complete.ts'
 import { content } from '../src/content.generated.ts'
+import { companyJourney } from './fixture.ts'
 import { newSession } from '../src/session.ts'
 
 describe('complete', () => {
@@ -23,6 +24,14 @@ describe('complete', () => {
 
   it('returns nothing on an empty argument prefix', () => {
     expect(complete(newSession(), content, 'cd ')).toEqual([])
+  })
+
+  it("completes the journey's own sections as commands", () => {
+    expect(complete(newSession(), companyJourney, 'ro')).toEqual(['role'])
+  })
+
+  it('never completes the hidden section as a command', () => {
+    expect(complete(newSession(), companyJourney, 'kn')).toEqual([])
   })
 
   it('returns sorted results', () => {

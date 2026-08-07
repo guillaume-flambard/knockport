@@ -23,14 +23,14 @@ export const content: Content = {
     "files": [
       {
         "name": "whoami",
-        "title": "whoami",
+        "title": "the short version",
         "order": 1,
         "hidden": false,
         "body": "Guillaume Flambard. Full-stack and AI engineer.\nFive years shipping products, the last three of them mostly alone,\nfrom the database up to whatever the user actually touches.\nFully remote, across European time zones."
       },
       {
         "name": "stack",
-        "title": "stack",
+        "title": "what it is built with",
         "order": 2,
         "hidden": false,
         "body": "Daily: TypeScript, React, Next.js, Laravel, PostgreSQL, Rust when it earns its place.\nAI: retrieval pipelines, agent orchestration, evaluation harnesses.\nInfra: Docker, nginx, Cloudflare, a VPS that has been up for 25 days."

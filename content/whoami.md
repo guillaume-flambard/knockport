@@ -1,5 +1,5 @@
 ---
-title: whoami
+title: the short version
 order: 1
 ---
 Guillaume Flambard. Full-stack and AI engineer.

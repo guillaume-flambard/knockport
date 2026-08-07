@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { execute, parse } from '../src/command.ts'
 import { content } from '../src/content.generated.ts'
+import { companyJourney } from './fixture.ts'
 import { newSession } from '../src/session.ts'
+import type { Content } from '../src/content.ts'
 import type { Output } from '../src/output.ts'
 
 const flatten = (out: Output): string =>
@@ -57,6 +59,38 @@ describe('execute', () => {
     const s = newSession()
     expect(execute(s, content, 'cv', 1).effect).toEqual({ kind: 'openUrl', url: '{{cv_url}}' })
     expect(execute(s, content, 'book', 2).effect).toEqual({ kind: 'openUrl', url: '{{book_url}}' })
+  })
+
+  it('any root section is a command, not just whoami and stack', () => {
+    const s = newSession()
+    const out = execute(s, companyJourney, 'role', 1)
+    expect(flatten(out)).toBe('Product Engineer.')
+    expect(out.failed).toBe(false)
+  })
+
+  it('a section inside a directory is not a bare command', () => {
+    const out = execute(newSession(), companyJourney, 'oris', 1)
+    expect(out.failed).toBe(true)
+  })
+
+  it('the hidden section is not a bare command, it is opened with cat', () => {
+    const s = newSession()
+    expect(execute(s, companyJourney, 'knock', 1).failed).toBe(true)
+    expect(execute(s, companyJourney, '.knock', 2).failed).toBe(true)
+    expect(s.eggFound).toBe(false)
+    expect(execute(s, companyJourney, 'cat .knock', 3).failed).toBe(false)
+    expect(s.eggFound).toBe(true)
+  })
+
+  it('a section cannot shadow a builtin', () => {
+    const shadowed: Content = {
+      root: {
+        name: '',
+        dirs: [],
+        files: [{ name: 'ls', title: 'not the listing', order: 1, hidden: false, body: 'Gotcha.' }],
+      },
+    }
+    expect(flatten(execute(newSession(), shadowed, 'ls', 1))).not.toContain('Gotcha')
   })
 
   it('in contact mode, the journal masks visitor input', () => {

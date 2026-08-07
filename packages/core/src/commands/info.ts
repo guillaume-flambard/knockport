@@ -1,19 +1,23 @@
-import type { Content } from '../content.ts'
-import { resolveFile } from '../content.ts'
+import type { Content, File } from '../content.ts'
+import { shortcuts } from '../content.ts'
 import type { Line, Output } from '../output.ts'
-import { blankLine, failureOutput, plainLine, styledLine } from '../output.ts'
+import { blankLine, plainLine, styledLine } from '../output.ts'
 import type { Session } from '../session.ts'
 import { lines } from '../text.ts'
 
-const COMMANDS: ReadonlyArray<readonly [string, string]> = [
+// Neutral voice, intentionally. A journey can be someone's or a company's.
+// "What I build with" or "leave me a message" ring false when spoken by a company.
+
+/** Moving around. Same in every journey. */
+const NAVIGATION: ReadonlyArray<readonly [string, string]> = [
   ['ls', 'list what is here, -a shows everything'],
   ['cd', 'move around, .. goes up'],
   ['pwd', 'where you are right now'],
   ['cat', 'read a file'],
-  // Neutral voice, intentionally. A journey can be someone's or a company's.
-  // "What I build with" or "leave me a message" ring false when spoken by a company.
-  ['whoami', 'the short version'],
-  ['stack', 'what it is built with'],
+]
+
+/** Reaching out and running the session. Same in every journey. */
+const SESSION: ReadonlyArray<readonly [string, string]> = [
   ['cv', 'the PDF version'],
   ['contact', 'leave a message right here'],
   ['book', 'put something in the calendar'],
@@ -22,13 +26,27 @@ const COMMANDS: ReadonlyArray<readonly [string, string]> = [
   ['exit', 'close the session'],
 ]
 
-export function help(): Output {
+/**
+ * The journey's own sections sit between the two fixed blocks, right where a
+ * reader looks first. They used to be hardcoded as `whoami` and `stack`,
+ * which were the root files of the one journey that existed at the time.
+ */
+export function help(c: Content): Output {
+  const rows: ReadonlyArray<readonly [string, string]> = [
+    ...NAVIGATION,
+    ...shortcuts(c).map((f) => [f.name, f.title] as const),
+    ...SESSION,
+  ]
+
+  // Rust padded to a fixed 9, which was enough for its own command names.
+  // A journey names its own sections, so the column has to be measured.
+  const width = Math.max(9, ...rows.map(([name]) => name.length + 2))
+
   const out: Line[] = [styledLine('commands', 'bold'), blankLine()]
-  for (const [name, description] of COMMANDS) {
+  for (const [name, description] of rows) {
     out.push({
       spans: [
-        // Rust's `format!("  {name:<9}")`: two spaces then the name left-aligned to 9.
-        { text: `  ${name.padEnd(9)}`, style: 'accent' },
+        { text: `  ${name.padEnd(width)}`, style: 'accent' },
         { text: description, style: 'dim' },
       ],
     })
@@ -44,8 +62,6 @@ export function history(s: Session): Output {
   }
 }
 
-export function show(c: Content, name: string): Output {
-  const file = resolveFile(c, [name])
-  if (!file) return failureOutput(`${name}: content is missing`)
+export function show(file: File): Output {
   return { lines: lines(file.body).map(plainLine), failed: false }
 }

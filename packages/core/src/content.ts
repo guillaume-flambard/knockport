@@ -23,6 +23,18 @@ export function resolveDir(c: Content, path: string[]): Dir | undefined {
   return cursor
 }
 
+/**
+ * The root files, which double as commands.
+ *
+ * `ls` advertises them, so typing one has to work: a listing that names
+ * something the parser then rejects reads as a broken product. Hidden files
+ * stay out. They are found by exploring and opened with `cat`, which is what
+ * marks the session.
+ */
+export function shortcuts(c: Content): File[] {
+  return c.root.files.filter((f) => !f.hidden)
+}
+
 export function resolveFile(c: Content, path: string[]): File | undefined {
   if (path.length === 0) return undefined
   const name = path[path.length - 1]!

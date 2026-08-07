@@ -13,7 +13,6 @@ packages/terminal   the browser client. No framework, bundled by esbuild.
 apps/web            Next.js (HTTP) + a custom Node server (WebSocket upgrade).
 content/            the personal demo journey, compiled at build time.
 crates/             the retired Rust implementation. Tagged v0-rust.
-docs/superpowers/   design specs and implementation plans, in French.
 ```
 
 ## Rules that are not negotiable
@@ -67,11 +66,18 @@ not solve issues, write code or produce anything the company could use.
   builds everything inside it.
 - **Deploy on one machine only.** SQLite has a single writer and the session
   manager keeps state in memory.
+- **Never hardcode a section name into the engine.** The dispatcher, the help
+  listing and the completion once carried `whoami` and `stack` as literals,
+  because those were the two root files of the only journey that existed. Any
+  company journey with a third section had it listed by `ls` and then rejected
+  by the parser. The command surface is derived from the content, and tests
+  that only use `content.generated.ts` cannot see this class of bug, which is
+  what `test/fixture.ts` is for.
 
 ## Testing
 
 ```bash
-pnpm test        # 72 tests, must stay green
+pnpm test        # 80 tests, must stay green
 pnpm typecheck
 ```
 

@@ -36,7 +36,7 @@ One pure core, several painters.
 
 | | |
 |---|---|
-| `packages/core` | The journey engine. Zero runtime dependencies, 72 tests. No I/O, no fork, no filesystem access. |
+| `packages/core` | The journey engine. Zero runtime dependencies, 80 tests. No I/O, no fork, no filesystem access. |
 | `packages/terminal` | The browser client. **2.7 kB**. Draws lines, captures keys, speaks WebSocket. It does not contain the engine. |
 | `apps/web` | Next.js for HTTP, a custom Node server for the WebSocket upgrade, `node:sqlite` for storage. |
 
@@ -75,7 +75,7 @@ pnpm dev      # http://localhost:3000/j/ojin-product-engineer
 ```
 
 ```bash
-pnpm test         # 72 tests
+pnpm test         # 80 tests
 pnpm typecheck
 ```
 
