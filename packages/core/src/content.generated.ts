@@ -15,7 +15,7 @@ export const content: Content = {
             "title": "knockport",
             "order": 1,
             "hidden": false,
-            "body": "The thing you are typing into right now.\nA Rust core with no I/O, painted by an SSH server and a WebAssembly frontend.\nThe name is port knocking, and knocking on a door."
+            "body": "The thing you are typing into right now.\nA TypeScript core with no I/O, painted by an SSH server and a browser.\nThe name is port knocking, and knocking on a door."
           }
         ]
       }
