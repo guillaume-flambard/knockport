@@ -33,7 +33,10 @@ visitor supplied text back into the scrollback.
 
 **`/j/<slug>/profile` must keep working with JavaScript disabled.** Since the
 terminal moved to a WebSocket, that page is the only access path for those
-visitors. Treat it as a legal requirement, not a fallback.
+visitors. Treat it as a legal requirement, not a fallback. That includes
+answering: the page carries its own contact form, as a server action so it
+posts without any client JavaScript. Reading without being able to reply is
+the same exclusion in a politer form.
 
 **Candidates are never asked to do real work.** They traverse a journey. They do
 not solve issues, write code or produce anything the company could use.

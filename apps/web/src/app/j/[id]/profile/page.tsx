@@ -2,11 +2,15 @@ import type { ReactNode } from 'react'
 import { notFound } from 'next/navigation'
 import type { Dir, File } from '@knockport/core'
 import { findJourneyBySlug } from '../../../../db/index.ts'
+import { submitContact } from './actions.ts'
 import '../../../site.css'
 
-type Params = { params: Promise<{ id: string }> }
+type Params = {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ sent?: string; error?: string }>
+}
 
-export async function generateMetadata({ params }: Params) {
+export async function generateMetadata({ params }: Pick<Params, 'params'>) {
   const { id } = await params
   const journey = findJourneyBySlug(id)
   if (!journey) return { title: 'knockport' }
@@ -63,8 +67,58 @@ function walk(dir: Dir, prefix: string): ReactNode[] {
   return out
 }
 
-export default async function ProfilePage({ params }: Params) {
+/** Same wording as the terminal, so neither path feels like the lesser one. */
+const ERRORS: Record<string, string> = {
+  name: 'A name, even a first one.',
+  email: 'That does not look like an email address.',
+  message: 'Between 10 and 4000 characters, please.',
+}
+
+function ContactForm({ slug, sent, error }: { slug: string; sent: boolean; error?: string }) {
+  if (sent) {
+    return (
+      <section id="contact">
+        <h2>Get in touch</h2>
+        <p role="status">Sent. I read everything, and I answer.</p>
+      </section>
+    )
+  }
+
+  return (
+    <section id="contact">
+      <h2>Get in touch</h2>
+      {error ? (
+        <p className="form-error" role="alert">
+          {ERRORS[error] ?? 'Something in there did not go through.'}
+        </p>
+      ) : null}
+      <form action={submitContact}>
+        <input type="hidden" name="slug" value={slug} />
+
+        <label htmlFor="contact-name">Your name</label>
+        <input id="contact-name" name="name" type="text" required maxLength={200} autoComplete="name" />
+
+        <label htmlFor="contact-email">Your email</label>
+        <input id="contact-email" name="email" type="email" required autoComplete="email" />
+
+        <label htmlFor="contact-message">Your message</label>
+        <textarea id="contact-message" name="message" required rows={6} minLength={10} maxLength={4000} />
+
+        {/* Hidden from sight and from assistive technology. Only a bot fills it. */}
+        <div className="trap" aria-hidden="true">
+          <label htmlFor="contact-website">Leave this field empty</label>
+          <input id="contact-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+        </div>
+
+        <button type="submit">Send</button>
+      </form>
+    </section>
+  )
+}
+
+export default async function ProfilePage({ params, searchParams }: Params) {
   const { id } = await params
+  const { sent, error } = await searchParams
   const journey = findJourneyBySlug(id)
   if (!journey) notFound()
 
@@ -84,6 +138,8 @@ export default async function ProfilePage({ params }: Params) {
       {/* The hidden file is shown here like any other: on this path there is no
           puzzle, otherwise the accessible route would be the lesser one. */}
       {walk(journey.content.root, '')}
+
+      <ContactForm slug={journey.slug} sent={sent === '1'} error={error} />
 
       <footer>
         {journey.bookUrl ? (
