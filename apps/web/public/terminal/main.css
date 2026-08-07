@@ -1,7 +1,9 @@
 /* knockport, candidate terminal.
-   Direction validated in mockups: window placed soberly on a radial gradient,
-   solid gray dots (red, yellow, green is for screenshot tutorials), IBM Plex
-   Mono, light and dark following the system. */
+   Direction validated in mockups and in the design system (brand/DESIGN.md):
+   dark by default, a terminal on a radial gradient, solid gray dots (red,
+   yellow, green is for screenshot tutorials), IBM Plex Mono. The light theme
+   is documented in DESIGN.md but not toggled here, so the terminal stays
+   dark. */
 
 @font-face {
   font-family: 'IBM Plex Mono';
@@ -23,20 +25,6 @@
   --dot: #3d4447;
   --edge: rgba(232, 230, 225, 0.1);
   --shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #fbfaf8;
-    --fg: #14171a;
-    --dim: #666c70;
-    --accent: #0f6f77;
-    --stage: radial-gradient(115% 80% at 50% 0%, #fff 0%, #e6e4dd 75%);
-    --chrome: rgba(20, 23, 26, 0.035);
-    --dot: #c4c1b9;
-    --edge: rgba(20, 23, 26, 0.1);
-    --shadow: 0 16px 34px rgba(20, 23, 26, 0.14);
-  }
 }
 
 * { box-sizing: border-box; }

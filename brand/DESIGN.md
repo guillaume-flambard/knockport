@@ -8,8 +8,10 @@ teal accent. Variance is moderate (5/10): layouts are mostly single-column
 and left-aligned, with asymmetric whitespace where a moment needs emphasis.
 Motion is restrained (4/10): fades and slides on state changes, nothing that
 draws attention to itself. The atmosphere is deliberate and quiet, like a
-terminal you trust. Dark by default; a light theme is a first-class citizen,
-not an afterthought.
+terminal you trust. Dark by default, always: the product does not follow the
+system color scheme, it stays dark like a terminal. The light palette is
+documented below as the future second theme, but nothing auto-applies it
+until there is a real toggle.
 
 Two audiences share one visual language: the candidate, who types their way
 through a company in the terminal; and the recruiter, who builds journeys in
@@ -25,7 +27,7 @@ Dark theme (default):
 - **Teal Signal** (#7fd6d1) — The single accent: focus, active, links, cursor
 - **Hairline Rule** (rgba(232,230,225,0.14)) — 1px structural borders and dividers
 
-Light theme (`prefers-color-scheme: light`):
+Light theme (documented, not auto-applied — reserved for a future toggle):
 
 - **Paper** (#fbfaf8) — Primary background surface
 - **Ink** (#14171a) — Primary text and foreground

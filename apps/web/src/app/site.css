@@ -14,16 +14,6 @@
   --rule: rgba(232, 230, 225, 0.14);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #fbfaf8;
-    --fg: #14171a;
-    --dim: #6b7175;
-    --accent: #0f6f77;
-    --rule: rgba(20, 23, 26, 0.14);
-  }
-}
-
 * { box-sizing: border-box; }
 
 body {
