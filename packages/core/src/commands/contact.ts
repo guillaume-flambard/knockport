@@ -61,7 +61,9 @@ export function contactStep(s: Session, input: string): Output {
       if (!validMessage(value)) return retry('Between 10 and 4000 characters, please.')
       s.mode = { kind: 'normal' }
       return {
-        lines: [plainLine('Sent. I read everything, and I answer.')],
+        // Company voice belongs to the default: this is a hiring journey,
+        // and the string is expected after a message to the company.
+        lines: [plainLine('Sent. We read everything, and we answer.')],
         effect: {
           kind: 'submitContact',
           payload: {

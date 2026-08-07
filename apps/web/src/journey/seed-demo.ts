@@ -3,17 +3,18 @@ import { assemble } from './assemble.ts'
 import type { Section } from './assemble.ts'
 
 /**
- * The demo journey, which is Memo Labs, the name Guillaume Flambard's
- * engineering work goes out under.
+ * The demo journey: Memo Labs, a small product engineering company the author
+ * owns. It speaks as a company, because a journey is what a company offers a
+ * candidate, not what a freelancer offers a client.
  *
  * It used to be a real company reconstructed from its public pages. That was
  * a mistake waiting to happen: a page written in the first person plural,
  * carrying someone else's name and served on a domain they do not control,
  * reads like their own recruitment page no matter how visible the disclaimer
- * is. A demo now speaks for a business we actually own.
+ * is. A demo speaks for a business you own.
  *
- * It is also a real call. Memo Labs takes on contract work, and the contact
- * flow reaches a person, so nobody who types `contact` is writing into a
+ * The contact flow is real: Memo Labs is hiring, and a message reaches the
+ * person who answers, so nobody who types `contact` is writing into a
  * fixture.
  */
 
@@ -22,7 +23,7 @@ export const JOURNEY_SLUG = 'memo-labs'
 
 const BANNER = [
   'memo labs',
-  'contract and freelance engineering, remote across europe',
+  'small product engineering company, remote across europe',
   '',
   'ls    look around',
   'help  complete list',
@@ -37,33 +38,32 @@ const NOTICE = 'a live example. yours would carry your company and your role.'
 const SECTIONS: Section[] = [
   {
     name: 'whoami',
-    title: 'who you would work with',
+    title: 'who we are',
     order: 1,
-    body: `Memo Labs. The name my engineering work goes out under, registered in France,
-one person, and that person is Guillaume Flambard.
-Five years shipping products, the last three of them mostly alone, from the
-database up to whatever the user actually touches.
+    body: `Memo Labs. A small product engineering company, registered in France.
+We ship web products end to end and AI features that have to survive contact
+with real users. Five years shipping, the last three of them as a company.
 Fully remote, across European time zones.`,
   },
   {
     name: 'stack',
-    title: 'what I build with',
+    title: 'what we build with',
     order: 2,
     body: `Daily: TypeScript, React, Next.js, Laravel, PostgreSQL, Rust when it earns
 its place.
 AI: retrieval pipelines, agent orchestration, evaluation harnesses.
-Infra: Docker, nginx, Cloudflare, and a VPS I look after myself.`,
+Infra: Docker, nginx, Cloudflare, and a VPS we look after ourselves.`,
   },
   {
-    name: 'work',
-    title: 'the kind of work',
+    name: 'role',
+    title: 'the role',
     order: 3,
-    body: `Contract and freelance engineering. Missions from a few weeks to a few
-months, remote, anywhere within a couple of hours of CET.
-What I take on: web products end to end, AI features that have to survive
-contact with real users, and codebases that grew faster than their tests.
-What I turn down: anything that needs me on site five days a week, and
-anything where the brief is a job title rather than a problem.`,
+    body: `We are hiring a full stack engineer, remote, anywhere within a couple of
+hours of CET.
+What ties it together: web products end to end, AI features that have to
+survive contact with real users, and code that grew faster than its tests.
+Who we are after: someone who reads before assuming, which is the habit the
+file in front of you is testing.`,
   },
   {
     name: 'knockport',
@@ -85,7 +85,7 @@ The name is port knocking, and knocking on a door.`,
 That is the whole test, and it is not about cleverness. It is about looking
 before assuming, which is the same habit that catches a bad query before the
 customer does.
-Mention this file when you write to me. It tells me more than a CV does.`,
+Mention this file when you apply. It tells us more than a CV does.`,
   },
 ]
 
@@ -103,7 +103,7 @@ export function seedDemo(): string {
     `INSERT INTO companies (id, slug, name, github_org, created_at)
      VALUES (?, ?, ?, ?, ?)
      ON CONFLICT(slug) DO UPDATE SET name = excluded.name, github_org = excluded.github_org`,
-  ).run(companyId, COMPANY_SLUG, 'Memo Labs', 'guillaume-flambard', now)
+  ).run(companyId, COMPANY_SLUG, 'Memo Labs', 'memo-labs', now)
 
   const journeyId =
     (db.prepare('SELECT id FROM journeys WHERE slug = ?').get(JOURNEY_SLUG) as

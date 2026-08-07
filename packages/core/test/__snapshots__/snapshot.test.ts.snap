@@ -7,8 +7,8 @@ exports[`snapshot help 1`] = `
   cd       move around, .. goes up
   pwd      where you are right now
   cat      read a file
-  whoami   the short version
-  stack    what it is built with
+  whoami   who we are
+  stack    what we build with
   cv       the PDF version
   contact  leave a message right here
   book     put something in the calendar
@@ -19,8 +19,8 @@ exports[`snapshot help 1`] = `
 
 exports[`snapshot ls root 1`] = `
 "projects/
-whoami   the short version
-stack    what it is built with"
+whoami   who we are
+stack    what we build with"
 `;
 
 exports[`snapshot unknown command 1`] = `

@@ -68,7 +68,7 @@ describe('show', () => {
   it('prints the file body, one line per line', () => {
     const file = content.root.files.find((f) => f.name === 'whoami')!
     const out = show(file)
-    expect(flatten(out)).toContain('Guillaume Flambard')
+    expect(flatten(out)).toContain('Memo Labs')
     expect(out.failed).toBe(false)
   })
 })

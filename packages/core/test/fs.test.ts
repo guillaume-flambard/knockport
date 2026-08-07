@@ -63,7 +63,7 @@ describe('cd and pwd', () => {
 
 describe('cat', () => {
   it('prints the file body', () => {
-    expect(flatten(cat(newSession(), content, ['whoami']))).toContain('Guillaume Flambard')
+    expect(flatten(cat(newSession(), content, ['whoami']))).toContain('Memo Labs')
   })
 
   it('refuses a directory', () => {

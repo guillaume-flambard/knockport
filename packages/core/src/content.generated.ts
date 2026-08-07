@@ -23,24 +23,24 @@ export const content: Content = {
     "files": [
       {
         "name": "whoami",
-        "title": "the short version",
+        "title": "who we are",
         "order": 1,
         "hidden": false,
-        "body": "Guillaume Flambard. Full-stack and AI engineer.\nFive years shipping products, the last three of them mostly alone,\nfrom the database up to whatever the user actually touches.\nFully remote, across European time zones."
+        "body": "Memo Labs. A small product engineering company, registered in France.\nWe ship web products end to end and AI features that have to survive contact\nwith real users. Five years shipping, the last three of them as a company.\nFully remote, across European time zones."
       },
       {
         "name": "stack",
-        "title": "what it is built with",
+        "title": "what we build with",
         "order": 2,
         "hidden": false,
-        "body": "Daily: TypeScript, React, Next.js, Laravel, PostgreSQL, Rust when it earns its place.\nAI: retrieval pipelines, agent orchestration, evaluation harnesses.\nInfra: Docker, nginx, Cloudflare, a VPS that has been up for 25 days."
+        "body": "Daily: TypeScript, React, Next.js, Laravel, PostgreSQL, Rust when it earns its place.\nAI: retrieval pipelines, agent orchestration, evaluation harnesses.\nInfra: Docker, nginx, Cloudflare, and a VPS we look after ourselves."
       },
       {
         "name": "knock",
         "title": "knock",
         "order": 99,
         "hidden": true,
-        "body": "You went looking. That is the whole test, and you passed it."
+        "body": "You went looking. That is the whole test, and you passed it.\nMention this file when you apply. It tells us more than a CV does."
       }
     ]
   }

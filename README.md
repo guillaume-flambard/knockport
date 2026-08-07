@@ -82,12 +82,14 @@ pnpm typecheck
 The only build step is the browser client, bundled by esbuild into one file. No
 bundler config, and no framework inside the terminal.
 
-The demo journey is Memo Labs, which is the name the author's engineering work
-goes out under. An earlier version reconstructed a real company from its public
+The demo journey is Memo Labs, a small product engineering company that the
+author owns. It speaks as a company, because that is what a journey is for:
+the product helps companies show candidates who they are and what a role
+looks like. An earlier version reconstructed a real company from its public
 pages, and that was a mistake: a page written in the first person, carrying
 someone else's name and served on a domain they do not control, reads like
-their own recruitment page however visible the disclaimer is. A demo speaks for
-a business you own.
+their own recruitment page however visible the disclaimer is. A demo speaks
+for a business you own.
 
 ---
 

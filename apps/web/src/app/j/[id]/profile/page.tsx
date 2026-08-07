@@ -79,7 +79,7 @@ function ContactForm({ slug, sent, error }: { slug: string; sent: boolean; error
     return (
       <section id="contact">
         <h2>Get in touch</h2>
-        <p role="status">Sent. I read everything, and I answer.</p>
+        <p role="status">Sent. We read everything, and we answer.</p>
       </section>
     )
   }

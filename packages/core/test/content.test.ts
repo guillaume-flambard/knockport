@@ -10,9 +10,9 @@ import { displayName, resolveDir, resolveFile } from '../src/content.ts'
 describe('content resolution', () => {
   it('reads a root file with its frontmatter', () => {
     const whoami = resolveFile(content, ['whoami'])
-    expect(whoami?.title).toBe('the short version')
+    expect(whoami?.title).toBe('who we are')
     expect(whoami?.hidden).toBe(false)
-    expect(whoami?.body).toContain('Guillaume Flambard')
+    expect(whoami?.body).toContain('Memo Labs')
   })
 
   it('addresses the hidden file with an initial dot', () => {
