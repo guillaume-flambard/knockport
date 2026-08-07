@@ -71,7 +71,7 @@ for the server.
 ```bash
 pnpm install
 pnpm seed     # creates the demo journey
-pnpm dev      # http://localhost:3000/j/memo-labs
+pnpm dev      # http://localhost:3010/j/memo-labs
 ```
 
 ```bash
@@ -98,9 +98,12 @@ for a business you own.
 The studio (`/studio`) is where a company builds and runs its journeys. It is
 a private tool behind a passphrase (`KNOCKPORT_STUDIO_PASS`):
 
-- **Builder** — a three-step wizard (company, journey, publish) with a live
-  terminal preview on the right that updates as you type. Editing is one
-  screen. Drafts are auto-saved in the browser.
+- **Builder** — a three-step wizard (company, journey, publish) that starts
+  from the Memo Labs example, so a first-time employer edits real content
+  instead of inventing structure from a blank form. A link at the bottom
+  starts from a blank journey instead. A live terminal preview on the right
+  updates as you type. Editing is one screen. Drafts are auto-saved in the
+  browser.
 - **Inbox** — applications arrive with the candidate's whole journey behind
   them: what they read, in what order, how long they stayed. Evidence, never
   a score.
