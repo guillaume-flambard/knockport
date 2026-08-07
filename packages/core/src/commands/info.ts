@@ -10,10 +10,13 @@ const COMMANDS: ReadonlyArray<readonly [string, string]> = [
   ['cd', 'move around, .. goes up'],
   ['pwd', 'where you are right now'],
   ['cat', 'read a file'],
+  // Voix neutre, volontairement. Un parcours peut etre celui d'une personne
+  // comme celui d'une entreprise, et "what I build with" ou "leave me a
+  // message" sonnaient faux des que c'est une boite qui parle.
   ['whoami', 'the short version'],
-  ['stack', 'what I build with'],
-  ['cv', 'the PDF, for your ATS'],
-  ['contact', 'leave me a message right here'],
+  ['stack', 'what it is built with'],
+  ['cv', 'the PDF version'],
+  ['contact', 'leave a message right here'],
   ['book', 'put something in the calendar'],
   ['history', 'what you have typed'],
   ['clear', 'wipe the screen'],

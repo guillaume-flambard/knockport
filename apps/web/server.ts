@@ -14,10 +14,13 @@ const hostname = process.env.HOSTNAME ?? '0.0.0.0'
 const MAX_FRAME_BYTES = 8 * 1024
 
 const app = next({ dev, hostname, port })
+
+// prepare() d'abord: getUpgradeHandler() leve tant que le serveur interne de
+// Next n'est pas construit.
+await app.prepare()
+
 const handleHttp = app.getRequestHandler()
 const handleUpgrade = app.getUpgradeHandler()
-
-await app.prepare()
 
 const server = createServer((req, res) => {
   handleHttp(req, res).catch((error: unknown) => {
@@ -39,7 +42,12 @@ server.on('upgrade', (req, socket: Duplex, head) => {
   const match = /^\/ws\/([a-z0-9][a-z0-9-]{0,63})$/.exec(path)
 
   if (!match) {
-    handleUpgrade(req, socket, head).catch(() => socket.destroy())
+    // Tout ce qui n'est pas un parcours repart chez Next, qui a son propre
+    // WebSocket pour le rechargement a chaud en developpement.
+    handleUpgrade(req, socket, head).catch((error: unknown) => {
+      console.error('knockport: upgrade Next refuse', path, error)
+      socket.destroy()
+    })
     return
   }
 

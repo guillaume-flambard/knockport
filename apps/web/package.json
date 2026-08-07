@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --watch server.ts",
+    "dev": "node --watch-path=./server.ts --watch-path=./src/session --watch-path=./src/db server.ts",
     "build": "next build",
     "start": "NODE_ENV=production node server.ts",
     "seed": "node ../../scripts/seed-ojin.ts"

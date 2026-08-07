@@ -8,7 +8,7 @@ import type { ReactNode } from 'react'
  */
 export const metadata = {
   title: 'knockport',
-  description: 'Un parcours de candidature qui se traverse au clavier.',
+  description: 'A hiring journey you type into.',
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "knockport",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "PORT=3003 exec pnpm dev"],
+      "port": 3003
+    }
+  ]
+}

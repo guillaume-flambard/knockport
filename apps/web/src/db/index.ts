@@ -8,7 +8,15 @@ import type { Content } from '@knockport/core'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 
-/** Sur Fly.io, pointer vers le volume monte. En local, un fichier ignore par git. */
+/**
+ * Sur Fly.io, KNOCKPORT_DB pointe vers le volume monte.
+ *
+ * En local le defaut ne peut PAS dependre du repertoire courant: les scripts
+ * de la racine tournent depuis la racine, et Next tourne depuis apps/web. On
+ * obtenait deux fichiers de base differents, et un parcours introuvable cote
+ * serveur alors que le seed venait de reussir. Les scripts du package.json
+ * racine exportent donc KNOCKPORT_DB explicitement.
+ */
 const DB_PATH = process.env.KNOCKPORT_DB ?? join(process.cwd(), 'data', 'knockport.db')
 
 /**
@@ -22,6 +30,8 @@ export type Journey = {
   id: string
   slug: string
   companyId: string
+  companyName: string
+  companySlug: string
   title: string
   banner: string
   content: Content
@@ -57,8 +67,11 @@ function purgeExpiredEvents(handle: DatabaseSync): void {
 export function findJourneyBySlug(slug: string): Journey | undefined {
   const row = getDb()
     .prepare(
-      `SELECT id, slug, company_id, title, banner, content, cv_url, book_url
-       FROM journeys WHERE slug = ? AND published_at IS NOT NULL`,
+      `SELECT j.id, j.slug, j.company_id, j.title, j.banner, j.content, j.cv_url, j.book_url,
+              c.name AS company_name, c.slug AS company_slug
+       FROM journeys j
+       JOIN companies c ON c.id = j.company_id
+       WHERE j.slug = ? AND j.published_at IS NOT NULL`,
     )
     .get(slug) as Record<string, string | null> | undefined
 
@@ -68,11 +81,15 @@ export function findJourneyBySlug(slug: string): Journey | undefined {
     id: row.id as string,
     slug: row.slug as string,
     companyId: row.company_id as string,
+    companyName: row.company_name as string,
+    companySlug: row.company_slug as string,
     title: row.title as string,
     banner: row.banner as string,
     content: JSON.parse(row.content as string) as Content,
-    cvUrl: row.cv_url,
-    bookUrl: row.book_url,
+    // `noUncheckedIndexedAccess` fait remonter un `undefined` sur l'acces par
+    // cle. Les colonnes existent, mais elles sont nullables en base.
+    cvUrl: row.cv_url ?? null,
+    bookUrl: row.book_url ?? null,
   }
 }
 
