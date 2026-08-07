@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>knockport — Stitch vs actual comparison</title>
+<style>
+  :root { --bg:#0b0d0e; --fg:#e8e6e1; --dim:#7d8285; --accent:#7fd6d1; --rule:rgba(232,230,225,.14); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font-family:'IBM Plex Mono',monospace; padding:2rem 1.5rem; }
+  h1 { font-size:1.3rem; } p.muted { color:var(--dim); max-width:70ch; }
+  .pair { border:1px solid var(--rule); padding:1rem; margin:2rem 0; }
+  .pair h2 { font-size:.9rem; text-transform:uppercase; letter-spacing:.06em; color:var(--dim); margin:0 0 .5rem; }
+  .pair h2 .diff { color:var(--accent); margin-left:.5rem; }
+  .sides { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .side h3 { font-size:.75rem; color:var(--dim); margin:0 0 .4rem; text-transform:uppercase; letter-spacing:.05em; }
+  .side img { width:100%; height:auto; border:1px solid var(--rule); background:#0a0c0d; }
+  @media (max-width:900px) { .sides { grid-template-columns:1fr; } }
+</style></head>
+<body>
+  <h1>knockport — Stitch reference vs actual app</h1>
+  <p class="muted">Each pair shows the Google Stitch reference (left) and the real
+  app screen captured at a proportional viewport (right). The diff% is a rough
+  pixel guide; legitimately different screens (a live terminal, an interactive
+  wizard) will show a high number.</p>
+  
+    <div class="pair">
+      <h2>landing <span class="diff">diff 6.2%</span></h2>
+      <div class="side"><h3>Stitch ref</h3><img src="landing.png" alt="reference landing"></div>
+      <div class="side"><h3>Actual app</h3><img src="actual-landing.png" alt="actual landing"></div>
+    </div>
+    <div class="pair">
+      <h2>terminal <span class="diff">diff 3.8%</span></h2>
+      <div class="side"><h3>Stitch ref</h3><img src="terminal.png" alt="reference terminal"></div>
+      <div class="side"><h3>Actual app</h3><img src="actual-terminal.png" alt="actual terminal"></div>
+    </div>
+    <div class="pair">
+      <h2>studio-dashboard <span class="diff">diff 3.0%</span></h2>
+      <div class="side"><h3>Stitch ref</h3><img src="studio-dashboard.png" alt="reference studio-dashboard"></div>
+      <div class="side"><h3>Actual app</h3><img src="actual-studio-dashboard.png" alt="actual studio-dashboard"></div>
+    </div>
+    <div class="pair">
+      <h2>studio-login <span class="diff">diff 1.0%</span></h2>
+      <div class="side"><h3>Stitch ref</h3><img src="studio-login.png" alt="reference studio-login"></div>
+      <div class="side"><h3>Actual app</h3><img src="actual-studio-login.png" alt="actual studio-login"></div>
+    </div>
+    <div class="pair">
+      <h2>studio-builder <span class="diff">diff 7.6%</span></h2>
+      <div class="side"><h3>Stitch ref</h3><img src="studio-builder.png" alt="reference studio-builder"></div>
+      <div class="side"><h3>Actual app</h3><img src="actual-studio-builder.png" alt="actual studio-builder"></div>
+    </div>
+    <div class="pair">
+      <h2>edit-journey <span class="diff">diff 7.2%</span></h2>
+      <div class="side"><h3>Stitch ref</h3><img src="edit-journey.png" alt="reference edit-journey"></div>
+      <div class="side"><h3>Actual app</h3><img src="actual-edit-journey.png" alt="actual edit-journey"></div>
+    </div>
+    <div class="pair">
+      <h2>wizard-publish <span class="diff">diff 6.2%</span></h2>
+      <div class="side"><h3>Stitch ref</h3><img src="wizard-publish.png" alt="reference wizard-publish"></div>
+      <div class="side"><h3>Actual app</h3><img src="actual-wizard-publish.png" alt="actual wizard-publish"></div>
+    </div>
+    <div class="pair">
+      <h2>profile-noscript <span class="diff">diff 9.8%</span></h2>
+      <div class="side"><h3>Stitch ref</h3><img src="profile-noscript.png" alt="reference profile-noscript"></div>
+      <div class="side"><h3>Actual app</h3><img src="actual-profile-noscript.png" alt="actual profile-noscript"></div>
+    </div>
+    <div class="pair">
+      <h2>inbox <span class="diff">diff 4.6%</span></h2>
+      <div class="side"><h3>Stitch ref</h3><img src="inbox.png" alt="reference inbox"></div>
+      <div class="side"><h3>Actual app</h3><img src="actual-inbox.png" alt="actual inbox"></div>
+    </div>
+    <div class="pair">
+      <h2>terminal-mobile <span class="diff">diff 7.4%</span></h2>
+      <div class="side"><h3>Stitch ref</h3><img src="terminal-mobile.png" alt="reference terminal-mobile"></div>
+      <div class="side"><h3>Actual app</h3><img src="actual-terminal-mobile.png" alt="actual terminal-mobile"></div>
+    </div>
+</body></html>
