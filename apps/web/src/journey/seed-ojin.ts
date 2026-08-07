@@ -3,12 +3,12 @@ import { assemble } from './assemble.ts'
 import type { Section } from './assemble.ts'
 
 /**
- * Le parcours de demonstration Ojin.
+ * The Ojin demo journey.
  *
- * Tout ce qui est ecrit ici vient de leur surface publique, verifiee le
- * 2026-08-05: site, org GitHub `ojinai`, PyPI, en-tetes HTTP, offre Greenhouse.
- * Rien n'est suppose. Un parcours qui se trompe sur l'entreprise qu'il decrit
- * est pire que pas de parcours du tout.
+ * Everything written here comes from their public surface, verified on
+ * 2026-08-05: website, GitHub org ojinai, PyPI, HTTP headers, Greenhouse job
+ * posting. Nothing is assumed. A journey that gets the company wrong is
+ * worse than no journey at all.
  */
 
 const COMPANY_SLUG = 'ojin'
@@ -24,9 +24,9 @@ const BANNER = [
 ].join('\n')
 
 /**
- * Sans cette mention, une page ecrite a la premiere personne du pluriel et
- * servie sur un domaine tiers se lit comme la vraie page de recrutement
- * d'Ojin. Elle est affichee en gris sous le titre, et en pied de /profile.
+ * Without this notice, a page written in the first person plural and served
+ * on a third-party domain reads like Ojin's real recruitment page. It is
+ * displayed in gray under the title and in the footer of /profile.
  */
 const NOTICE = 'a demo by guillaume flambard, from ojin public pages. not affiliated with ojin.'
 
@@ -88,7 +88,7 @@ Mention this file when you write to us. It tells us more than a cover letter.`,
   },
 ]
 
-/** Idempotent: relancer met a jour au lieu de dupliquer. */
+/** Idempotent: re-running updates instead of duplicating. */
 export function seedOjin(): string {
   const db = getDb()
   const now = Date.now()
@@ -139,9 +139,9 @@ export function seedOjin(): string {
   return JOURNEY_SLUG
 }
 
-/** Au demarrage: ne cree le parcours de demonstration que si la base est vide. */
+/** On startup: creates the demo journey only if the database is empty. */
 export function seedIfEmpty(): void {
   const count = getDb().prepare('SELECT COUNT(*) AS c FROM journeys').get() as { c: number }
   if (count.c > 0) return
-  console.log(`knockport: base vide, parcours de demonstration cree sur /j/${seedOjin()}`)
+  console.log(`knockport: empty database, demo journey created at /j/${seedOjin()}`)
 }

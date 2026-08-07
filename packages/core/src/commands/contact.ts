@@ -3,8 +3,8 @@ import { blankLine, emptyOutput, plainLine, styledLine, textOutput } from '../ou
 import type { Session } from '../session.ts'
 import { charCount } from '../text.ts'
 
-// Des marqueurs, pas des URL. Le core ne connait pas les URL: la facade
-// traduit (le web vers /cv.pdf et /book, le SSH les imprime en clair).
+// Markers, not URLs. The core knows nothing of URLs; the facade translates
+// (web maps to /cv.pdf and /book, SSH prints them in plaintext).
 export const CV_URL = '{{cv_url}}'
 export const BOOK_URL = '{{book_url}}'
 
@@ -13,16 +13,16 @@ export function validEmail(value: string): boolean {
   if (v === '' || v.length > 254 || /\s/.test(v)) return false
   const at = v.indexOf('@')
   if (at <= 0) return false
-  // Le Rust d'origine acceptait plusieurs @ (split_once decoupait au premier).
-  // TypeScript resserre: rejette si @ apparait plus d'une fois.
+  // Original Rust accepted multiple @ (split_once cut at the first).
+  // TypeScript tightens: reject if @ appears more than once.
   if (v.indexOf('@') !== v.lastIndexOf('@')) return false
   const domain = v.slice(at + 1)
   return domain.includes('.') && !domain.startsWith('.') && !domain.endsWith('.')
 }
 
 export function validMessage(value: string): boolean {
-  // `chars().count()` en Rust: des points de code. `.length` compterait
-  // un emoji pour deux et laisserait passer un message trop court.
+  // `chars().count()` in Rust counts code points. `.length` would count
+  // an emoji as two and allow a message that is too short.
   const len = charCount(value.trim())
   return len >= 10 && len <= 4000
 }

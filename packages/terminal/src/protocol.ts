@@ -1,10 +1,10 @@
 import type { Line } from '@knockport/core'
 
 /**
- * Le protocole de la session terminal, volontairement minuscule.
+ * The terminal session protocol, deliberately minimal.
  *
- * Il est importe en `import type` des deux cotes, donc il est efface a la
- * compilation et ne pese rien dans le bundle client.
+ * It is imported as `import type` on both sides, so it is erased at
+ * compilation and weighs nothing in the client bundle.
  */
 
 export type ClientMessage =
@@ -12,11 +12,11 @@ export type ClientMessage =
   | { t: 'complete'; partial: string }
 
 export type ServerMessage =
-  /** Premiere trame apres connexion: la banniere et l'invite de depart. */
+  /** First frame after connection: the banner and initial prompt. */
   | { t: 'ready'; lines: Line[]; prompt: string }
-  /** Reponse a un `exec`. `clear` vide le scrollback, `openUrl` ouvre un onglet. */
+  /** Response to an `exec`. `clear` empties the scrollback, `openUrl` opens a tab. */
   | { t: 'output'; lines: Line[]; prompt: string; clear: boolean; openUrl?: string }
-  /** Reponse a un `complete`. Vide si rien ne correspond. */
+  /** Response to a `complete`. Empty if nothing matches. */
   | { t: 'complete'; candidates: string[] }
-  /** Le serveur ferme: `exit`, expiration, ou plafond atteint. */
+  /** Server closing: `exit`, expiration, or limit reached. */
   | { t: 'closed'; reason: string }

@@ -1,11 +1,11 @@
 /**
- * Cree ou met a jour le parcours de demonstration Ojin.
+ * Creates or updates the Ojin demo journey.
  *
  *   pnpm seed
  *
- * Le contenu lui meme vit dans apps/web/src/journey/seed-ojin.ts, pour que le
- * serveur puisse l'appeler au demarrage quand la base est vide.
+ * The content itself lives in apps/web/src/journey/seed-ojin.ts so the
+ * server can call it on startup when the database is empty.
  */
 import { seedOjin } from '../apps/web/src/journey/seed-ojin.ts'
 
-console.log(`parcours pret: /j/${seedOjin()}`)
+console.log(`journey ready: /j/${seedOjin()}`)

@@ -9,20 +9,20 @@ import type { Content } from '@knockport/core'
 const HERE = dirname(fileURLToPath(import.meta.url))
 
 /**
- * Sur Fly.io, KNOCKPORT_DB pointe vers le volume monte.
+ * On Fly.io, KNOCKPORT_DB points to the mounted volume.
  *
- * En local le defaut ne peut PAS dependre du repertoire courant: les scripts
- * de la racine tournent depuis la racine, et Next tourne depuis apps/web. On
- * obtenait deux fichiers de base differents, et un parcours introuvable cote
- * serveur alors que le seed venait de reussir. Les scripts du package.json
- * racine exportent donc KNOCKPORT_DB explicitement.
+ * Locally the default cannot depend on the current working directory: root
+ * scripts run from the repo root, and Next runs from apps/web. We were
+ * getting two different database files, and a journey unreachable on the
+ * server even though the seed had just succeeded. The root package.json
+ * scripts export KNOCKPORT_DB explicitly.
  */
 const DB_PATH = process.env.KNOCKPORT_DB ?? join(process.cwd(), 'data', 'knockport.db')
 
 /**
- * Retention des evenements de session: 90 jours. Ce sont des commandes et des
- * horodatages, jamais des donnees personnelles, mais les garder indefiniment
- * n'aurait aucune justification.
+ * Retention of session events: 90 days. These are commands and timestamps,
+ * never personal data, but keeping them indefinitely would have no
+ * justification.
  */
 const EVENT_RETENTION_MS = 90 * 24 * 60 * 60 * 1000
 
@@ -58,7 +58,7 @@ export function getDb(): DatabaseSync {
   return db
 }
 
-/** Applique la retention. Appele a l'ouverture, ce qui suffit a ce volume. */
+/** Applies retention. Called on open, which is sufficient for this volume. */
 function purgeExpiredEvents(handle: DatabaseSync): void {
   handle
     .prepare('DELETE FROM session_events WHERE created_at < ?')
@@ -88,16 +88,16 @@ export function findJourneyBySlug(slug: string): Journey | undefined {
     banner: row.banner as string,
     notice: row.notice ?? null,
     content: JSON.parse(row.content as string) as Content,
-    // `noUncheckedIndexedAccess` fait remonter un `undefined` sur l'acces par
-    // cle. Les colonnes existent, mais elles sont nullables en base.
+    // noUncheckedIndexedAccess raises undefined on key access. The columns
+    // exist but are nullable in the database.
     cvUrl: row.cv_url ?? null,
     bookUrl: row.book_url ?? null,
   }
 }
 
 /**
- * Ecrit le journal d'une session en une transaction, a la deconnexion.
- * Ecrire evenement par evenement couterait une ecriture disque par touche.
+ * Writes a session journal in one transaction, on disconnect.
+ * Writing event by event would cost one disk write per keystroke.
  */
 export function saveSessionEvents(
   journeyId: string,

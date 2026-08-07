@@ -9,12 +9,12 @@ const flatten = (out: Output): string =>
   out.lines.map((l) => l.spans.map((s) => s.text).join('')).join('\n')
 
 describe('validEmail', () => {
-  it('accepte une adresse ordinaire', () => {
+  it('accepts an ordinary address', () => {
     expect(validEmail('a@b.co')).toBe(true)
     expect(validEmail('guillaume.flambard+jobs@example.com')).toBe(true)
   })
 
-  it('rejette les cas evidents', () => {
+  it('rejects obvious cases', () => {
     expect(validEmail('nope')).toBe(false)
     expect(validEmail('a@b')).toBe(false)
     expect(validEmail('a b@c.co')).toBe(false)
@@ -28,26 +28,26 @@ describe('validEmail', () => {
 })
 
 describe('validMessage', () => {
-  it('applique les deux bornes', () => {
+  it('enforces both bounds', () => {
     expect(validMessage('too short')).toBe(false)
     expect(validMessage('this one is long enough to say something')).toBe(true)
     expect(validMessage('x'.repeat(4001))).toBe(false)
   })
 
-  it('compte des points de code, pas des unites UTF-16', () => {
-    // 6 emoji: 6 points de code en Rust, 12 unites UTF-16 en JS.
+  it('counts code points, not UTF-16 units', () => {
+    // 6 emoji: 6 code points in Rust, 12 UTF-16 units in JS.
     expect(validMessage('🙂'.repeat(6))).toBe(false)
   })
 })
 
-describe('machine a etats', () => {
-  it('start entre en mode contact a l etape du nom', () => {
+describe('state machine', () => {
+  it('start enters contact mode at the name step', () => {
     const s = newSession()
     startContact(s)
     expect(s.mode).toEqual({ kind: 'contact', step: 'name', draft: { name: '', email: '' } })
   })
 
-  it('un parcours complet emet la charge et revient en mode normal', () => {
+  it('a complete journey emits the payload and returns to normal mode', () => {
     const s = newSession()
     s.eggFound = true
     s.journal.push({ atMs: 5, input: 'ls', ok: true })
@@ -58,7 +58,7 @@ describe('machine a etats', () => {
     const out = contactStep(s, 'we have a role that fits, are you free thursday')
 
     expect(out.effect?.kind).toBe('submitContact')
-    if (out.effect?.kind !== 'submitContact') throw new Error('charge attendue')
+    if (out.effect?.kind !== 'submitContact') throw new Error('payload expected')
     expect(out.effect.payload.name).toBe('Seema')
     expect(out.effect.payload.email).toBe('seema@example.com')
     expect(out.effect.payload.eggFound).toBe(true)
@@ -66,7 +66,7 @@ describe('machine a etats', () => {
     expect(s.mode.kind).toBe('normal')
   })
 
-  it('un mail invalide redemande sans avancer', () => {
+  it('invalid email re-prompts without advancing', () => {
     const s = newSession()
     startContact(s)
     contactStep(s, 'Seema')
@@ -75,7 +75,7 @@ describe('machine a etats', () => {
     expect(s.mode).toMatchObject({ kind: 'contact', step: 'email' })
   })
 
-  it('un nom vide redemande', () => {
+  it('empty name re-prompts', () => {
     const s = newSession()
     startContact(s)
     const out = contactStep(s, '   ')
@@ -83,7 +83,7 @@ describe('machine a etats', () => {
     expect(s.mode).toMatchObject({ kind: 'contact', step: 'name' })
   })
 
-  it('cancel sort du mode contact sans rien envoyer', () => {
+  it('cancel exits contact mode without sending', () => {
     const s = newSession()
     startContact(s)
     const out = contactStep(s, 'cancel')
@@ -91,7 +91,7 @@ describe('machine a etats', () => {
     expect(s.mode.kind).toBe('normal')
   })
 
-  it('cancel est insensible a la casse', () => {
+  it('cancel is case-insensitive', () => {
     const s = newSession()
     startContact(s)
     contactStep(s, 'CANCEL')

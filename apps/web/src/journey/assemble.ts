@@ -1,29 +1,28 @@
 import type { Content, Dir, File } from '@knockport/core'
 
 /**
- * Ce qu'un recruteur remplit dans le constructeur: des champs plats, aucune
- * syntaxe. Le markdown et le frontmatter etaient une commodite pour un
- * developpeur qui edite des fichiers; ils n'ont rien a faire dans un
- * formulaire destine a quelqu'un qui ne code pas.
+ * What a recruiter fills in the journey builder: flat fields, no syntax.
+ * Markdown and frontmatter were a convenience for a developer editing files.
+ * They have no place in a form meant for someone who does not code.
  */
 export type Section = {
-  /** Nom dans le systeme de fichiers virtuel. Ex: "stack". */
+  /** Name in the virtual filesystem. Example: "stack". */
   name: string
-  /** Libelle affiche a cote du nom par `ls`. */
+  /** Label displayed next to the name by `ls`. */
   title: string
   body: string
-  /** Position dans le `ls`. Croissant. */
+  /** Position in `ls`. Ascending. */
   order: number
-  /** Revele seulement par `ls -a`. C'est l'enigme du parcours. */
+  /** Revealed only by `ls -a`. This is the hidden file of the journey. */
   hidden?: boolean
-  /** Sous-repertoire optionnel. Ex: "projects". */
+  /** Optional subdirectory. Example: "projects". */
   dir?: string
 }
 
 /**
- * Reproduit le tri de scripts/gen-content.mjs: fichiers par ordre croissant
- * puis par nom, repertoires par nom. Le core n'ordonne rien lui-meme, il
- * affiche dans l'ordre recu, donc c'est ici que ca se joue.
+ * Reproduces the sort from scripts/gen-content.mjs: files by ascending order
+ * then by name, directories by name. The core does not sort anything itself;
+ * it displays in the order received, so the sort happens here.
  */
 function sortDir(dir: Dir): void {
   dir.files.sort((a, b) => a.order - b.order || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))

@@ -1,6 +1,6 @@
 /**
- * Racine du domaine. Volontairement courte: la vraie porte d'entree est un
- * lien de parcours colle dans une offre d'emploi, pas cette page.
+ * Domain root. Intentionally brief: the real entry point is a journey link
+ * pasted into a job posting, not this page.
  */
 export const metadata = {
   title: 'knockport',

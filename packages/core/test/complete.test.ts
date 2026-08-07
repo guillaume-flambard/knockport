@@ -5,27 +5,27 @@ import { content } from '../src/content.generated.ts'
 import { newSession } from '../src/session.ts'
 
 describe('complete', () => {
-  it('complete un nom de commande', () => {
+  it('completes a command name', () => {
     expect(complete(newSession(), content, 'wh')).toEqual(['whoami'])
   })
 
-  it('complete un argument de chemin', () => {
+  it('completes a path argument', () => {
     expect(complete(newSession(), content, 'cd pro')).toContain('cd projects')
   })
 
-  it('ne complete jamais le fichier cache', () => {
+  it('never completes the hidden file', () => {
     expect(complete(newSession(), content, 'cat .kn')).toEqual([])
   })
 
-  it('ne rend rien sans correspondance', () => {
+  it('returns nothing without a match', () => {
     expect(complete(newSession(), content, 'xyz')).toEqual([])
   })
 
-  it('ne rend rien sur un prefixe d argument vide', () => {
+  it('returns nothing on an empty argument prefix', () => {
     expect(complete(newSession(), content, 'cd ')).toEqual([])
   })
 
-  it('rend les resultats tries', () => {
+  it('returns sorted results', () => {
     const fixture: Content = {
       root: {
         name: 'root',

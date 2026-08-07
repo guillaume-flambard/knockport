@@ -6,8 +6,8 @@ import type { Session } from '../session.ts'
 import { lines } from '../text.ts'
 
 /**
- * `trim_start_matches('/')` en Rust retire TOUTES les barres initiales,
- * pas une seule, d'ou le quantificateur `+`.
+ * Rust's `trim_start_matches('/')` removes ALL leading slashes, not just one.
+ * Hence the `+` quantifier.
  */
 export function resolvePath(s: Session, arg: string): string[] {
   const path = arg.startsWith('/') ? [] : [...s.cwd]
@@ -35,10 +35,10 @@ export function ls(s: Session, c: Content, args: string[]): Output {
 
   const shown = dir.files.filter((f) => showAll || !f.hidden)
 
-  // Les titres s'alignent sur le nom le plus long du repertoire. Trois espaces
-  // fixes suffisaient tant que le contenu etait le portfolio personnel, ou les
-  // deux noms faisaient presque la meme longueur. Sur un parcours d'entreprise
-  // quelconque, ca donne des colonnes en escalier.
+  // Titles align to the longest name in the directory. Three fixed spaces were
+  // enough while the content was the personal portfolio, where the two names
+  // happened to be nearly the same length. On any company journey it produced
+  // staircase columns.
   const width = Math.max(0, ...shown.map((f) => displayName(f).length))
 
   for (const file of shown) {

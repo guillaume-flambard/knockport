@@ -3,7 +3,7 @@ import { execute } from '../src/command.ts'
 import { content } from '../src/content.generated.ts'
 import { newSession } from '../src/session.ts'
 
-/** Reproduit exactement le helper `render` de crates/core/tests/snapshots.rs. */
+/** Reproduces exactly the `render` helper from crates/core/tests/snapshots.rs. */
 function render(input: string): string {
   const out = execute(newSession(), content, input, 0)
   return out.lines.map((l) => l.spans.map((s) => s.text).join('')).join('\n')

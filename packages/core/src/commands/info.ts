@@ -10,9 +10,8 @@ const COMMANDS: ReadonlyArray<readonly [string, string]> = [
   ['cd', 'move around, .. goes up'],
   ['pwd', 'where you are right now'],
   ['cat', 'read a file'],
-  // Voix neutre, volontairement. Un parcours peut etre celui d'une personne
-  // comme celui d'une entreprise, et "what I build with" ou "leave me a
-  // message" sonnaient faux des que c'est une boite qui parle.
+  // Neutral voice, intentionally. A journey can be someone's or a company's.
+  // "What I build with" or "leave me a message" ring false when spoken by a company.
   ['whoami', 'the short version'],
   ['stack', 'what it is built with'],
   ['cv', 'the PDF version'],
@@ -28,7 +27,7 @@ export function help(): Output {
   for (const [name, description] of COMMANDS) {
     out.push({
       spans: [
-        // `format!("  {name:<9}")` du Rust: deux espaces puis le nom cale a gauche sur 9.
+        // Rust's `format!("  {name:<9}")`: two spaces then the name left-aligned to 9.
         { text: `  ${name.padEnd(9)}`, style: 'accent' },
         { text: description, style: 'dim' },
       ],
@@ -39,7 +38,7 @@ export function help(): Output {
 
 export function history(s: Session): Output {
   return {
-    // `format!("{:>3}  {entry}")`: le numero cale a droite sur 3, puis deux espaces.
+    // Rust's `format!("{:>3}  {entry}")`: number right-aligned to 3, then two spaces.
     lines: s.history.map((entry, i) => plainLine(`${String(i + 1).padStart(3)}  ${entry}`)),
     failed: false,
   }

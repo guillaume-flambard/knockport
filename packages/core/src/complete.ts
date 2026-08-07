@@ -21,7 +21,7 @@ export function complete(s: Session, c: Content, partial: string): string[] {
 
   return [
     ...dir.dirs.map((d) => d.name),
-    // Le fichier cache est exclu: l'enigme se trouve a la main.
+    // The hidden file is excluded: the puzzle is found by manual exploration.
     ...dir.files.filter((f) => !f.hidden).map((f) => f.name),
   ]
     .filter((name) => name.startsWith(prefix))

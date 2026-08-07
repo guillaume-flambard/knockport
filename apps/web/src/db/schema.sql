@@ -1,10 +1,10 @@
--- knockport, schema du lot A.
--- La table recruiters arrive au lot B, avec companies.recruiter_id.
+-- knockport, schema batch A.
+-- The recruiters table arrives in batch B, with companies.recruiter_id.
 --
--- Regle de donnees personnelles, valable partout dans ce fichier:
--- aucune adresse IP n'est stockee, meme hachee. Les evenements de session ne
--- portent que la commande tapee et son horodatage relatif. Le nom et le mail
--- d'un candidat n'existent que s'il a lui-meme envoye le formulaire de contact.
+-- Personal data rule, valid everywhere in this file:
+-- no IP addresses are stored, not even hashed. Session events carry only
+-- the typed command and its relative timestamp. A candidate's name and email
+-- exist only if the candidate submitted the contact form.
 
 PRAGMA journal_mode = WAL;
 PRAGMA foreign_keys = ON;
@@ -17,20 +17,19 @@ CREATE TABLE IF NOT EXISTS companies (
   created_at  INTEGER NOT NULL
 );
 
--- Un parcours est public par conception: son lien est colle dans une offre
--- d'emploi. D'ou un slug lisible dans l'URL plutot qu'un identifiant opaque.
--- Ce sont les preuves qui sont protegees, pas le parcours.
+-- A journey is public by design: its link is pasted into a job posting.
+-- Hence a readable slug in the URL rather than an opaque identifier.
+-- It is the evidence that is protected, not the journey.
 CREATE TABLE IF NOT EXISTS journeys (
   id            TEXT PRIMARY KEY,
   slug          TEXT NOT NULL UNIQUE,
   company_id    TEXT NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
   title         TEXT NOT NULL,
   banner        TEXT NOT NULL,
-  -- Mention affichee en gris sous la banniere, et en pied de la page
-  -- accessible. Un parcours de demonstration construit depuis la surface
-  -- publique d'une entreprise doit dire qu'il n'est pas officiel: sans ca,
-  -- une page qui parle a la premiere personne du pluriel se lit comme la
-  -- vraie page de recrutement de cette entreprise.
+  -- Notice shown in gray under the banner and in the footer of the
+  -- accessible page. A demo journey built from a company's public surface
+  -- must say it is not official: without it, a page speaking in the first
+  -- person plural reads like the company's real recruitment page.
   notice        TEXT,
   content       TEXT NOT NULL,
   cv_url        TEXT,

@@ -1,15 +1,15 @@
-/* knockport, terminal candidat.
-   Direction validee en maquettes: fenetre posee sobre sur un degrade radial,
-   pastilles grises unies (le rouge, jaune, vert fait capture d'ecran de
-   tutoriel), IBM Plex Mono, clair et sombre suivant le systeme. */
+/* knockport, candidate terminal.
+   Direction validated in mockups: window placed soberly on a radial gradient,
+   solid gray dots (red, yellow, green is for screenshot tutorials), IBM Plex
+   Mono, light and dark following the system. */
 
 @font-face {
   font-family: 'IBM Plex Mono';
   src: url('/terminal/ibm-plex-mono-400.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  /* `swap` provoquerait un reflow visible sur une page entierement monospace.
-     Avec le preload dans le head, la fonte arrive a temps. */
+  /* `swap` would cause a visible reflow on a fully monospace page.
+     With the preload in the head, the font arrives in time. */
   font-display: optional;
 }
 
@@ -49,7 +49,7 @@ body {
 }
 
 .stage {
-  /* dvh et non vh: sur telephone, la barre d'adresse mangerait la saisie. */
+  /* dvh not vh: on mobile, the address bar would eat the input. */
   min-height: 100dvh;
   display: flex;
   align-items: center;
@@ -59,13 +59,12 @@ body {
 
 .window {
   width: 100%;
-  /* Un element flex retrecit sous sa largeur declaree par defaut. Sans ceci,
-     la fenetre ne prenait pas toute la largeur sur telephone. */
+  /* A flex item shrinks below its declared width by default. Without this,
+     the window didn't take full width on mobile. */
   flex: 0 0 auto;
   max-width: 82ch;
-  /* Une hauteur plancher: sans elle, la fenetre au premier chargement est une
-     petite boite flottante au milieu du vide, qui lit comme une boite de
-     dialogue et non comme un terminal. */
+  /* A minimum height: without it, the window on first load is a small box
+     floating in the void, reading as a dialog box rather than a terminal. */
   min-height: min(30rem, calc(100dvh - 64px));
   max-height: calc(100dvh - 64px);
   background: var(--bg);
@@ -122,9 +121,9 @@ input:disabled { opacity: 0.5; }
 .bold { font-weight: 600; }
 .accent { color: var(--accent); }
 
-/* Le lien d'evitement est le premier element focusable et devient visible des
-   qu'il a le focus. Sans JavaScript il n'y a plus de terminal du tout, donc
-   c'est le seul chemin pour ces visiteurs. */
+/* The skip link is the first focusable element and becomes visible as soon
+   as it has focus. Without JavaScript there is no terminal at all, so it is
+   the only path for those visitors. */
 .skip { position: absolute; left: -9999px; color: var(--accent); }
 .skip:focus {
   position: static;
@@ -141,8 +140,8 @@ input:disabled { opacity: 0.5; }
   clip-path: inset(50%);
 }
 
-/* Sous 768 px la fenetre perd son cadre et prend tout l'ecran. Une fenetre
-   dans une fenetre gaspille l'ecran d'un telephone. */
+/* Below 768px the window loses its frame and takes the full screen. A window
+   within a window wastes a phone's screen. */
 @media (max-width: 768px) {
   .stage { padding: 0; align-items: stretch; }
   .window {

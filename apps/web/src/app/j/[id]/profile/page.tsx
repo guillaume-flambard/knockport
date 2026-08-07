@@ -15,15 +15,15 @@ export async function generateMetadata({ params }: Params) {
 }
 
 /**
- * La version accessible, servie entierement par le serveur.
+ * The accessible version, served entirely by the server.
  *
- * Ce n'est pas une commodite. Depuis que le terminal passe par un WebSocket,
- * un visiteur sans JavaScript n'a plus AUCUN acces au parcours, donc cette
- * page est le seul chemin qui lui reste. La note d'origine du produit est
- * explicite: une friction qui exclut de fait un candidat handicape est une
- * discrimination, pas une astuce de filtrage.
+ * This is not a convenience. Since the terminal uses WebSocket, a visitor
+ * without JavaScript has NO access to the journey, so this page is the only
+ * path left. The product's original note is explicit: friction that
+ * effectively excludes a disabled candidate is discrimination, not a
+ * filtering trick.
  *
- * Elle ne contient donc ni script, ni enigme, ni jeu. Juste le contenu.
+ * So it contains no scripts, no puzzles, no games. Just the content.
  */
 function Section({ file, prefix }: { file: File; prefix: string }) {
   return (
@@ -68,8 +68,8 @@ export default async function ProfilePage({ params }: Params) {
         </p>
       </header>
 
-      {/* Le fichier cache est montre ici comme les autres: sur cette voie il n'y
-          a pas d'enigme, sinon la voie accessible serait une voie inferieure. */}
+      {/* The hidden file is shown here like any other: on this path there is
+          no puzzle, otherwise the accessible path would be an inferior path. */}
       {walk(journey.content.root, '')}
 
       <footer style={{ borderTop: '1px solid rgba(128,128,128,.3)', paddingTop: '1.5rem' }}>

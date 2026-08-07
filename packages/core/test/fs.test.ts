@@ -8,52 +8,52 @@ const flatten = (out: Output): string =>
   out.lines.map((l) => l.spans.map((s) => s.text).join('')).join('\n')
 
 describe('ls', () => {
-  it('liste les repertoires puis les fichiers', () => {
+  it('lists directories then files', () => {
     const rendered = flatten(ls(newSession(), content, []))
     expect(rendered).toContain('projects/')
     expect(rendered).toContain('whoami')
   })
 
-  it('cache le fichier cache par defaut', () => {
+  it('hides the hidden file by default', () => {
     expect(flatten(ls(newSession(), content, []))).not.toContain('.knock')
   })
 
-  it('revele le fichier cache avec -a', () => {
+  it('reveals the hidden file with -a', () => {
     expect(flatten(ls(newSession(), content, ['-a']))).toContain('.knock')
   })
 
-  it('explique un repertoire inconnu', () => {
+  it('explains an unknown directory', () => {
     const out = ls(newSession(), content, ['nowhere'])
     expect(out.failed).toBe(true)
     expect(flatten(out)).toContain('no such directory')
   })
 })
 
-describe('cd et pwd', () => {
-  it('se deplace puis rapporte', () => {
+describe('cd and pwd', () => {
+  it('moves and then reports', () => {
     const s = newSession()
     cd(s, content, ['projects'])
     expect(s.cwd).toEqual(['projects'])
     expect(flatten(pwd(s))).toContain('~/projects')
   })
 
-  it('remonte avec .. et s arrete a la racine', () => {
+  it('goes up with .. and stops at root', () => {
     const s = newSession()
     cd(s, content, ['projects'])
     cd(s, content, ['..'])
     expect(s.cwd).toEqual([])
     cd(s, content, ['..'])
-    expect(s.cwd, 'la racine n a pas de parent').toEqual([])
+    expect(s.cwd, 'root has no parent').toEqual([])
   })
 
-  it('sans argument, revient a la racine', () => {
+  it('with no argument, returns to root', () => {
     const s = newSession()
     cd(s, content, ['projects'])
     cd(s, content, [])
     expect(s.cwd).toEqual([])
   })
 
-  it('refuse un repertoire inconnu sans bouger', () => {
+  it('refuses an unknown directory without moving', () => {
     const s = newSession()
     const out = cd(s, content, ['nowhere'])
     expect(flatten(out)).toContain('no such directory')
@@ -62,32 +62,32 @@ describe('cd et pwd', () => {
 })
 
 describe('cat', () => {
-  it('imprime le corps du fichier', () => {
+  it('prints the file body', () => {
     expect(flatten(cat(newSession(), content, ['whoami']))).toContain('Guillaume Flambard')
   })
 
-  it('refuse un repertoire', () => {
+  it('refuses a directory', () => {
     expect(flatten(cat(newSession(), content, ['projects']))).toContain('is a directory')
   })
 
-  it('reclame un argument', () => {
+  it('demands an argument', () => {
     expect(flatten(cat(newSession(), content, []))).toContain('which file')
   })
 
-  it('lire le fichier cache marque la session', () => {
+  it('reading the hidden file marks the session', () => {
     const s = newSession()
     expect(s.eggFound).toBe(false)
     cat(s, content, ['.knock'])
     expect(s.eggFound).toBe(true)
   })
 
-  it('un fichier ordinaire ne marque pas la session', () => {
+  it('an ordinary file does not mark the session', () => {
     const s = newSession()
     cat(s, content, ['whoami'])
     expect(s.eggFound).toBe(false)
   })
 
-  it('n ajoute pas de ligne vide finale', () => {
+  it('does not add a trailing empty line', () => {
     const out = cat(newSession(), content, ['knock'])
     expect(out.lines.at(-1)!.spans[0]!.text).not.toBe('')
   })

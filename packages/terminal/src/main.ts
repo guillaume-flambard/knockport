@@ -2,23 +2,23 @@ import type { Line, Span } from '@knockport/core'
 import type { ClientMessage, ServerMessage } from './protocol.ts'
 
 /**
- * Le client terminal. Il ne contient pas le moteur: celui ci tourne cote
- * serveur et parle par WebSocket, a l'image du js-sdk d'Ojin. Ce fichier ne
- * fait que construire le terminal, le peindre et capturer des touches.
+ * The terminal client. It does not contain the engine: that runs server-side
+ * and communicates via WebSocket, like Ojin's js-sdk. This file only builds
+ * the terminal, renders it, and captures keypresses.
  *
- * Il construit son propre DOM a partir d'un point de montage vide, et c'est
- * volontaire: React ne doit rien posseder ici. Rendre le scrollback cote
- * serveur puis le remplir en JavaScript faisait echouer l'hydratation, et un
- * script pose dans l'arbre React ne s'execute pas apres une navigation client.
+ * It builds its own DOM from an empty mount point, and this is intentional:
+ * React must not own anything here. Rendering the scrollback server-side
+ * and filling it with JavaScript caused hydration to fail, and a script
+ * placed in the React tree does not execute after client-side navigation.
  *
- * Regle absolue de rendu: `textContent`, jamais `innerHTML`. Le mode contact
- * reaffiche la saisie du visiteur dans le scrollback, donc un
- * `your name> <img onerror=...>` serait execute. `textContent` rend le
- * probleme inexistant par construction plutot que par echappement.
+ * Absolute rendering rule: `textContent`, never `innerHTML`. Contact mode
+ * echoes visitor input back into the scrollback, so a
+ * `your name> <img onerror=...>` would execute. `textContent` makes the
+ * problem nonexistent by construction rather than by escaping.
  */
 
 const mount = document.querySelector<HTMLElement>('[data-journey]')
-if (!mount) throw new Error('knockport: point de montage absent')
+if (!mount) throw new Error('knockport: mount point missing')
 
 const slug = mount.dataset.journey as string
 const windowTitle = mount.dataset.title ?? ''
@@ -32,7 +32,7 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return node
 }
 
-// --- construction du terminal ------------------------------------------------
+// --- terminal construction --------------------------------------------------
 
 const chrome = el('div', 'chrome')
 for (let i = 0; i < 3; i++) chrome.appendChild(el('span', 'dot'))
@@ -70,9 +70,9 @@ const windowEl = el('div', 'window')
 windowEl.append(chrome, body)
 mount.appendChild(windowEl)
 
-// --- rendu -------------------------------------------------------------------
+// --- rendering --------------------------------------------------------------
 
-/** Historique local: la fleche haut doit repondre sans aller retour reseau. */
+/** Local history: the up arrow must respond without network roundtrip. */
 const history: string[] = []
 let historyIndex = -1
 let prompt = ''
@@ -148,8 +148,8 @@ function connect(): void {
     }
   })
 
-  // Se figer sans rien dire est la pire des reponses: le visiteur croit que le
-  // produit est casse. On le dit, en clair.
+  // Freezing with no response is the worst answer: the visitor thinks the
+  // product is broken. We tell them clearly.
   socket.addEventListener('close', () => {
     if (input.disabled) return
     input.disabled = true
@@ -162,7 +162,7 @@ function connect(): void {
   })
 }
 
-// --- saisie ------------------------------------------------------------------
+// --- input ------------------------------------------------------------------
 
 function submit(): void {
   const typed = input.value
@@ -181,10 +181,10 @@ form.addEventListener('submit', (event) => {
 })
 
 input.addEventListener('keydown', (event) => {
-  // Entree est gerée ici plutot que de dependre de la soumission implicite du
-  // formulaire, qui ne se declenche pas de la meme facon selon le navigateur
-  // et les methodes de saisie. Le `submit` du formulaire reste branche pour le
-  // bouton, qui est la voie clavier des technologies d'assistance.
+  // Enter is handled here rather than relying on the form's implicit
+  // submission, which doesn't trigger the same way across browsers and input
+  // methods. Form submit stays wired for the button, which is the keyboard
+  // path for assistive technologies.
   if (event.key === 'Enter') {
     event.preventDefault()
     submit()
@@ -218,8 +218,8 @@ input.addEventListener('keydown', (event) => {
   }
 })
 
-// Le focus revient sur la saisie quand on clique n'importe ou dans la fenetre,
-// sauf si le visiteur est en train de selectionner du texte pour le copier.
+// Focus returns to the input when clicking anywhere in the window, unless
+// the visitor is selecting text to copy.
 mount.addEventListener('click', () => {
   if (window.getSelection()?.toString() === '') input.focus()
 })

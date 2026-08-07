@@ -17,8 +17,8 @@ export function parse(input: string): Cmd | undefined {
 export function execute(s: Session, c: Content, input: string, atMs: number): Output {
   if (s.mode.kind === 'contact') {
     const out = contactStep(s, input)
-    // La saisie du visiteur ne va jamais dans le journal en clair: elle
-    // contient son nom, son mail et son message, deja portes par la charge.
+    // Visitor input never goes into the journal in plain text: it carries
+    // the name, email, and message that are already included in the payload.
     s.journal.push({ atMs, input: '<contact>', ok: true })
     return out
   }

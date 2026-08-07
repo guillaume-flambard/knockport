@@ -15,14 +15,14 @@ export async function generateMetadata({ params }: Params) {
 }
 
 /**
- * La page candidat. Elle pose le CSS, le lien d'evitement et un point de
- * montage VIDE, puis charge le script du terminal. Rien d'autre.
+ * The candidate page. It sets the CSS, the skip link, and an EMPTY mount
+ * point, then loads the terminal script. Nothing else.
  *
- * Le terminal se construit lui meme dans ce point de montage, et c'est
- * volontaire: React ne doit rien posseder ici. Rendre le scrollback cote
- * serveur puis le remplir en JavaScript faisait echouer l'hydratation, et un
- * `<script>` pose dans l'arbre React ne s'execute pas apres une navigation
- * client, ce qui donnait un terminal vide.
+ * The terminal builds itself in this mount point, and it is intentional:
+ * React must not own anything here. Rendering the scrollback server-side
+ * and filling it with JavaScript caused hydration to fail, and a script
+ * placed in the React tree does not execute after client-side navigation,
+ * which gave an empty terminal.
  */
 export default async function JourneyPage({ params }: Params) {
   const { id } = await params
@@ -39,8 +39,8 @@ export default async function JourneyPage({ params }: Params) {
         type="font/woff2"
         crossOrigin="anonymous"
       />
-      {/* Le lien d'evitement reste rendu par le serveur: il doit fonctionner
-          meme si le script du terminal ne se charge jamais. */}
+      {/* The skip link stays server-rendered: it must work even if the
+          terminal script never loads. */}
       <a className="skip" href={`/j/${journey.slug}/profile`}>
         Plain, accessible version of this page
       </a>

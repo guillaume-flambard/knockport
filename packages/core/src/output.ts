@@ -10,9 +10,9 @@ export type Effect =
   | { kind: 'submitContact'; payload: ContactPayload }
 
 /**
- * `failed` est porte explicitement et n'est jamais deduit du texte rendu.
- * Le journal a besoin de savoir si le visiteur s'est cogne, et renifler la
- * sortie pour le deviner casserait a la premiere reformulation d'un message.
+ * `failed` is carried explicitly and never inferred from rendered text.
+ * The journal needs to know if the visitor encountered an error, and sniffing
+ * the output to guess it would break on the first message rewording.
  */
 export type Output = { lines: Line[]; effect?: Effect; failed: boolean }
 

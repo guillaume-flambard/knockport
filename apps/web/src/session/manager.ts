@@ -12,24 +12,24 @@ import { findJourneyBySlug, saveContact, saveSessionEvents } from '../db/index.t
 import type { Journey } from '../db/index.ts'
 
 /**
- * Plafonds. Un socket ouvert sur internet est une surface exposee, au meme
- * titre que le port 22 le sera pour la facade SSH.
+ * Caps. An open socket on the internet is exposed surface, just like
+ * port 22 will be for the SSH facade.
  */
 const MAX_CONCURRENT_SESSIONS = 200
 const MAX_SESSION_MS = 30 * 60 * 1000
-/** Meme plafond que la version Rust: un visiteur reel produit des dizaines
- *  d'evenements en dix minutes, pas des milliers. */
+/** Same cap as the Rust version: a real visitor produces tens of events
+ *  in ten minutes, not thousands. */
 const MAX_EVENTS = 500
 
-/** Ce que le transport doit renvoyer au client apres une commande. */
+/** What the transport must return to the client after a command. */
 export type ExecResult = {
   output: Output
   prompt: string
-  /** Le transport doit fermer la connexion apres avoir transmis la sortie. */
+  /** The transport must close the connection after sending the output. */
   done: boolean
-  /** URL a ouvrir dans un onglet, deja traduite depuis le marqueur du core. */
+  /** URL to open in a tab, already translated from the core marker. */
   openUrl?: string
-  /** Le client doit vider son scrollback. */
+  /** The client must clear its scrollback. */
   clear: boolean
 }
 
@@ -66,8 +66,8 @@ export class TerminalSession {
       .split('\n')
       .map((text) => ({ spans: [{ text, style: 'plain' as const }] }))
 
-    // La mention passe apres le titre et avant les commandes, en gris: assez
-    // tot pour etre lue, assez discrete pour ne pas casser l'entree.
+    // The notice goes after the title and before the commands, in gray: early
+    // enough to be read, discrete enough not to break the entry.
     if (this.journey.notice) {
       lines.splice(2, 0, { spans: [] }, {
         spans: [{ text: this.journey.notice, style: 'dim' as const }],
@@ -103,8 +103,8 @@ export class TerminalSession {
         if (url) {
           result.openUrl = url
         } else {
-          // Un parcours d'entreprise n'a pas forcement de CV ni d'agenda a
-          // ouvrir. Le dire vaut mieux qu'un clic qui ne fait rien.
+          // A company's journey may not have a CV or calendar to open.
+          // Saying so is better than a click that does nothing.
           output.lines.push({
             spans: [{ text: 'Nothing set up here yet.', style: 'dim' }],
           })
@@ -112,10 +112,9 @@ export class TerminalSession {
         break
       }
       case 'submitContact':
-        // La charge est deja ici, cote serveur. Elle n'a aucune raison de
-        // repartir vers le client puis de revenir par une route HTTP: le
-        // nom, le mail et le message du candidat ne traversent jamais le
-        // reseau une seconde fois.
+        // The payload is already here on the server. It has no reason to go
+        // back to the client and return via an HTTP route: the candidate's
+        // name, email and message never cross the network a second time.
         saveContact({
           journeyId: this.journey.id,
           sessionId: this.id,
@@ -129,8 +128,8 @@ export class TerminalSession {
         break
     }
 
-    // L'effet ne doit pas partir vers le client: il porterait la charge de
-    // contact, et le client n'a rien a en faire. Le transport lit `result`.
+    // The effect must not go to the client: it would carry the contact
+    // payload, which the client has no use for. The transport reads `result`.
     result.output = { lines: output.lines, failed: output.failed }
 
     if (this.session.journal.length > MAX_EVENTS) result.done = true
@@ -143,8 +142,8 @@ export class TerminalSession {
   }
 
   /**
-   * Le core ne connait aucune URL, il emet un marqueur. C'est la facade qui
-   * traduit, et elle est la seule a savoir ce que ce parcours a configure.
+   * The core knows no URLs; it emits a marker. The facade translates it,
+   * and it alone knows what this journey has configured.
    */
   private resolveMarker(marker: string): string | undefined {
     if (marker === CV_URL) return this.journey.cvUrl ?? undefined
@@ -159,7 +158,7 @@ export class TerminalSession {
     try {
       saveSessionEvents(this.journey.id, this.id, this.session.journal)
     } catch (error) {
-      console.error('knockport: journal non ecrit', error)
+      console.error('knockport: journal not written', error)
     }
   }
 }

@@ -1,10 +1,10 @@
 import type { NextConfig } from 'next'
 
 const config: NextConfig = {
-  // @knockport/core est du TypeScript brut, publie tel quel dans le workspace,
-  // avec des imports relatifs portant l'extension .ts explicite. Next doit donc
-  // le passer par ses propres loaders au lieu de le traiter comme un paquet
-  // deja compile.
+  // @knockport/core is raw TypeScript, published as-is in the workspace,
+  // with relative imports carrying the explicit .ts extension. Next must
+  // therefore pass it through its own loaders instead of treating it as an
+  // already-compiled package.
   transpilePackages: ['@knockport/core'],
 }
 

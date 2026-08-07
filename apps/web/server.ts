@@ -11,13 +11,13 @@ const dev = process.env.NODE_ENV !== 'production'
 const port = Number(process.env.PORT ?? 3000)
 const hostname = process.env.HOSTNAME ?? '0.0.0.0'
 
-/** Une trame de plus de 8 Ko n'est pas une commande de terminal. */
+/** A frame larger than 8 KB is not a terminal command. */
 const MAX_FRAME_BYTES = 8 * 1024
 
 const app = next({ dev, hostname, port })
 
-// prepare() d'abord: getUpgradeHandler() leve tant que le serveur interne de
-// Next n'est pas construit.
+// prepare() first: getUpgradeHandler() throws until Next's internal server
+// is built.
 await app.prepare()
 
 const handleHttp = app.getRequestHandler()
@@ -25,7 +25,7 @@ const handleUpgrade = app.getUpgradeHandler()
 
 const server = createServer((req, res) => {
   handleHttp(req, res).catch((error: unknown) => {
-    console.error('knockport: erreur HTTP', error)
+    console.error('knockport: HTTP error', error)
     res.statusCode = 500
     res.end('internal error')
   })
@@ -34,19 +34,19 @@ const server = createServer((req, res) => {
 const wss = new WebSocketServer({ noServer: true, maxPayload: MAX_FRAME_BYTES })
 
 /**
- * Next.js gere lui-meme un WebSocket en developpement, pour le rechargement a
- * chaud. On n'intercepte donc que `/ws/<slug>` et on rend la main a Next pour
- * tout le reste, sans quoi le hot reload casse.
+ * Next.js manages its own WebSocket in development for hot reloading.
+ * So we only intercept `/ws/<slug>` and hand control back to Next for
+ * everything else, otherwise hot reload breaks.
  */
 server.on('upgrade', (req, socket: Duplex, head) => {
   const path = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`).pathname
   const match = /^\/ws\/([a-z0-9][a-z0-9-]{0,63})$/.exec(path)
 
   if (!match) {
-    // Tout ce qui n'est pas un parcours repart chez Next, qui a son propre
-    // WebSocket pour le rechargement a chaud en developpement.
+    // Anything that isn't a journey goes back to Next, which has its own
+    // WebSocket for hot reloading in development.
     handleUpgrade(req, socket, head).catch((error: unknown) => {
-      console.error('knockport: upgrade Next refuse', path, error)
+      console.error('knockport: Next refused the upgrade', path, error)
       socket.destroy()
     })
     return
@@ -107,17 +107,17 @@ function attach(ws: WebSocket, slug: string): void {
     }
   })
 
-  // Le journal part en base ici, en une transaction. C'est le seul moment ou
-  // l'on ecrit: journaliser touche par touche couterait une ecriture disque
-  // par frappe.
+  // The log goes to the database here, in one transaction. This is the only
+  // time we write: logging keystroke by keystroke would cost a disk write per
+  // keystroke.
   ws.on('close', () => session.close())
   ws.on('error', () => session.close())
 }
 
-// Sur un volume neuf, la base est vide et le parcours de demonstration n'y est
-// pas. Le creer ici evite une etape de deploiement separee.
+// On a fresh volume, the database is empty and the demo journey is not there.
+// Creating it here avoids a separate deployment step.
 seedIfEmpty()
 
 server.listen(port, hostname, () => {
-  console.log(`knockport sur http://${hostname}:${port}`)
+  console.log(`knockport on http://${hostname}:${port}`)
 })

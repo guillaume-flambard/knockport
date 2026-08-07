@@ -1,10 +1,9 @@
 import type { ReactNode } from 'react'
 
 /**
- * Layout racine volontairement nu. MUI et Emotion vivent dans le layout du
- * groupe recruteur, jamais ici : la page candidat ne doit embarquer aucun
- * composant React au dela du strict conteneur, et surtout pas une
- * bibliotheque d'interface.
+ * Root layout intentionally bare. MUI and Emotion live in the recruiter
+ * group's layout, never here: the candidate page must not carry any React
+ * component beyond the strict container, and especially not a UI library.
  */
 export const metadata = {
   title: 'knockport',
