@@ -89,14 +89,35 @@ export const STEPS: Step[] = [
   },
   { action: 'type', target: '#pass', text: STUDIO_PASS, pauseMs: 700 },
   { action: 'click', target: 'button[type=submit]', pauseMs: 2200 },
-  { action: 'goto', url: '/studio/new', pauseMs: 3200, caption: 'A new offer for a full stack engineer.', title: 'The builder' },
-  { action: 'type', target: '#companyName', text: 'Harbor', pauseMs: 700 },
-  { action: 'type', target: '#slug', text: 'harbor', pauseMs: 700 },
-  { action: 'click', target: 'button:has-text("Continue") >> nth=0', pauseMs: 1400 },
-  { action: 'type', target: '#title', text: 'Working at Harbor', pauseMs: 700 },
-  { action: 'type', target: '#banner', text: 'Welcome to Harbor.\nWe build the software that keeps warehouses moving.', pauseMs: 900 },
-  { action: 'click', target: 'button:has-text("Continue") >> nth=1', pauseMs: 1400 },
-  // The live preview on the right reflects the offer as it is written.
+  {
+    action: 'goto',
+    url: '/studio/new',
+    pauseMs: 3200,
+    caption: 'A new offer for a full stack engineer, step by step.',
+    title: 'The builder',
+  },
+  // --- Step 1: the company ---
+  { action: 'type', target: '#companyName', text: 'Harbor', pauseMs: 900 },
+  { action: 'type', target: '#slug', text: 'harbor-offer', pauseMs: 900, caption: 'Step 1: who you are and where the offer lives.', title: 'The company' },
+  { action: 'type', target: '#website', text: 'https://harbor.dev', pauseMs: 900 },
+  { action: 'click', target: 'button:has-text("Continue") >> nth=0', pauseMs: 1800 },
+  // --- Step 2: title, banner, notice ---
+  { action: 'type', target: '#title', text: 'Working at Harbor', pauseMs: 900 },
+  { action: 'type', target: '#banner', text: 'Welcome to Harbor.\nWe build the software that keeps warehouses moving.', pauseMs: 1200 },
+  { action: 'type', target: '#notice', text: 'a live example. your company would carry your name.', pauseMs: 1000, caption: 'Step 2: the words the candidate sees first.', title: 'Title and banner' },
+  // --- Step 2: sections, with the live preview reacting ---
+  { action: 'type', target: '#s-0-name', text: 'whoami', pauseMs: 900 },
+  { action: 'type', target: '#s-0-title', text: 'who we are', pauseMs: 900 },
+  { action: 'type', target: '#s-0-body', text: 'Harbor is a small product company building the software that keeps warehouses moving.', pauseMs: 1400, caption: 'Each section is a file the candidate can open.', title: 'Sections' },
+  { action: 'click', target: 'button:has-text("Add a section")', pauseMs: 1200, caption: 'Add another: the role they are hiring for.', title: 'Add a section' },
+  { action: 'type', target: '#s-1-name', text: 'role', pauseMs: 900 },
+  { action: 'type', target: '#s-1-title', text: 'the role', pauseMs: 900 },
+  { action: 'type', target: '#s-1-body', text: 'We are hiring a full stack engineer to own features from the database to the screen.', pauseMs: 1600, caption: 'The preview on the right updates as you write.', title: 'The role section' },
+  { action: 'click', target: 'button:has-text("Continue") >> nth=1', pauseMs: 1800 },
+  // --- Step 3: contact & publish ---
+  { action: 'wait', ms: 1600 },
+  { action: 'click', target: 'button:has-text("Create journey")', pauseMs: 2600, caption: 'Step 3: contact is built in. Publish, and it is live.', title: 'Publish' },
+  // --- Confirmation + the inbox where Ada applied ---
   { action: 'goto', url: `/studio/j/${JOURNEY_SLUG}/inbox`, pauseMs: 3600, caption: 'Applications arrive with the whole journey behind them.', title: 'The inbox', act: 'The outcome', zoom: true },
 
   // --- Act 3: the outcome ---
