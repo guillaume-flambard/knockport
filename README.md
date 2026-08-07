@@ -71,7 +71,7 @@ for the server.
 ```bash
 pnpm install
 pnpm seed     # creates the demo journey
-pnpm dev      # http://localhost:3000/j/ojin-product-engineer
+pnpm dev      # http://localhost:3000/j/memo-labs
 ```
 
 ```bash
@@ -82,9 +82,12 @@ pnpm typecheck
 The only build step is the browser client, bundled by esbuild into one file. No
 bundler config, and no framework inside the terminal.
 
-The repository ships a demo journey built from the public pages of a real
-company, clearly marked as unofficial and unaffiliated on both the terminal and
-the plain text version.
+The demo journey is Memo Labs, which is the name the author's engineering work
+goes out under. An earlier version reconstructed a real company from its public
+pages, and that was a mistake: a page written in the first person, carrying
+someone else's name and served on a domain they do not control, reads like
+their own recruitment page however visible the disclaimer is. A demo speaks for
+a business you own.
 
 ---
 

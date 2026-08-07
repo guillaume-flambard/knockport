@@ -7,7 +7,7 @@
     "dev": "node --watch-path=./server.ts --watch-path=./src/session --watch-path=./src/db server.ts",
     "build": "next build",
     "start": "NODE_ENV=production node server.ts",
-    "seed": "node ../../scripts/seed-ojin.ts"
+    "seed": "node ../../scripts/seed-demo.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

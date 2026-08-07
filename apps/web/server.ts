@@ -4,7 +4,7 @@ import next from 'next'
 import { WebSocketServer, type WebSocket } from 'ws'
 
 import { TerminalSession } from './src/session/manager.ts'
-import { seedIfEmpty } from './src/journey/seed-ojin.ts'
+import { seedIfEmpty } from './src/journey/seed-demo.ts'
 import type { ClientMessage, ServerMessage } from '@knockport/terminal/protocol'
 
 const dev = process.env.NODE_ENV !== 'production'

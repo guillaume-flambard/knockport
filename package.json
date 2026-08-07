@@ -8,7 +8,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "gen:content": "node scripts/gen-content.mjs",
-    "seed": "KNOCKPORT_DB=$PWD/data/knockport.db node scripts/seed-ojin.ts",
+    "seed": "KNOCKPORT_DB=$PWD/data/knockport.db node scripts/seed-demo.ts",
     "build:terminal": "esbuild packages/terminal/src/main.ts --bundle --minify --format=esm --target=es2022 --outfile=apps/web/public/terminal/main.js && cp packages/terminal/src/main.css apps/web/public/terminal/main.css",
     "watch:terminal": "esbuild packages/terminal/src/main.ts --bundle --format=esm --target=es2022 --outfile=apps/web/public/terminal/main.js --watch",
     "build": "pnpm build:terminal && pnpm --filter @knockport/web build",

@@ -3,8 +3,8 @@ import type { ClientMessage, ServerMessage } from './protocol.ts'
 
 /**
  * The terminal client. It does not contain the engine: that runs server-side
- * and communicates via WebSocket, like Ojin's js-sdk. This file only builds
- * the terminal, renders it, and captures keypresses.
+ * and is reached over a WebSocket. This file only builds the terminal,
+ * renders it, and captures keypresses.
  *
  * It builds its own DOM from an empty mount point, and this is intentional:
  * React must not own anything here. Rendering the scrollback server-side
