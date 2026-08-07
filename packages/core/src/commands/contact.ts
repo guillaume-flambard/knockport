@@ -13,6 +13,9 @@ export function validEmail(value: string): boolean {
   if (v === '' || v.length > 254 || /\s/.test(v)) return false
   const at = v.indexOf('@')
   if (at <= 0) return false
+  // Original Rust accepted multiple @ (split_once cut at first). TypeScript
+  // tightens this: reject if @ appears more than once.
+  if (v.indexOf('@') !== v.lastIndexOf('@')) return false
   const domain = v.slice(at + 1)
   return domain.includes('.') && !domain.startsWith('.') && !domain.endsWith('.')
 }

@@ -22,6 +22,8 @@ describe('validEmail', () => {
     expect(validEmail(`${'x'.repeat(300)}@example.com`)).toBe(false)
     expect(validEmail('a@.b.co')).toBe(false)
     expect(validEmail('a@b.co.')).toBe(false)
+    expect(validEmail('a@b@c.co')).toBe(false)
+    expect(validEmail('a@b.co@')).toBe(false)
   })
 })
 
