@@ -62,9 +62,18 @@ export class TerminalSession {
   }
 
   banner(): Line[] {
-    return this.journey.banner
+    const lines: Line[] = this.journey.banner
       .split('\n')
       .map((text) => ({ spans: [{ text, style: 'plain' as const }] }))
+
+    // La mention passe apres le titre et avant les commandes, en gris: assez
+    // tot pour etre lue, assez discrete pour ne pas casser l'entree.
+    if (this.journey.notice) {
+      lines.splice(2, 0, { spans: [] }, {
+        spans: [{ text: this.journey.notice, style: 'dim' as const }],
+      })
+    }
+    return lines
   }
 
   expired(): boolean {

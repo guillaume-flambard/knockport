@@ -72,11 +72,12 @@ export default async function ProfilePage({ params }: Params) {
           a pas d'enigme, sinon la voie accessible serait une voie inferieure. */}
       {walk(journey.content.root, '')}
 
-      {journey.bookUrl ? (
-        <footer style={{ borderTop: '1px solid rgba(128,128,128,.3)', paddingTop: '1.5rem' }}>
-          <a href={journey.bookUrl}>Apply or get in touch</a>
-        </footer>
-      ) : null}
+      <footer style={{ borderTop: '1px solid rgba(128,128,128,.3)', paddingTop: '1.5rem' }}>
+        {journey.bookUrl ? <a href={journey.bookUrl}>Apply or get in touch</a> : null}
+        {journey.notice ? (
+          <p style={{ opacity: 0.6, marginTop: '1rem', fontSize: '0.9rem' }}>{journey.notice}</p>
+        ) : null}
+      </footer>
     </main>
   )
 }

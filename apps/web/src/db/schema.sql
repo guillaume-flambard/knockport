@@ -26,6 +26,12 @@ CREATE TABLE IF NOT EXISTS journeys (
   company_id    TEXT NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
   title         TEXT NOT NULL,
   banner        TEXT NOT NULL,
+  -- Mention affichee en gris sous la banniere, et en pied de la page
+  -- accessible. Un parcours de demonstration construit depuis la surface
+  -- publique d'une entreprise doit dire qu'il n'est pas officiel: sans ca,
+  -- une page qui parle a la premiere personne du pluriel se lit comme la
+  -- vraie page de recrutement de cette entreprise.
+  notice        TEXT,
   content       TEXT NOT NULL,
   cv_url        TEXT,
   book_url      TEXT,

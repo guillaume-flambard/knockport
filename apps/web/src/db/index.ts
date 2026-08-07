@@ -34,6 +34,7 @@ export type Journey = {
   companySlug: string
   title: string
   banner: string
+  notice: string | null
   content: Content
   cvUrl: string | null
   bookUrl: string | null
@@ -67,8 +68,8 @@ function purgeExpiredEvents(handle: DatabaseSync): void {
 export function findJourneyBySlug(slug: string): Journey | undefined {
   const row = getDb()
     .prepare(
-      `SELECT j.id, j.slug, j.company_id, j.title, j.banner, j.content, j.cv_url, j.book_url,
-              c.name AS company_name, c.slug AS company_slug
+      `SELECT j.id, j.slug, j.company_id, j.title, j.banner, j.notice, j.content,
+              j.cv_url, j.book_url, c.name AS company_name, c.slug AS company_slug
        FROM journeys j
        JOIN companies c ON c.id = j.company_id
        WHERE j.slug = ? AND j.published_at IS NOT NULL`,
@@ -85,6 +86,7 @@ export function findJourneyBySlug(slug: string): Journey | undefined {
     companySlug: row.company_slug as string,
     title: row.title as string,
     banner: row.banner as string,
+    notice: row.notice ?? null,
     content: JSON.parse(row.content as string) as Content,
     // `noUncheckedIndexedAccess` fait remonter un `undefined` sur l'acces par
     // cle. Les colonnes existent, mais elles sont nullables en base.

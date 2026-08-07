@@ -23,6 +23,13 @@ const BANNER = [
   'help  complete list',
 ].join('\n')
 
+/**
+ * Sans cette mention, une page ecrite a la premiere personne du pluriel et
+ * servie sur un domaine tiers se lit comme la vraie page de recrutement
+ * d'Ojin. Elle est affichee en gris sous le titre, et en pied de /profile.
+ */
+const NOTICE = 'a demo by guillaume flambard, from ojin public pages. not affiliated with ojin.'
+
 const SECTIONS: Section[] = [
   {
     name: 'whoami',
@@ -104,11 +111,13 @@ export function seedOjin(): string {
 
   db.prepare(
     `INSERT INTO journeys
-       (id, slug, company_id, title, banner, content, cv_url, book_url, published_at, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       (id, slug, company_id, title, banner, notice, content,
+        cv_url, book_url, published_at, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON CONFLICT(slug) DO UPDATE SET
        title = excluded.title,
        banner = excluded.banner,
+       notice = excluded.notice,
        content = excluded.content,
        cv_url = excluded.cv_url,
        book_url = excluded.book_url,
@@ -119,6 +128,7 @@ export function seedOjin(): string {
     companyId,
     'Product Engineer at Ojin',
     BANNER,
+    NOTICE,
     JSON.stringify(assemble(SECTIONS)),
     GREENHOUSE,
     GREENHOUSE,
