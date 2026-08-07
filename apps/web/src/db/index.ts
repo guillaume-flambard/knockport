@@ -49,7 +49,9 @@ let db: DatabaseSync | undefined
 export function getDb(): DatabaseSync {
   if (db) return db
 
-  mkdirSync(dirname(DB_PATH), { recursive: true })
+  // `:memory:` is how tests isolate: one throwaway database per test file,
+  // no file on disk. Its directory does not exist, so skip mkdirSync for it.
+  if (DB_PATH !== ':memory:') mkdirSync(dirname(DB_PATH), { recursive: true })
   db = new DatabaseSync(DB_PATH)
   db.exec(readFileSync(join(HERE, 'schema.sql'), 'utf8'))
   migrate(db)
@@ -63,8 +65,11 @@ export function getDb(): DatabaseSync {
  * the table silently misses it and the builder then crashes on insert.
  * Pragmatic: check the columns, add the missing one. This is not a versioned
  * migration framework, and it should not grow into one without reason.
+ *
+ * Exported for tests: migrations run on an existing database, so the test
+ * constructs one shaped like the old schema and proves the rename happens.
  */
-function migrate(handle: DatabaseSync): void {
+export function migrate(handle: DatabaseSync): void {
   const columns = handle
     .prepare(`SELECT name FROM pragma_table_info('journeys')`)
     .all() as { name: string }[]

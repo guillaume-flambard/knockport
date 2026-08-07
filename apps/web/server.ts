@@ -3,16 +3,12 @@ import type { Duplex } from 'node:stream'
 import next from 'next'
 import { WebSocketServer, type WebSocket } from 'ws'
 
-import { TerminalSession } from './src/session/manager.ts'
 import { seedIfEmpty } from './src/journey/seed-demo.ts'
-import type { ClientMessage, ServerMessage } from '@knockport/terminal/protocol'
+import { attachSession, MAX_FRAME_BYTES } from './src/session/attach.ts'
 
 const dev = process.env.NODE_ENV !== 'production'
 const port = Number(process.env.PORT ?? 3000)
 const hostname = process.env.HOSTNAME ?? '0.0.0.0'
-
-/** A frame larger than 8 KB is not a terminal command. */
-const MAX_FRAME_BYTES = 8 * 1024
 
 const app = next({ dev, hostname, port })
 
@@ -56,61 +52,8 @@ server.on('upgrade', (req, socket: Duplex, head) => {
   wss.handleUpgrade(req, socket, head, (ws) => attach(ws, slug))
 })
 
-function send(ws: WebSocket, message: ServerMessage): void {
-  if (ws.readyState === ws.OPEN) ws.send(JSON.stringify(message))
-}
-
 function attach(ws: WebSocket, slug: string): void {
-  const session = TerminalSession.open(slug)
-
-  if (!session) {
-    send(ws, { t: 'closed', reason: 'Journey unavailable. Reload to try again.' })
-    ws.close()
-    return
-  }
-
-  send(ws, { t: 'ready', lines: session.banner(), prompt: session.prompt })
-
-  ws.on('message', (raw) => {
-    if (session.expired()) {
-      send(ws, { t: 'closed', reason: 'Session expired. Reload to start again.' })
-      ws.close()
-      return
-    }
-
-    let message: ClientMessage
-    try {
-      message = JSON.parse(String(raw)) as ClientMessage
-    } catch {
-      return
-    }
-
-    if (message.t === 'complete') {
-      send(ws, { t: 'complete', candidates: session.complete(message.partial) })
-      return
-    }
-
-    if (message.t !== 'exec' || typeof message.input !== 'string') return
-
-    const result = session.exec(message.input)
-    send(ws, {
-      t: 'output',
-      lines: result.output.lines,
-      prompt: result.prompt,
-      clear: result.clear,
-    })
-
-    if (result.done) {
-      send(ws, { t: 'closed', reason: 'Session closed. Reload to start again.' })
-      ws.close()
-    }
-  })
-
-  // The log goes to the database here, in one transaction. This is the only
-  // time we write: logging keystroke by keystroke would cost a disk write per
-  // keystroke.
-  ws.on('close', () => session.close())
-  ws.on('error', () => session.close())
+  attachSession(ws, slug)
 }
 
 // On a fresh volume, the database is empty and the demo journey is not there.

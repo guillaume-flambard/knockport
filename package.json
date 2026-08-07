@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit && pnpm --filter @knockport/web exec tsc --noEmit",
     "gen:content": "node scripts/gen-content.mjs",
     "seed": "KNOCKPORT_DB=$PWD/data/knockport.db node scripts/seed-demo.ts",
     "build:terminal": "esbuild packages/terminal/src/main.ts --bundle --minify --format=esm --target=es2022 --outfile=apps/web/public/terminal/main.js && cp packages/terminal/src/main.css apps/web/public/terminal/main.css",
@@ -16,6 +17,7 @@
     "start": "KNOCKPORT_DB=$PWD/data/knockport.db pnpm --filter @knockport/web start"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "esbuild": "^0.28.1",
     "typescript": "^5.9.0",
     "vitest": "^3.2.0"

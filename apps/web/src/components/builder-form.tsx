@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import type { Section } from '../../../journey/assemble.ts'
+import type { Section } from '../journey/assemble.ts'
 import { saveJourney } from '../app/studio/actions.ts'
 import { BuilderPreview } from './builder-preview.tsx'
 

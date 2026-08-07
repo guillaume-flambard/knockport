@@ -101,7 +101,7 @@ export function listJourneys(): JourneySummary[] {
       `SELECT j.slug, j.title, j.published_at,
               (SELECT COUNT(*) FROM candidate_contacts c WHERE c.journey_id = j.id) AS count
        FROM journeys j
-       ORDER BY j.created_at DESC`,
+       ORDER BY j.created_at DESC, j.slug ASC`,
     )
     .all() as Record<string, string | number | null>[]
 
@@ -133,7 +133,7 @@ export function getJourneyForEdit(slug: string): JourneyDraft | undefined {
     website: row.website ?? null,
     title: row.title as string,
     banner: row.banner as string,
-    notice: row.notice,
+    notice: row.notice ?? null,
     sections: JSON.parse(row.sections_json as string) as Section[],
     published: row.published_at !== null,
   }
@@ -194,12 +194,18 @@ export function markInboxRead(journeySlug: string): void {
  * into the session. Read only, chronological, never ranked.
  */
 export function getSessionTimeline(sessionId: string): TimelineEvent[] {
-  return getDb()
+  const rows = getDb()
     .prepare(
       `SELECT at_ms AS atMs, input, ok
        FROM session_events
        WHERE session_id = ?
        ORDER BY at_ms ASC`,
     )
-    .all(sessionId) as TimelineEvent[]
+    .all(sessionId) as Record<string, number | string>[]
+
+  return rows.map((r) => ({
+    atMs: r.atMs as number,
+    input: r.input as string,
+    ok: r.ok === 1,
+  }))
 }
