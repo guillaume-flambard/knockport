@@ -2,3 +2,6 @@ target/
 *.png.bak
 .env
 .superpowers/brainstorm/
+data/
+.next/
+next-env.d.ts

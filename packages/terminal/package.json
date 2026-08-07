@@ -1,0 +1,13 @@
+{
+  "name": "@knockport/terminal",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/main.ts",
+    "./protocol": "./src/protocol.ts"
+  },
+  "dependencies": {
+    "@knockport/core": "workspace:*"
+  }
+}

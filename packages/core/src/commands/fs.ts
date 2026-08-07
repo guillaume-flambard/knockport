@@ -33,11 +33,18 @@ export function ls(s: Session, c: Content, args: string[]): Output {
 
   const out: Line[] = dir.dirs.map((d) => styledLine(`${d.name}/`, 'accent'))
 
-  for (const file of dir.files) {
-    if (file.hidden && !showAll) continue
+  const shown = dir.files.filter((f) => showAll || !f.hidden)
+
+  // Les titres s'alignent sur le nom le plus long du repertoire. Trois espaces
+  // fixes suffisaient tant que le contenu etait le portfolio personnel, ou les
+  // deux noms faisaient presque la meme longueur. Sur un parcours d'entreprise
+  // quelconque, ca donne des colonnes en escalier.
+  const width = Math.max(0, ...shown.map((f) => displayName(f).length))
+
+  for (const file of shown) {
     out.push({
       spans: [
-        { text: displayName(file), style: 'plain' },
+        { text: displayName(file).padEnd(width), style: 'plain' },
         { text: `   ${file.title}`, style: 'dim' },
       ],
     })
