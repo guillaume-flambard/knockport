@@ -8,7 +8,7 @@ type Props = { searchParams: Promise<{ error?: string }> }
 export default async function LoginPage({ searchParams }: Props) {
   const { error } = await searchParams
   return (
-    <div className="page studio">
+    <main className="page studio">
       <p className="wordmark">knockport / studio</p>
       <h1>Sign in</h1>
       <p className="muted">
@@ -30,6 +30,6 @@ export default async function LoginPage({ searchParams }: Props) {
         ) : null}
         <button type="submit">Sign in</button>
       </form>
-    </div>
+    </main>
   )
 }

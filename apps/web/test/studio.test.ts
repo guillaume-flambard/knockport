@@ -4,6 +4,7 @@ import {
   deleteJourney,
   getJourneyForEdit,
   getSessionTimeline,
+  getTimelinesForSessions,
   listCandidates,
   listJourneys,
   markInboxRead,
@@ -175,5 +176,31 @@ describe('getSessionTimeline', () => {
     // Regression: the SQL aliases at_ms AS atMs; without it the field is
     // undefined and the inbox renders NaN.
     expect(timeline[0]!.atMs).toBe(3000)
+  })
+
+  it('getTimelinesForSessions loads all sessions in one call, grouped', () => {
+    upsertJourney(draft())
+    const journeyId = (
+      getDb().prepare('SELECT id FROM journeys WHERE slug = ?').get('acme') as { id: string }
+    ).id
+    getDb()
+      .prepare(
+        'INSERT INTO session_events (journey_id, session_id, at_ms, input, ok, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+      )
+      .run(journeyId, 's1', 1000, 'ls', 1, Date.now())
+    getDb()
+      .prepare(
+        'INSERT INTO session_events (journey_id, session_id, at_ms, input, ok, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+      )
+      .run(journeyId, 's2', 2000, 'whoami', 1, Date.now())
+
+    const map = getTimelinesForSessions(['s1', 's2'])
+    expect(map.get('s1')!.map((e) => e.input)).toEqual(['ls'])
+    expect(map.get('s2')!.map((e) => e.input)).toEqual(['whoami'])
+    expect(map.get('missing')).toBeUndefined()
+  })
+
+  it('getTimelinesForSessions is empty for no sessions', () => {
+    expect(getTimelinesForSessions([]).size).toBe(0)
   })
 })

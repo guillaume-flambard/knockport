@@ -53,6 +53,34 @@ describe('validDraft', () => {
     expect(validDraft(form({ ...valid, slug: '-acme' }))).toBe('slug')
   })
 
+  it('rejects a slug longer than 64 characters', () => {
+    expect(validDraft(form({ ...valid, slug: 'a'.repeat(65) }))).toBe('slug')
+  })
+
+  it('accepts a 64-character slug and a single-character slug', () => {
+    expect((validDraft(form({ ...valid, slug: 'a'.repeat(64) })) as JourneyDraft).slug)
+      .toBe('a'.repeat(64))
+    expect((validDraft(form({ ...valid, slug: 'a' })) as JourneyDraft).slug).toBe('a')
+  })
+
+  it('rejects a slug with an underscore or a space', () => {
+    expect(validDraft(form({ ...valid, slug: 'a_b' }))).toBe('slug')
+    expect(validDraft(form({ ...valid, slug: 'a b' }))).toBe('slug')
+  })
+
+  it('rejects a slug with an uppercase letter', () => {
+    expect(validDraft(form({ ...valid, slug: 'Acme' }))).toBe('slug')
+  })
+
+  it('rejects a title longer than 200 characters', () => {
+    expect(validDraft(form({ ...valid, title: 't'.repeat(201) }))).toBe('title')
+  })
+
+  it('accepts a title of exactly 200 characters', () => {
+    expect((validDraft(form({ ...valid, title: 't'.repeat(200) })) as JourneyDraft).title.length)
+      .toBe(200)
+  })
+
   it('rejects an empty company name', () => {
     expect(validDraft(form({ ...valid, companyName: '  ' }))).toBe('companyName')
   })

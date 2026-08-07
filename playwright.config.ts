@@ -12,6 +12,7 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   globalSetup: './apps/web/test/e2e/global-setup.ts',
+  snapshotPathTemplate: '{testDir}/../visual/{testFilePath}/{arg}{ext}',
   use: {
     baseURL: `http://127.0.0.1:${PORT}`,
   },
@@ -19,7 +20,8 @@ export default defineConfig({
     command:
       `bash -c 'pnpm build:terminal && ` +
       `cd apps/web && ` +
-      `KNOCKPORT_DB=${DB} KNOCKPORT_STUDIO_PASS=e2epass PORT=${PORT} HOSTNAME=127.0.0.1 node server.ts'`,
+      `KNOCKPORT_DB=${DB} KNOCKPORT_STUDIO_PASS=e2epass KNOCKPORT_LOGIN_MAX_ATTEMPTS=1000 ` +
+      `PORT=${PORT} HOSTNAME=127.0.0.1 node server.ts'`,
     url: `http://127.0.0.1:${PORT}/studio/login`,
     reuseExistingServer: false,
     timeout: 60_000,

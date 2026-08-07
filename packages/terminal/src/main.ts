@@ -40,6 +40,11 @@ const title = el('span', 'title')
 title.textContent = windowTitle
 chrome.appendChild(title)
 
+// A level-one heading, visually hidden, so the terminal still has a document
+// outline for assistive technology without disturbing the design.
+const h1 = el('h1', 'visually-hidden')
+h1.textContent = windowTitle
+
 const scrollback = el('pre', 'scrollback')
 scrollback.setAttribute('aria-live', 'polite')
 scrollback.setAttribute('aria-atomic', 'false')
@@ -56,9 +61,12 @@ input.autocomplete = 'off'
 input.spellcheck = false
 input.disabled = true
 
+// The button is a keyboard path for assistive technologies; it needs a name
+// even though it is visually hidden.
 const submitButton = el('button', 'visually-hidden')
 submitButton.type = 'submit'
 submitButton.tabIndex = -1
+submitButton.setAttribute('aria-label', 'Run command')
 
 const form = el('form', 'prompt')
 form.append(label, sigil, input, submitButton)
@@ -68,7 +76,7 @@ body.append(scrollback, form)
 
 const windowEl = el('div', 'window')
 windowEl.append(chrome, body)
-mount.appendChild(windowEl)
+mount.append(h1, windowEl)
 
 // --- rendering --------------------------------------------------------------
 

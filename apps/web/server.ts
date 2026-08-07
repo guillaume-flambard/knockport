@@ -19,7 +19,31 @@ await app.prepare()
 const handleHttp = app.getRequestHandler()
 const handleUpgrade = app.getUpgradeHandler()
 
+/**
+ * Security headers on every HTTP response. The terminal loads its stylesheet
+ * and fonts from the same origin, and talks to the server over a WebSocket,
+ * so the CSP has to allow connect-src 'self' and ws:. The studio, being a
+ * private tool on the same host, inherits the same policy.
+ */
+function securityHeaders(res: { setHeader: (k: string, v: string) => void }): void {
+  res.setHeader('Content-Security-Policy', [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data:",
+    "font-src 'self'",
+    "connect-src 'self' ws: wss:",
+    "frame-ancestors 'none'",
+  ].join('; '))
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-Frame-Options', 'DENY')
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+  if (!dev) res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+}
+
 const server = createServer((req, res) => {
+  securityHeaders(res)
   handleHttp(req, res).catch((error: unknown) => {
     console.error('knockport: HTTP error', error)
     res.statusCode = 500
@@ -45,6 +69,25 @@ server.on('upgrade', (req, socket: Duplex, head) => {
       console.error('knockport: Next refused the upgrade', path, error)
       socket.destroy()
     })
+    return
+  }
+
+  // Only pages served by this site may open a terminal socket. A script
+  // running elsewhere cannot simply `new WebSocket('ws://host/ws/x')`.
+  // The Origin header is present on browser upgrades; compare it to the Host
+  // the client connected to. Port is ignored: dev runs on any port.
+  const origin = req.headers.origin
+  const host = req.headers.host ?? ''
+  if (!origin) {
+    socket.write('HTTP/1.1 403 Forbidden\r\n\r\n')
+    socket.destroy()
+    return
+  }
+  const originHost = new URL(origin).host
+  const hostnameOnly = originHost.replace(/:\d+$/, '') === host.replace(/:\d+$/, '')
+  if (!hostnameOnly) {
+    socket.write('HTTP/1.1 403 Forbidden\r\n\r\n')
+    socket.destroy()
     return
   }
 

@@ -1,9 +1,12 @@
 'use server'
 
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
+import { createHash } from 'node:crypto'
 import { deleteJourney, getJourneyForEdit, slugExists, upsertJourney, type JourneyDraft } from '../../db/studio.ts'
 import { clearAuth, isAuthed, setAuth } from './auth.ts'
 import { validDraft, SLUG_RE } from '../../journey/validate.ts'
+import { isRateLimited } from '../../session/rate-limit.ts'
 
 export async function saveJourney(input: FormData): Promise<void> {
   if (!(await isAuthed())) redirect('/studio/login')
@@ -53,9 +56,29 @@ export async function duplicateJourney(slug: string): Promise<void> {
   redirect(`/studio/j/${copySlug}`)
 }
 
+/**
+ * A rate-limit key derived from the client address. The IP is hashed with a
+ * static pepper, so it is never stored or logged in the clear: the key exists
+ * only to separate one visitor from another.
+ */
+async function clientKey(): Promise<string> {
+  const jar = await headers()
+  const ip = String(jar.get('x-forwarded-for') ?? '').split(',')[0]?.trim() ?? 'unknown'
+  return createHash('sha256').update(`knockport-rl:${ip}`).digest('hex')
+}
+
+/** Brute force on the studio passphrase is cheap to script; five tries per
+ *  window per client is already generous for a one-person tool. Tests may
+ *  raise it via KNOCKPORT_LOGIN_MAX_ATTEMPTS so a browser suite full of
+ *  logins does not starve itself. */
+const LOGIN_MAX_ATTEMPTS = Number(process.env.KNOCKPORT_LOGIN_MAX_ATTEMPTS ?? 5)
+
 export async function login(input: FormData): Promise<void> {
   const pass = String(input.get('pass') ?? '')
   const expected = process.env.KNOCKPORT_STUDIO_PASS ?? ''
+  if (await isRateLimited(await clientKey(), LOGIN_MAX_ATTEMPTS)) {
+    redirect('/studio/login?error=1')
+  }
   if (pass !== '' && pass === expected) {
     await setAuth()
     redirect('/studio')

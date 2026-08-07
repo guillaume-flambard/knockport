@@ -1,8 +1,11 @@
 'use server'
 
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
+import { createHash } from 'node:crypto'
 import { validEmail, validMessage } from '@knockport/core'
 import { findJourneyBySlug, saveContact } from '../../../../db/index.ts'
+import { isRateLimited } from '../../../../session/rate-limit.ts'
 
 /**
  * The contact flow for visitors without JavaScript.
@@ -24,6 +27,13 @@ export async function submitContact(formData: FormData): Promise<void> {
   // Honeypot. Hidden from sight and from assistive technology, so a person
   // never meets it and a bot filling every field in the form does.
   if (String(formData.get('website') ?? '') !== '') redirect(`/j/${slug}/profile?sent=1`)
+
+  // The honeypot catches naive bots, not scripts that skip it. A modest cap
+  // per client keeps the database from filling with fabricated applications.
+  const jar = await headers()
+  const ip = String(jar.get('x-forwarded-for') ?? '').split(',')[0]?.trim() ?? 'unknown'
+  const key = createHash('sha256').update(`knockport-contact:${ip}`).digest('hex')
+  if (await isRateLimited(key, 20)) redirect(`/j/${slug}/profile?error=ratelimit#contact`)
 
   const name = String(formData.get('name') ?? '').trim()
   const email = String(formData.get('email') ?? '').trim()

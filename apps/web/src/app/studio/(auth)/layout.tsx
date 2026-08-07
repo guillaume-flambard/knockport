@@ -18,7 +18,7 @@ export default async function StudioLayout({ children }: { children: ReactNode }
           </button>
         </form>
       </header>
-      {children}
+      <main>{children}</main>
     </div>
   )
 }

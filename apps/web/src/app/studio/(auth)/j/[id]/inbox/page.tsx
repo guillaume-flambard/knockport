@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getJourneyForEdit, listCandidates, getSessionTimeline, markInboxRead } from '../../../../../../db/studio.ts'
+import { getJourneyForEdit, listCandidates, getTimelinesForSessions, markInboxRead } from '../../../../../../db/studio.ts'
 import type { Candidate, TimelineEvent } from '../../../../../../db/studio.ts'
 import { CopyEmail } from './copy-email.tsx'
 
@@ -19,8 +19,7 @@ function ago(ms: number): string {
 
 /** The contact message and the raw timeline, each kept as simple as they came
  *  in. This page shows what the candidate did, never an opinion on it. */
-function CandidateCard({ candidate }: { candidate: Candidate }) {
-  const timeline: TimelineEvent[] = getSessionTimeline(candidate.sessionId)
+function CandidateCard({ candidate, timeline }: { candidate: Candidate; timeline: TimelineEvent[] }) {
 
   return (
     <article className="section">
@@ -59,6 +58,8 @@ export default async function InboxPage({ params }: Props) {
   const candidates = listCandidates(id)
   markInboxRead(id)
   const newCount = candidates.filter((c) => !c.read).length
+  // One query for every timeline, not one per candidate.
+  const timelines = getTimelinesForSessions(candidates.map((c) => c.sessionId))
 
   return (
     <>
@@ -83,7 +84,7 @@ export default async function InboxPage({ params }: Props) {
       )}
 
       {candidates.map((c) => (
-        <CandidateCard key={c.id} candidate={c} />
+        <CandidateCard key={c.id} candidate={c} timeline={timelines.get(c.sessionId) ?? []} />
       ))}
     </>
   )

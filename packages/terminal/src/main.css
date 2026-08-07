@@ -29,7 +29,7 @@
   :root {
     --bg: #fbfaf8;
     --fg: #14171a;
-    --dim: #6b7175;
+    --dim: #666c70;
     --accent: #0f6f77;
     --stage: radial-gradient(115% 80% at 50% 0%, #fff 0%, #e6e4dd 75%);
     --chrome: rgba(20, 23, 26, 0.035);

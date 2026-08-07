@@ -209,3 +209,31 @@ export function getSessionTimeline(sessionId: string): TimelineEvent[] {
     ok: r.ok === 1,
   }))
 }
+
+/** All timelines for a set of sessions, in one query. The inbox previously
+ *  loaded one timeline per candidate, which was a query per row (N+1). */
+export function getTimelinesForSessions(sessionIds: readonly string[]): Map<string, TimelineEvent[]> {
+  const map = new Map<string, TimelineEvent[]>()
+  if (sessionIds.length === 0) return map
+
+  const placeholders = sessionIds.map(() => '?').join(',')
+  const rows = getDb()
+    .prepare(
+      `SELECT session_id, at_ms AS atMs, input, ok
+       FROM session_events
+       WHERE session_id IN (${placeholders})
+       ORDER BY at_ms ASC`,
+    )
+    .all(...sessionIds) as Record<string, string | number>[]
+
+  for (const row of rows) {
+    const sid = row.session_id as string
+    if (!map.has(sid)) map.set(sid, [])
+    map.get(sid)!.push({
+      atMs: row.atMs as number,
+      input: row.input as string,
+      ok: row.ok === 1,
+    })
+  }
+  return map
+}

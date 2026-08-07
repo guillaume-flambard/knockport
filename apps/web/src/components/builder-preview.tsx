@@ -79,7 +79,7 @@ export function BuilderPreview({
   // Titles align to the longest name, exactly like `ls` in the core. The ls
   // output lines already carry that padding, so a plain render is faithful.
   return (
-    <div className="preview" aria-label={`Preview of the terminal at /j/${slug}`}>
+    <div className="preview" role="region" aria-label={`Preview of the terminal at /j/${slug}`}>
       <div className="preview-chrome">
         <span className="dot" />
         <span className="dot" />
@@ -100,7 +100,10 @@ export function BuilderPreview({
         {lsOut.lines.map((line, i) => {
           const name = line.spans[0]?.text?.trim()
           const isDir = name?.endsWith('/') ?? false
-          const clickable = !isDir && name !== undefined && rootNames.has(name)
+          // A section the user has not named yet must not become a clickable
+          // button: an unnamed file renders as an empty button, which fails
+          // accessibility (button-name) and confuses the click target.
+          const clickable = !isDir && name !== undefined && name !== '' && rootNames.has(name)
           const inner = line.spans.map((span, j) =>
             span.style === 'plain' ? (
               <span key={j}>{span.text}</span>

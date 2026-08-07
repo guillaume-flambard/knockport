@@ -152,4 +152,18 @@ describe('websocket protocol', () => {
       .all(journeyId) as { input: string }[]
     expect(events.map((e) => e.input)).toContain('whoami')
   })
+
+  it('handles many concurrent sessions independently', async () => {
+    upsertJourney(draft())
+    const sockets = await Promise.all(
+      Array.from({ length: 10 }, () => connect('acme')),
+    )
+    for (const s of sockets) s.send({ t: 'exec', input: 'ls' })
+    await new Promise((r) => setTimeout(r, 40))
+    for (const s of sockets) {
+      const text = flatten(s.messages)
+      expect(text.some((l) => l.includes('whoami'))).toBe(true)
+      s.ws.close()
+    }
+  })
 })
