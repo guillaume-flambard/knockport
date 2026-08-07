@@ -2,6 +2,11 @@
 
 **A hiring journey you type into.**
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/guillaume-flambard/knockport/blob/main/LICENSE)
+[![CI](https://github.com/guillaume-flambard/knockport/actions/workflows/ci.yml/badge.svg)](https://github.com/guillaume-flambard/knockport/actions/workflows/ci.yml)
+
+[![Watch the demo](brand/demo-poster.png)](https://github.com/guillaume-flambard/knockport/releases/download/v0.1.0/demo-final.mp4)
+
 A job posting gets around 254 applications. A recruiter spends most of a working
 day reading them to find the four people who actually looked at what the company
 builds.
@@ -28,7 +33,69 @@ order, how long they stayed, what they asked. No ranking, no grade, no automated
 rejection. Ranking is what an ATS already does, and doing it here would be both
 worse and harder to defend.
 
----
+> The image above links to the walkthrough video
+> (`v0.1.0` release asset, 81s, 1080p).
+
+## Features
+
+- **Evidence, never scores.** The inbox shows a candidate's whole journey, in
+  order, as a timeline. Never a rank, a grade or an automated rejection.
+- **A terminal they walk into.** The journey is a virtual filesystem a candidate
+  explores with `ls`, `cat`, `help`. What they read and in what order is the
+  signal, and the signal is the company's to read, not a number.
+- **Live preview in the builder.** The studio renders the exact terminal from
+  what the recruiter types, from the same pure core the candidate runs. No
+  guessing what the offer will look like.
+- **Plain for everyone.** `/j/<slug>/profile` serves the whole journey without
+  JavaScript, with its own contact form. Reading without being able to reply is
+  the same exclusion in a politer form.
+- **Zero runtime dependencies.** The engine runs in a browser, in Node and in
+  an SSH session from the same code. No bundler inside the terminal.
+
+## Studio
+
+The studio (`/studio`) is where a company builds and runs its journeys. It is
+a private tool behind a passphrase (`KNOCKPORT_STUDIO_PASS`):
+
+- **Builder** — a three-step wizard (company, journey, publish) that starts
+  from the Memo Labs example, so a first-time employer edits real content
+  instead of inventing structure from a blank form. A link at the bottom
+  starts from a blank journey instead. A live terminal preview on the right
+  updates as you type. Editing is one screen. Drafts are auto-saved in the
+  browser.
+- **Inbox** — applications arrive with the candidate's whole journey behind
+  them: what they read, in what order, how long they stayed. Evidence, never
+  a score.
+
+## Running it
+
+Node 26 and pnpm. Node runs the TypeScript directly, so there is no build step
+for the server.
+
+```bash
+pnpm install
+pnpm seed     # creates the demo journey
+pnpm dev      # http://localhost:3010/j/memo-labs
+```
+
+```bash
+pnpm test         # unit + integration (171 tests)
+pnpm test:e2e     # Playwright suite (studio, terminal, no-JS, security, a11y)
+pnpm typecheck
+pnpm audit:full   # deps + secrets + typecheck + tests
+```
+
+The only build step is the browser client, bundled by esbuild into one file. No
+bundler config, and no framework inside the terminal.
+
+The demo journey is Memo Labs, a small product engineering company that the
+author owns. It speaks as a company, because that is what a journey is for:
+the product helps companies show candidates who they are and what a role
+looks like. An earlier version reconstructed a real company from its public
+pages, and that was a mistake: a page written in the first person, carrying
+someone else's name and served on a domain they do not control, reads like
+their own recruitment page however visible the disclaimer is. A demo speaks
+for a business you own.
 
 ## How it is built
 
@@ -61,58 +128,11 @@ Without JavaScript there is no terminal at all, so that page is the only path
 left for those visitors. A friction that in practice excludes a disabled
 candidate is discrimination, not a filter.
 
----
-
-## Running it
-
-Node 26 and pnpm. Node runs the TypeScript directly, so there is no build step
-for the server.
-
-```bash
-pnpm install
-pnpm seed     # creates the demo journey
-pnpm dev      # http://localhost:3010/j/memo-labs
-```
-
-```bash
-pnpm test         # unit + integration (171 tests)
-pnpm test:e2e     # Playwright suite (studio, terminal, no-JS, security, a11y)
-pnpm typecheck
-pnpm audit:full   # deps + secrets + typecheck + tests
-```
-
-The only build step is the browser client, bundled by esbuild into one file. No
-bundler config, and no framework inside the terminal.
-
-The demo journey is Memo Labs, a small product engineering company that the
-author owns. It speaks as a company, because that is what a journey is for:
-the product helps companies show candidates who they are and what a role
-looks like. An earlier version reconstructed a real company from its public
-pages, and that was a mistake: a page written in the first person, carrying
-someone else's name and served on a domain they do not control, reads like
-their own recruitment page however visible the disclaimer is. A demo speaks
-for a business you own.
-
-## Studio
-
-The studio (`/studio`) is where a company builds and runs its journeys. It is
-a private tool behind a passphrase (`KNOCKPORT_STUDIO_PASS`):
-
-- **Builder** — a three-step wizard (company, journey, publish) that starts
-  from the Memo Labs example, so a first-time employer edits real content
-  instead of inventing structure from a blank form. A link at the bottom
-  starts from a blank journey instead. A live terminal preview on the right
-  updates as you type. Editing is one screen. Drafts are auto-saved in the
-  browser.
-- **Inbox** — applications arrive with the candidate's whole journey behind
-  them: what they read, in what order, how long they stayed. Evidence, never
-  a score.
-
 ## Demo video
 
-`pnpm demo` records and renders a walkthrough video of the product end to
-end: a candidate explores a journey in the terminal, finds `contact` through
-`help`, applies, and the company sees the application land in the inbox.
+`pnpm demo` records and renders the walkthrough video end to end from a
+scripted browser session, with no manual editing. The latest render lives on
+the [v0.1.0 release](https://github.com/guillaume-flambard/knockport/releases/tag/v0.1.0).
 
 - `scripts/demo/` — the scenario and the capture/render pipeline.
 - `demo/remotion/` — the Remotion composition (transitions, animated
