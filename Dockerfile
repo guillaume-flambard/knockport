@@ -2,7 +2,7 @@
 # terminal, et plus tard ssh2 sur le port 22 dans le meme processus.
 FROM node:26-slim AS base
 ENV PNPM_HOME=/pnpm PATH=$PNPM_HOME:$PATH
-RUN corepack enable
+RUN npm i -g pnpm@10.14.0
 WORKDIR /app
 
 FROM base AS deps
