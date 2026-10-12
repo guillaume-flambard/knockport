@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { once } from 'node:events'
 import { createServer } from 'node:http'
 import { WebSocket, WebSocketServer } from 'ws'
@@ -61,8 +61,10 @@ async function connect(slug: string) {
     ws.once('open', resolve)
     ws.once('error', reject)
   })
-  // wait for the ready frame
-  await new Promise((r) => setTimeout(r, 20))
+  // Wait for the first frame (ready, or closed for an unknown journey). A
+  // fixed 20 ms sleep was not always enough once the suite ran on Node 24
+  // with every test file in parallel, so poll instead of guessing.
+  await vi.waitFor(() => expect(messages.length).toBeGreaterThan(0))
   return { ws, messages, send: (m: unknown) => ws.send(JSON.stringify(m)) }
 }
 
@@ -83,10 +85,11 @@ describe('websocket protocol', () => {
     expect(messages[0]).toMatchObject({ t: 'ready' })
 
     send({ t: 'exec', input: 'ls' })
-    await new Promise((r) => setTimeout(r, 20))
-    const text = flatten(messages)
-    expect(text).toContain('Welcome to Acme.')
-    expect(text.some((l) => l.includes('whoami'))).toBe(true)
+    await vi.waitFor(() => {
+      const text = flatten(messages)
+      expect(text).toContain('Welcome to Acme.')
+      expect(text.some((l) => l.includes('whoami'))).toBe(true)
+    })
     ws.close()
   })
 
@@ -94,21 +97,23 @@ describe('websocket protocol', () => {
     upsertJourney(draft())
     const { ws, messages, send } = await connect('acme')
     send({ t: 'complete', partial: 'w' })
-    await new Promise((r) => setTimeout(r, 20))
-    const complete = messages.find((m) => (m as { t: string }).t === 'complete') as {
-      candidates: string[]
-    }
-    expect(complete.candidates).toContain('whoami')
+    await vi.waitFor(() => {
+      const complete = messages.find((m) => (m as { t: string }).t === 'complete') as
+        | { candidates: string[] }
+        | undefined
+      expect(complete?.candidates).toContain('whoami')
+    })
     ws.close()
   })
 
   it('closes with a reason for an unknown journey', async () => {
     const { ws, messages } = await connect('nope')
-    await new Promise((r) => setTimeout(r, 20))
-    const closed = messages.find((m) => (m as { t: string }).t === 'closed') as {
-      reason: string
-    }
-    expect(closed.reason).toContain('Journey unavailable')
+    await vi.waitFor(() => {
+      const closed = messages.find((m) => (m as { t: string }).t === 'closed') as
+        | { reason: string }
+        | undefined
+      expect(closed?.reason).toContain('Journey unavailable')
+    })
     ws.close()
   })
 
@@ -122,18 +127,20 @@ describe('websocket protocol', () => {
     send({ t: 'exec', input: 'ada@example.com' })
     await new Promise((r) => setTimeout(r, 20))
     send({ t: 'exec', input: 'Interested.' })
-    await new Promise((r) => setTimeout(r, 20))
 
-    const text = flatten(messages)
-    expect(text.some((l) => l.includes('Sent.'))).toBe(true)
+    await vi.waitFor(() => {
+      const text = flatten(messages)
+      expect(text.some((l) => l.includes('Sent.'))).toBe(true)
+    })
     ws.close()
-    await new Promise((r) => setTimeout(r, 20))
 
-    const row = getDb().prepare('SELECT name, email FROM candidate_contacts').get() as
-      | { name: string; email: string }
-      | undefined
-    expect(row?.name).toBe('Ada')
-    expect(row?.email).toBe('ada@example.com')
+    await vi.waitFor(() => {
+      const row = getDb().prepare('SELECT name, email FROM candidate_contacts').get() as
+        | { name: string; email: string }
+        | undefined
+      expect(row?.name).toBe('Ada')
+      expect(row?.email).toBe('ada@example.com')
+    })
   })
 
   it('journals the session when the socket closes', async () => {
@@ -142,15 +149,16 @@ describe('websocket protocol', () => {
     send({ t: 'exec', input: 'whoami' })
     await new Promise((r) => setTimeout(r, 20))
     ws.close()
-    await new Promise((r) => setTimeout(r, 30))
 
     const journeyId = (
       getDb().prepare('SELECT id FROM journeys WHERE slug = ?').get('acme') as { id: string }
     ).id
-    const events = getDb()
-      .prepare('SELECT input FROM session_events WHERE journey_id = ?')
-      .all(journeyId) as { input: string }[]
-    expect(events.map((e) => e.input)).toContain('whoami')
+    await vi.waitFor(() => {
+      const events = getDb()
+        .prepare('SELECT input FROM session_events WHERE journey_id = ?')
+        .all(journeyId) as { input: string }[]
+      expect(events.map((e) => e.input)).toContain('whoami')
+    })
   })
 
   it('handles many concurrent sessions independently', async () => {
@@ -159,11 +167,12 @@ describe('websocket protocol', () => {
       Array.from({ length: 10 }, () => connect('acme')),
     )
     for (const s of sockets) s.send({ t: 'exec', input: 'ls' })
-    await new Promise((r) => setTimeout(r, 40))
-    for (const s of sockets) {
-      const text = flatten(s.messages)
-      expect(text.some((l) => l.includes('whoami'))).toBe(true)
-      s.ws.close()
-    }
+    await vi.waitFor(() => {
+      for (const s of sockets) {
+        const text = flatten(s.messages)
+        expect(text.some((l) => l.includes('whoami'))).toBe(true)
+      }
+    })
+    for (const s of sockets) s.ws.close()
   })
 })
