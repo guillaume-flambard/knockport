@@ -1,6 +1,6 @@
 # knockport. Une seule image: Next.js pour le HTTP, ws pour la session
 # terminal, et plus tard ssh2 sur le port 22 dans le meme processus.
-FROM node:26-slim AS base
+FROM node:24-slim AS base
 ENV PNPM_HOME=/pnpm PATH=$PNPM_HOME:$PATH
 RUN npm i -g pnpm@10.14.0
 WORKDIR /app
