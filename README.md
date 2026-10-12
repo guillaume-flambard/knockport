@@ -6,7 +6,7 @@
 [![CI](https://github.com/guillaume-flambard/knockport/actions/workflows/ci.yml/badge.svg)](https://github.com/guillaume-flambard/knockport/actions/workflows/ci.yml)
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript&logoColor=white)](https://github.com/guillaume-flambard/knockport)
-[![Node 26](https://img.shields.io/badge/Node-26-339933?logo=nodedotjs&logoColor=white)](https://github.com/guillaume-flambard/knockport)
+[![Node 24](https://img.shields.io/badge/Node-24-339933?logo=nodedotjs&logoColor=white)](https://github.com/guillaume-flambard/knockport)
 [![pnpm](https://img.shields.io/badge/pnpm-10.14-F6921E?logo=pnpm&logoColor=white)](https://github.com/guillaume-flambard/knockport)
 [![Tests](https://img.shields.io/badge/tests-171-green)](https://github.com/guillaume-flambard/knockport/actions/workflows/ci.yml)
 [![Terminal: 2.7 kB](https://img.shields.io/badge/terminal-2.7kB-7fd6d1)](https://github.com/guillaume-flambard/knockport/tree/main/packages/terminal)
@@ -76,7 +76,7 @@ a private tool behind a passphrase (`KNOCKPORT_STUDIO_PASS`):
 
 ## Running it
 
-Node 26 and pnpm. Node runs the TypeScript directly, so there is no build step
+Node 24 and pnpm. Node runs the TypeScript directly, so there is no build step
 for the server.
 
 ```bash

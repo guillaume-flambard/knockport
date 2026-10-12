@@ -45,7 +45,7 @@ not solve issues, write code or produce anything the company could use.
 
 ## Conventions
 
-- Node 26 runs TypeScript natively, so relative imports carry an explicit `.ts`
+- Node 24 runs TypeScript natively, so relative imports carry an explicit `.ts`
   extension. This is required, not stylistic.
 - Prefer Node built ins over packages: `node:sqlite`, `crypto.randomUUID()`,
   `crypto.scrypt` are all in use and replaced three third party dependencies.
