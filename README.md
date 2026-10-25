@@ -8,19 +8,14 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript&logoColor=white)](https://github.com/guillaume-flambard/knockport)
 [![Node 24](https://img.shields.io/badge/Node-24-339933?logo=nodedotjs&logoColor=white)](https://github.com/guillaume-flambard/knockport)
 [![pnpm](https://img.shields.io/badge/pnpm-10.14-F6921E?logo=pnpm&logoColor=white)](https://github.com/guillaume-flambard/knockport)
-[![Tests](https://img.shields.io/badge/tests-171-green)](https://github.com/guillaume-flambard/knockport/actions/workflows/ci.yml)
 [![Terminal: 2.7 kB](https://img.shields.io/badge/terminal-2.7kB-7fd6d1)](https://github.com/guillaume-flambard/knockport/tree/main/packages/terminal)
 [![Core: 0 deps](https://img.shields.io/badge/core-0%20deps-black)](https://github.com/guillaume-flambard/knockport/tree/main/packages/core)
 
 [![Watch the demo](brand/demo-poster.png)](https://github.com/guillaume-flambard/knockport/releases/download/v0.1.0/demo-final.mp4)
 
-A job posting gets around 254 applications. A recruiter spends most of a working
-day reading them to find the four people who actually looked at what the company
-builds.
+**The problem:** a job listing tells candidates little about the actual work, while a CV tells recruiters little about which parts of the role a candidate explored. knockport lets an employer publish a navigable, terminal-style introduction to its team, product and role before someone chooses to apply.
 
-Every tool on the market tries to filter that output better. knockport reduces
-the input instead. Candidates explore the company in a terminal, and only the
-ones who spend fifteen minutes there ever reach the inbox.
+**The approach:** candidates explore the material themselves; recruiters review a recorded journey rather than an automated suitability score. This is a product experiment, not evidence that it improves hiring outcomes.
 
 ```
 ~ $ ls -a
@@ -42,6 +37,17 @@ worse and harder to defend.
 
 > The image above links to the walkthrough video
 > (`v0.1.0` release asset, 81s, 1080p).
+
+## Project status and proof
+
+| Evidence | What it establishes | What it does not establish |
+| --- | --- | --- |
+| [81-second product walkthrough](https://github.com/guillaume-flambard/knockport/releases/download/v0.1.0/demo-final.mp4) | A scripted browser journey including the terminal and recruiter studio | Independent-user adoption or measured hiring effectiveness |
+| [GitHub Actions CI](https://github.com/guillaume-flambard/knockport/actions/workflows/ci.yml) | Automated dependency checks, typechecking and unit/integration tests on CI runs | A production SLA or independent security assessment |
+| [Playwright E2E suite](playwright.config.ts) | Browser tests for the studio, terminal, no-JavaScript path, security headers and accessibility checks | Accessibility certification or real candidate usability |
+| [Engineering case study](docs/engineering-case-study.md) | Architecture decisions, tradeoffs, reproduction commands and remaining risks | Client case study or commercial results |
+
+**Maturity:** open-source prototype / release `v0.1.0`. The demo journey uses a business owned by the maintainer, not an impersonated employer. No independent recruiting effectiveness benchmark is claimed.
 
 ## Features
 
@@ -86,7 +92,7 @@ pnpm dev      # http://localhost:3010/j/memo-labs
 ```
 
 ```bash
-pnpm test         # unit + integration (171 tests)
+pnpm test         # unit + integration (current count reported by test runner)
 pnpm test:e2e     # Playwright suite (studio, terminal, no-JS, security, a11y)
 pnpm typecheck
 pnpm audit:full   # deps + secrets + typecheck + tests
@@ -173,6 +179,10 @@ snapshot files were the oracle for the port: the TypeScript was only accepted
 once its output matched them character for character.
 
 ---
+
+## Contributing and security
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for reproducible setup and focused pull requests, and [SECURITY.md](SECURITY.md) for responsible vulnerability reporting. Do not submit real applicant data, private tokens or live company information as demo fixtures.
 
 ## License
 
